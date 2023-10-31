@@ -1,0 +1,33 @@
+
+<div class="wrap-login about_intro">
+<div class="login-form">
+    <!-- <img src="../../../assets/images/l" alt=""> -->
+    <h2 class="text-center mb-3">Admin Login</h2>
+
+    
+
+        <form [formGroup]="userForm">
+            <img src="../../../assets/logo-icon.png" alt="">
+            <div class="form-group">
+                <label for="">Email</label>
+                <input formControlName="username" type="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label for="">Password</label>
+                <input [attr.type]="passCheck" formControlName="password" class="form-control" placeholder="Password">
+    
+                <i *ngIf="passCheck == 'password'" (click)="passChange()" class="fa-solid fa-eye"></i>
+                <i *ngIf="passCheck == 'text'" (click)="passChange()" class="fa-solid fa-eye-slash"></i>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <button *ngIf="!loginLoader" (click)="Authenticate()" class="btn btn-primary" style="background-color: #f5b324; color: #ffffff; margin-top: 15px !important">
+                    Login
+                </button>
+                <button *ngIf="loginLoader" disabled class="btn btn-primary" style="background-color: #f5b324; color: #ffffff; margin-top: 15px !important">
+                    Loading ...
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
