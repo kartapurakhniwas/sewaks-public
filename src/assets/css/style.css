@@ -3629,7 +3629,7 @@ User Area CSS
 }
 
 .user-area .user-form-content .user-form .login-action .forgot-login {
-  display: inline-block;
+  /* display: inline-block; */
   float: right;
 }
 
@@ -4195,7 +4195,7 @@ Blog Details Content Style
 }
 
 .blog-details-content .share-link {
-  display: inline-block;
+  /* display: inline-block; */
   float: right;
   position: relative;
   padding-bottom: 0;
