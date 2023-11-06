@@ -1,26 +1,24 @@
-
+<!-- 
 <div class="wrap-login about_intro">
 <div class="login-form">
-    <!-- <img src="../../../assets/images/l" alt=""> -->
     <h2 class="text-center mb-3">Admin Login</h2>
 
     
 
-        <form [formGroup]="userForm">
+        <form >
             <img src="../../../assets/logo-icon.png" alt="">
             <div class="form-group">
                 <label for="">Email</label>
-                <input formControlName="username" type="email" class="form-control" placeholder="Email">
+                <input  type="email" class="form-control" placeholder="Email">
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <label for="">Password</label>
-                <input [attr.type]="passCheck" formControlName="password" class="form-control" placeholder="Password">
+                <input  formControlName="password" class="form-control" placeholder="Password">
     
-                <i *ngIf="passCheck == 'password'" (click)="passChange()" class="fa-solid fa-eye"></i>
-                <i *ngIf="passCheck == 'text'" (click)="passChange()" class="fa-solid fa-eye-slash"></i>
+                
             </div>
-            <div class="d-flex align-items-center justify-content-between">
-                <button *ngIf="!loginLoader" (click)="Authenticate()" class="btn btn-primary" style="background-color: #f5b324; color: #ffffff; margin-top: 15px !important">
+            <div class="text-center">
+                <button  class="btn btn-primary" style="background-color: #f5b324; color: #ffffff; margin-top: 15px !important">
                     Login
                 </button>
                 <button *ngIf="loginLoader" disabled class="btn btn-primary" style="background-color: #f5b324; color: #ffffff; margin-top: 15px !important">
@@ -31,3 +29,104 @@
     </div>
 
 </div>
+ -->
+
+
+
+<!-- Start Page Title Area -->
+<div class="page-title-area bg-12 ht-auto">
+    <div class="container">
+        <div class="page-title-content">
+            <h2>Log in</h2>
+
+            <ul>
+                <li>
+                    <a href="index.html">
+                        Home 
+                    </a>
+                </li>
+
+                <li class="active">Log in</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-bg-shape">
+        <img src="assets/images/page-bg/page-bg-shape.png" alt="Image">
+    </div>
+</div>
+<!-- End Page Title Area -->
+
+<!-- Start User Area -->
+<section class="user-area ptb-100">
+    <div class="container">
+        <div class="user-form-content">
+            <h3>Log in</h3>
+        
+            <form class="user-form" [formGroup]="userForm">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-control" type="text" name="name" formControlName="username">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input class="form-control" type="password" name="password" [attr.type]="passCheck">
+                            <i *ngIf="passCheck == 'password'" (click)="passChange()" class="fa-solid fa-eye"></i>
+                            <i *ngIf="passCheck == 'text'" (click)="passChange()" class="fa-solid fa-eye-slash"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="login-action">
+                            <span class="log-rem">
+                                <input id="remember-2" type="checkbox">
+                                <label class="ps-2">Remember me</label>
+                            </span>
+                            
+                            <span class="forgot-login">
+                                <a href="#">Forgot your password?</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="default-btn" type="submit" *ngIf="!loginLoader" (click)="Authenticate()">
+                            SIGN IN
+                        </button>
+                        <button class="default-btn" type="submit" *ngIf="loginLoader" >
+                            SIGN IN
+                        </button>
+                    </div>
+
+                    <!-- <div class="col-12">
+                        <span class="or">Or</span>
+                    </div>
+
+                    <div class="col-12">
+                        <a href="https://www.facebook.com/" class="or-login" target="_blank">
+                            <i class="ri-facebook-fill"></i>
+                            Login with facebook
+                        </a>
+                    </div>
+
+                    <div class="col-12">
+                        <a href="#" class="or-login google" target="_blank">
+                            <i class="ri-google-fill"></i>
+                            Login with google
+                        </a>
+                    </div> -->
+
+                    <div class="col-12">
+                        <p class="create">Don’t have an account? <a href="register.html">Register now</a></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- End User Area -->

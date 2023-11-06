@@ -1,0 +1,29 @@
+<div class="admin-header">
+    <h3>Contact Us List</h3>
+    <div class="d-flex justify-content-between">
+        <!-- <input type="text" class="form-control" placeholder="Search ...">
+        <ng-select [(ngModel)]="selectedCar" class="ml-4">
+            <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
+         </ng-select> -->
+        <!-- <button  routerLink="/volunteers/add" class="btn" style="background-color: #f5b324; color: #ffffff;">
+            Add New
+        </button> -->
+        <div class="d-flex align-items-center" *ngIf="gl.setRowData">
+            Change Status To: 
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button (click)="statusChange(3)" type="button" class="btn">Called</button>
+                <button (click)="statusChange(4)" type="button" class="btn">Verified As Volunteer</button>
+                <button (click)="statusChange(1)" type="button" class="btn" style="background-color: #fd1f18; color: #ffffff;">Decline</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="getpaged">
+    <ag-grid-angular [rowData]="getpaged" #agGrid id="myGrid" class="ag-theme-balham table-size"
+        [columnDefs]="columnDefs" [pagination]="true" [paginationPageSize]="50" 
+        rowSelection="single" (selectionChanged)="onSelectionChanged()"
+        [defaultColDef]="defaultColDef" >
+    </ag-grid-angular>
+</div>

@@ -1,0 +1,46 @@
+i[class^="fa"] {
+    cursor: pointer;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h3 {
+        margin: 0;
+    }
+    .btn {
+        margin-left: 20px;
+        background-color: #bff8cf !important;
+        color: #0000008a !important;
+
+        border-radius: 50px;
+        padding: 14px 22px;
+    }
+}
+
+.table-responsive {
+    max-height: calc(100vh - 173px);
+    margin-top: 15px;
+}
+
+.ng-select.volunteer {
+    .ng-select-container {
+        width: 100% !important;
+    }
+}
+
+.add-form-wrap {
+    margin-top: 20px;
+}
+.fa-trash {
+    color: red;
+}
+
+.btn {
+    line-height: 15px !important;
+}
+
+label .red {
+    // color: red;
+}
