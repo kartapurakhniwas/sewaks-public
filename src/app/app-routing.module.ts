@@ -95,6 +95,123 @@ const routes: Routes = [
         (m) => m.VolunteersModule
       ),
   },
+  {
+    path: 'causes',
+    component: PublicComponent,
+    data: { title: ' ALS - Causes' },
+    loadChildren: () =>
+      import('./components/causes/_module').then(
+        (m) => m.CausesModule
+      ),
+  },
+  {
+    path: 'gallery',
+    component: PublicComponent,
+    data: { title: ' ALS - Gallery' },
+    loadChildren: () =>
+      import('./components/gallery/_module').then(
+        (m) => m.GalleryModule
+      ),
+  },
+  {
+    path: 'faq',
+    component: PublicComponent,
+    data: { title: ' ALS - Faq' },
+    loadChildren: () =>
+      import('./components/faq/_module').then(
+        (m) => m.FaqModule
+      ),
+  },
+  {
+    path: 'user',
+    component: PublicComponent,
+    data: { title: ' ALS - User' },
+    loadChildren: () =>
+      import('./components/user/_module').then(
+        (m) => m.UserModule
+      ),
+  },
+  {
+    path: 'events',
+    component: PublicComponent,
+    data: { title: ' ALS - Events' },
+    loadChildren: () =>
+      import('./components/events/_module').then(
+        (m) => m.EventsModule
+      ),
+  },
+  {
+    path: 'testimonials',
+    component: PublicComponent,
+    data: { title: ' ALS - Testimonials' },
+    loadChildren: () =>
+      import('./components/testimonials/_module').then(
+        (m) => m.TestimonialsModule
+      ),
+  },
+  {
+    path: 'privacy',
+    component: PublicComponent,
+    data: { title: ' ALS - Privacy' },
+    loadChildren: () =>
+      import('./components/privacy/_module').then(
+        (m) => m.PrivacyModule
+      ),
+  },
+  {
+    path: 'terms',
+    component: PublicComponent,
+    data: { title: ' ALS - Terms' },
+    loadChildren: () =>
+      import('./components/terms/_module').then(
+        (m) => m.TermsModule
+      ),
+  },
+  {
+    path: 'commingsoon',
+    component: PublicComponent,
+    data: { title: ' ALS - Commingsoon' },
+    loadChildren: () =>
+      import('./components/commingsoon/_module').then(
+        (m) => m.CommingsoonModule
+      ),
+  },
+  {
+    path: 'nofound',
+    component: PublicComponent,
+    data: { title: ' ALS - Nofound' },
+    loadChildren: () =>
+      import('./components/404/_module').then(
+        (m) => m.NotFoundModule
+      ),
+  },
+  {
+    path: 'blog',
+    component: PublicComponent,
+    data: { title: ' ALS - Blog' },
+    loadChildren: () =>
+      import('./components/blog/_module').then(
+        (m) => m.BlogModule
+      ),
+  },
+  {
+    path: 'blogdetail',
+    component: PublicComponent,
+    data: { title: ' ALS - Blogdetail' },
+    loadChildren: () =>
+      import('./components/blog-detail/_module').then(
+        (m) => m.BlogdetailModule
+      ),
+  },
+  {
+    path: 'contact',
+    component: PublicComponent,
+    data: { title: ' ALS - Contact' },
+    loadChildren: () =>
+      import('./components/contact/_module').then(
+        (m) => m.ContactModule
+      ),
+  },
   
   
 ];
