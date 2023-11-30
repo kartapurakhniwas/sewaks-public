@@ -3,12 +3,25 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+@import "./assets/css/bootstrap.min.css";
+@import "./assets/css/owl.theme.default.min.css";
+@import "./assets/css/owl.carousel.min.css";
+@import "./assets/css/remixicon.css";
+@import "./assets/css/flaticon.css";
+@import "./assets/css/meanmenu.min.css";
+@import "./assets/css/animate.min.css";
+@import "./assets/css/magnific-popup.min.css";
+@import "./assets/css/odometer.min.css";
+@import "./assets/css/navbar.css";
+@import "./assets/css/style.css";
+@import "./assets/css/responsive.css";
+
 
 // custom
 
 .ht-auto {
     height: auto !important;
 }
-.nav-link {
+footer .nav-link {
     padding: 0rem 1rem !important;
 }

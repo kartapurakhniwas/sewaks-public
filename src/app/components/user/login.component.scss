@@ -1,0 +1,22 @@
+.login-form {
+    max-width: 380px;
+    margin: auto;
+    background: white;
+    padding: 35px 35px;
+    box-shadow: 5px 5px 15px 0px #05005a36;
+}
+.form-group {
+    position: relative;
+    .fa-solid {
+        position: absolute;
+        right: 15px;
+        bottom: 17px;
+        cursor: pointer;
+    }
+}
+.wrap-login {
+    height: 100vh;
+    width: 100%;
+    background-size: contain;
+    padding-top: 140px;
+}

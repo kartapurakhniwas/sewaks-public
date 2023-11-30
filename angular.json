@@ -31,18 +31,6 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/assets/css/bootstrap.min.css",
-              "src/assets/css/owl.theme.default.min.css",
-              "src/assets/css/owl.carousel.min.css",
-              "src/assets/css/remixicon.css",
-              "src/assets/css/flaticon.css",
-              "src/assets/css/meanmenu.min.css",
-              "src/assets/css/animate.min.css",
-              "src/assets/css/magnific-popup.min.css",
-              "src/assets/css/odometer.min.css",
-              "src/assets/css/navbar.css",
-              "src/assets/css/style.css",
-              "src/assets/css/responsive.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -123,7 +111,21 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/email-decode.min.js",
+              "src/assets/js/jquery.min.js",
+              "src/assets/js/bootstrap.bundle.min.js",
+              "src/assets/js/meanmenu.min.js",
+              "src/assets/js/owl.carousel.min.js",
+              "src/assets/js/wow.min.js",
+              "src/assets/js/magnific-popup.min.js",
+              "src/assets/js/appear.min.js",
+              "src/assets/js/odometer.min.js",
+              "src/assets/js/form-validator.min.js",
+              "src/assets/js/contact-form-script.js",
+              "src/assets/js/ajaxchimp.min.js",
+              "src/assets/js/custom.js"
+            ]
           }
         }
       }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AccountComponent } from './account.component';
 import { LoginComponent } from './login.component';
 import { RegisterComponent } from './register.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { CarouselModule } from '../../../../node_modules/';
 
 
@@ -16,8 +17,10 @@ import { RegisterComponent } from './register.component';
 
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule.forChild([
-      { path: 'account', component: AccountComponent },
+      { path: '', component: AccountComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent }
     ])

@@ -14,11 +14,6 @@ const routes: Routes = [
         (m) => m.HomepageModule
       ),
   },
-  {
-    path: 'login',
-    component: LoginComponent,
-    data: { title: ' ALS - Login' }
-  },
   
   {
     path: 'admin/dashboard',
@@ -67,7 +62,15 @@ const routes: Routes = [
   },
 
 
-
+  {
+    path: 'account',
+    component: PublicComponent,
+    data: { title: ' ALS - Login' },
+    loadChildren: () =>
+      import('./components/user/_module').then(
+        (m) => m.UserModule
+      ),
+  },
   {
     path: 'about',
     component: PublicComponent,
