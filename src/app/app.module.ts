@@ -13,6 +13,7 @@ import { LoginComponent } from './layout/login/login.component';
 import { MasterComponent } from './layout/master/master.component';
 import { PublicComponent } from './layout/public/public.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     AuthService,

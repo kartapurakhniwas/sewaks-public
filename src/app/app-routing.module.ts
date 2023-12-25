@@ -215,6 +215,12 @@ const routes: Routes = [
         (m) => m.ContactModule
       ),
   },
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: { title: ' ALS - Contact' },
+    
+  },
   
   
 ];
