@@ -10,7 +10,7 @@ export class MasterService {
   sidebar: boolean = false;
   setRowData: any = null;
   setPaymentData: any = null;
-  setRowData1: any;
+  setRowDataArray: any;
   token: string = '';
   selectedWarehouse: any;
   selectedClient: any;
@@ -58,6 +58,72 @@ export class MasterService {
 
     if (dd.length > 0) return true;
     else return false;
+  }
+
+  printReceipt(printContents:any) {
+    return `
+    <style>
+    .divider {
+      height: 1px;
+      border-bottom: 1px dashed #000;
+      margin-top: 17px;
+    }
+    @media print {
+      .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+  }
+    h1,h2,h4,h5 {
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+    .wrap {
+        max-width: 1000px;
+        margin: auto;
+    }
+    .d-flex {
+        display: flex;
+    }
+    .d-flex > div {
+        width: 33.33%
+    }
+    .align-items-center {
+        align-items: center;
+    }
+    .justify-content-between {
+        justify-content: space-between;
+    }
+    .text-center {
+        text-align: center
+    }
+    .text-left {
+        text-align: left
+    }
+    .text-right {
+        text-align: right
+    }
+    .iso {
+        //background-color: #000000;
+        color: #000;
+       // padding: 3px 6px;
+       // border-radius: 5px;
+        font-size: 15px
+    }
+    .boxed {
+        text-align: center;
+        display: inline-block;
+        border: 2px solid #000000;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .rupees {
+        font-size: 30px;
+        border: 2px solid #000000;
+        padding: 2px 7px;
+        border-radius: 5px;
+    }
+</style>
+<div [innerHTML]=${printContents}</div>
+
+    `
   }
   
 }

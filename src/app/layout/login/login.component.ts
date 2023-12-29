@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
           this.master.CurrentUser = m.model;
           this.st.add("listoken", m.respMsg);
           this.st.add("userDetail", m.model);
-          this.nav.navigateByUrl("/volunteers");
+          this.nav.navigateByUrl("/admin/donations");
           this.loginLoader = false;
         } else {
           this._snackBar.open("Email ID or Password is not valid!", "Okay", { 'duration': 3000 });

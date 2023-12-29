@@ -1,10 +1,13 @@
+import { VolunteerService } from './../../../services/volunteer.service';
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
 import { MasterService } from 'src/app/services';
 import { DonationService } from 'src/app/services/donations.service';
 import { TableUtil } from 'src/shared/tableUtil';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-donations',
@@ -27,7 +30,8 @@ export class DonationsComponent implements OnInit {
   getPaged: any;
   getpaged: any;
 
-  constructor(public gl: MasterService, private vol: DonationService, public datepipe: DatePipe) {
+  constructor(public gl: MasterService, private vol: DonationService, public datepipe: DatePipe, public dialog: MatDialog,
+    private nav: Router) {
     this.columnDefs = [
       {
         headerName: 'Donnor Name',
@@ -121,8 +125,8 @@ export class DonationsComponent implements OnInit {
         // filter: true
       }
     }
-    this.rowSelection = "single";
-    this.gl.setRowData = null;
+    this.rowSelection = "multiple";
+    this.gl.setRowDataArray = [];
   }
 
   ngOnInit(): void {
@@ -150,21 +154,21 @@ export class DonationsComponent implements OnInit {
   }
 
   onSelectionChanged() {
-    this.gl.setRowData = null;
+    this.gl.setRowDataArray = null;
     const selectedNodes = this.agGrid?.api.getSelectedNodes();
     const selectedData: any = selectedNodes?.map((node) => node.data);
-    this.gl.setRowData = JSON.stringify(selectedData[0])
-      ? selectedData[0]
+    this.gl.setRowDataArray = JSON.stringify(selectedData)
+      ? selectedData
       : null;
   }
 
   delete() {
     let self = this;
     if (confirm("Are you sure you want to Delete?")) {
-      self.vol.Delete(this.gl.setRowData.id).subscribe((m:any) => {
+      self.vol.Delete(this.gl.setRowDataArray[0].id).subscribe((m:any) => {
         if (m.respStatus) {
             this.refresh();
-            this.gl.setRowData = null;
+            this.gl.setRowDataArray = [];
         }
       }
     );
@@ -198,5 +202,94 @@ export class DonationsComponent implements OnInit {
     TableUtil.exportAgGridToExcel(d, "KPN Volunteer");
   }
 
+  printReciept(): void {
+    console.log(this.gl.setRowDataArray, "this.gl.setRowData");
+    
+    const dialogRef = this.dialog.open(PrintReceiptPopup, {
+      width: '1070px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closedddd');
+      
+    });
+  }
+  
+  addNew() {
+    this.gl.setRowDataArray = [];
+    this.nav.navigateByUrl('/admin/donations/add')
+  }
+
+
+}
+
+
+
+
+
+
+@Component({
+  selector: 'print-receipt-dialog',
+  templateUrl: './receipt.component.html',
+  styleUrls: ['./donations.component.scss']
+})
+
+export class PrintReceiptPopup {
+  @ViewChild('myDiv') myDiv: ElementRef = null as any;
+  htmlContent: any = '';
+
+  constructor(public gl: MasterService, private srv: DonationService, private vol: VolunteerService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintReceiptPopup>) {
+   
+  }
+
+  ngOnInit(): void {
+    this.GetByID();
+  }
+
+  GetByID() {
+    console.log(this.gl.setRowDataArray, "this.gl.setRowDataArray");
+    
+    let self = this;
+    if (this.gl.setRowDataArray.length > 1) {
+      this.gl.setRowDataArray.forEach((element:any) => {
+        self.vol.GetById(element.donorId).subscribe((m: any) => {
+          if (m) {
+            console.log(m, "dataatatat");
+            element.address = m.lstModel[0].address;
+          }
+        });
+      });
+      
+    }
+  }
+
+  printPage() {
+    console.log(this.myDiv.nativeElement.innerHTML, "this.myDiv");
+    
+    let doc = document as any;
+    let printContents, popupWin:any;
+    // printContents = doc.getElementById('print-section').innerHTML;
+
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(
+      this.gl.printReceipt(this.myDiv.nativeElement.innerHTML)
+      );
+      // window.print();
+      popupWin.document.print();
+    popupWin.document.close();
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close('');
+  }
+
+  isOdd(n:any) {
+    return Math.abs(n % 2) == 1;
+ }
+
+ isEven(n:any) {
+  return n % 2 == 0
+ }
 
 }

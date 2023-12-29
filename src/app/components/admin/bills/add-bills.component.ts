@@ -142,7 +142,7 @@ export class AddBillsComponent implements OnInit {
     
     self.srv.Add(data).subscribe((m:any) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/bills");
+        this.nav.navigateByUrl("/admin/bills");
         console.log(m.respStatus, "paged");
         this.Form.reset();
         // this._snackBar.open('New Bill added successfully', "Okay", {
@@ -180,7 +180,7 @@ export class AddBillsComponent implements OnInit {
     let self = this;
     self.srv.Add(this.Form.value).subscribe((m:any) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/bill");
+        this.nav.navigateByUrl("/admin/bill");
         console.log(m.respStatus, "paged");
         this.Form.reset();
         // this._snackBar.open('New Bill added successfully', "Okay", {

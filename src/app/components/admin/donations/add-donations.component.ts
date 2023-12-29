@@ -23,7 +23,9 @@ export class AddDonationsComponent implements OnInit {
   ];
 
   Form = new FormGroup({
+    id: new FormControl(0),
     donorName: new FormControl("",Validators.required),
+    donorId: new FormControl(null as any,Validators.required),
     receiptNo: new FormControl("",Validators.required),
     receiptDate: new FormControl(new Date(),Validators.required),
     receiptAmount: new FormControl(Validators.required),
@@ -31,8 +33,8 @@ export class AddDonationsComponent implements OnInit {
     mode: new FormControl(1,Validators.required),
     image: new FormControl("",Validators.required),
     comments: new FormControl(""),
-    dateofBankCredit: new FormControl("",Validators.required)
-   
+    dateofBankCredit: new FormControl("",Validators.required),
+    // status: new FormControl(1),
   });
 
   dummy_date: any = new Date(2020, 3, 1);
@@ -48,9 +50,9 @@ export class AddDonationsComponent implements OnInit {
   }
 
   refresh() {
-    console.log(this.gl.setRowData, "this.gl.setRowDatathis.gl.setRowDatathis.gl.setRowData");
+    console.log(this.gl.setRowDataArray, "this.gl.setRowDatathis.gl.setRowDatathis.gl.setRowData");
     
-    if(this.gl.setRowData) {
+    if(this.gl.setRowDataArray[0]) {
       this.GetByID();
     }
     
@@ -58,7 +60,7 @@ export class AddDonationsComponent implements OnInit {
 
   GetByID() {
     let self = this;
-    self.srv.GetById(this.gl.setRowData.id).subscribe((m:any) => {
+    self.srv.GetById(this.gl.setRowDataArray[0].id).subscribe((m:any) => {
       if (m.respStatus) {
         this.setValue(m.model);
       }
@@ -67,6 +69,7 @@ export class AddDonationsComponent implements OnInit {
 
   setValue(data:any) {
     this.Form.controls["donorName"].setValue(data?.donorName);
+    this.Form.controls["donorId"].setValue(data?.donorId);
     this.Form.controls["receiptNo"].setValue(data?.receiptNo);
     this.Form.controls["receiptDate"].setValue(data?.receiptDate);
     this.Form.controls["receiptAmount"].setValue(data?.receiptAmount);
@@ -84,7 +87,7 @@ export class AddDonationsComponent implements OnInit {
     self.srv.Add(data).subscribe((m) => {
       const a = console.log(this.Form.value);
       if (m.respStatus) {
-        this.nav.navigateByUrl("/donations");
+        this.nav.navigateByUrl("/admin/donations");
         console.log(m.respStatus, "donation");
         this.Form.reset();
         // this._snackBar.open('New donation added successfully', "Okay", {
@@ -96,10 +99,10 @@ export class AddDonationsComponent implements OnInit {
   update() {
     let data =this.Form.value;
     let data1 = JSON.parse(JSON.stringify(data));
-    data1.id = this.gl.setRowData.id;
+    data1.id = this.gl.setRowDataArray[0].id;
     this.srv.update(data1).subscribe((m) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/donations");
+        this.nav.navigateByUrl("/admin/donations");
         console.log(m.respStatus, "paged");
         //this.updateFlag = false;
         this.Form.reset();
@@ -118,7 +121,7 @@ export class AddDonationsComponent implements OnInit {
   save() {
     console.log('dfsdfdfg');
     
-    if (this.gl.setRowData) {
+    if (this.gl.setRowDataArray[0]) {
       this.update();
     } else {
       this.add();
@@ -160,6 +163,7 @@ export class AddDonationsComponent implements OnInit {
       this.itemListFlag = false;
       // this.Form.controls["referedById"].setValue(selected?.volunteerID);
       this.Form.controls["donorName"].setValue(name);
+      this.Form.controls["donorId"].setValue(selected.volunteerID);
     }
   }
 

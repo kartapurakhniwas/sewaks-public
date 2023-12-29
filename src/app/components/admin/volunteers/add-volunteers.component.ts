@@ -128,7 +128,7 @@ export class AddVolunteersComponent implements OnInit {
         if (m.respStatus) {
           this.Form.reset();
           this._snackBar.open("Added Successfully", "Okay", { 'duration': 3000 });
-          this.nav.navigateByUrl('/volunteers');
+          this.nav.navigateByUrl('/admin/volunteers');
           // window.alert('Added Successfully');
         }
       });
@@ -155,7 +155,7 @@ export class AddVolunteersComponent implements OnInit {
         if (m.respStatus) {
           this.Form.reset();
           this._snackBar.open("Added Successfully", "Okay", { 'duration': 3000 });
-          this.nav.navigateByUrl('/volunteers');
+          this.nav.navigateByUrl('/admin/volunteers');
           // this.nav.navigateByUrl('/volunteers');
           // window.alert('Update Successfully');
         }
