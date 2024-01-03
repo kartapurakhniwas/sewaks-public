@@ -17,22 +17,28 @@
             <h5>Branch Office: Village Chhoti-Badi Naggal, Tehsil Kharar, Distt. Mohali (Pb.)</h5>
         </div>
         <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px">
-            <div><b>Receipt No.</b> SCT/976987</div>
-            <div class="text-right"><b>Receipt Issued:</b> DD/MM/YYYY</div>
+            <div><b>Receipt No.</b> SCT/{{item.receiptNo}}</div>
+            <div class="text-right"><b>Receipt Issued:</b> {{item.receiptDate | date:'dd/MM/YYYY'}}</div>
         </div>
-        <div><b>Donated By: </b>Name</div>
-        <div><b>Address: </b>Address</div><br>
+        <div><b>Donated By: </b>{{item.donorName}}</div>
+        <div><b>Address: </b>{{item.donorAddress}}</div><br>
         <div>
-            <div><b>Date of Donation: </b> DD/MM/YYYY</div>
-            <div><b>Amount Donated: </b>(Amount in words)</div>
-            <div><b>Vide Cash/Cheque/Draft No./Online Banking: </b>ONLINE BANKING</div>
+            <div><b>Date of Donation: </b> {{item.dateofBankCredit | date:'dd/MM/YYYY'}}</div>
+            <div><b>Amount Donated: </b><span style="text-transform: capitalize">{{inWords(item.receiptAmount)}}</span> Rupees Only</div>
+            <div><b>Vide Cash/Cheque/Draft No./Online Banking: </b> <span [ngSwitch]="item.mode">
+                <span *ngSwitchCase="2">Cheque</span>
+                <span *ngSwitchCase="3">NEFT</span>
+                <span *ngSwitchCase="4">UPI</span>
+                <span *ngSwitchCase="5">IMPS</span>
+                <span *ngSwitchCase="6">RTGS</span>
+            </span> </div>
             <div><b>Towards: </b> Charitable Donation</div>
         </div>
         <br>
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <span class="rupees">
-                    Rs. 10,000/-
+                    Rs. {{numberWithCommas(item.receiptAmount)}}/-
                 </span><br>
                 <span style="display: inline-block; margin-top: 10px">
                     SUBJECT TO<br>
@@ -41,7 +47,7 @@
             </div>
             <div class="text-center" >
                 <span class="boxed">
-                    Donations are exempt u/s 80G of I.T. Act 1961,<br>
+                    Donations are exempt u/s 80G of I.T. Act 1961,
                     vide Unique Registration No. AAATS3467PF20101<br>
                     Dtd. 07-04-2022 Issued by PCIT/CIT
                 </span>

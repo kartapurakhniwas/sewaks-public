@@ -35,6 +35,16 @@ import { ValueGetterParams } from "ag-grid-community";
 //   return moment(data).add(-8, 'hours').format("MM/DD/YYYY HH:mm");
 // }
 
+export function findInvalidControls(controls:any) {
+  const invalid = [];
+  for (const name in controls) {
+      if (controls[name].invalid) {
+          invalid.push(name);
+      }
+  }
+  return invalid;
+}
+
 export function missingCodeFormatter(params: ValueGetterParams) {
   let data = params.data;
   if (data.missingCodeList != null && data.missingCodeList.length > 0) {

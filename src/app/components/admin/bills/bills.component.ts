@@ -68,7 +68,7 @@ gridOptions: GridOptions;
         field: 'billType',
         width: 180,
         valueGetter: (data:any) => {
-          switch (data.data.mode) {
+          switch (data.data.billType) {
             case 1: {
               return 'Water';
               break;
@@ -105,11 +105,15 @@ gridOptions: GridOptions;
         },
       },
       {
-        headerName: 'mode',
+        headerName: 'payment mode',
         field: 'mode',
         width: 180,
         valueGetter: (data:any) => {
           switch (data.data.mode) {
+            case 1: {
+              return 'Cash';
+              break;
+            }
             case 2: {
               return 'Cheque';
               break;
@@ -155,7 +159,7 @@ gridOptions: GridOptions;
         field: 'status',
         width: 180,
         valueGetter: (data:any) => {
-          switch (data.data.mode) {
+          switch (data.data.status) {
             case 1: {
               return 'Paid';
               break;
@@ -232,7 +236,7 @@ gridOptions: GridOptions;
   delete() {
     let self = this;
     if (confirm("Are you sure you want to Delete?")) {
-      self.vol.Delete(this.gl.setRowData.volunteerID).subscribe((m:any) => {
+      self.vol.Delete(this.gl.setRowData.id).subscribe((m:any) => {
         if (m.respStatus) {
             this.refresh();
             this.gl.setRowData = null;

@@ -5,6 +5,8 @@ import { MasterService } from 'src/app/services';
 import { CustomAlertService } from 'src/shared/alert.service';
 import { DonationService } from 'src/app/services/donations.service';
 import { VolunteerService } from 'src/app/services/volunteer.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { findInvalidControls } from 'src/app/services/globalFunctions';
 @Component({
   selector: 'app-add-donations',
   templateUrl: './add-donations.component.html',
@@ -22,19 +24,20 @@ export class AddDonationsComponent implements OnInit {
     
   ];
 
-  Form = new FormGroup({
+  Form:any = new FormGroup({
     id: new FormControl(0),
     donorName: new FormControl("",Validators.required),
     donorId: new FormControl(null as any,Validators.required),
+    donorAddress: new FormControl(""),
     receiptNo: new FormControl("",Validators.required),
     receiptDate: new FormControl(new Date(),Validators.required),
-    receiptAmount: new FormControl(Validators.required),
-    bankAmount: new FormControl(Validators.required),
-    mode: new FormControl(1,Validators.required),
-    image: new FormControl("",Validators.required),
+    receiptAmount: new FormControl(null as any,Validators.required),
+    bankAmount: new FormControl(null as any,Validators.required),
+    mode: new FormControl(null as any,Validators.required),
+    image: new FormControl(""),
     comments: new FormControl(""),
     dateofBankCredit: new FormControl("",Validators.required),
-    // status: new FormControl(1),
+    status: new FormControl(1),
   });
 
   dummy_date: any = new Date(2020, 3, 1);
@@ -43,7 +46,7 @@ export class AddDonationsComponent implements OnInit {
   volList: any = [];
 
   constructor(public gl: MasterService, private srv: DonationService, private nav: Router,
-    private customAlertService: CustomAlertService,  private vol: VolunteerService,) { }
+    private customAlertService: CustomAlertService,  private vol: VolunteerService, private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.refresh()
@@ -84,33 +87,49 @@ export class AddDonationsComponent implements OnInit {
     let self = this;
     let data = this.Form.value;
     data.mode = Number(data.mode);
-    self.srv.Add(data).subscribe((m) => {
-      const a = console.log(this.Form.value);
-      if (m.respStatus) {
-        this.nav.navigateByUrl("/admin/donations");
-        console.log(m.respStatus, "donation");
-        this.Form.reset();
-        // this._snackBar.open('New donation added successfully', "Okay", {
-        //   duration: 3000,
-        // });
+    
+    if (this.Form.valid) {
+      self.srv.Add(data).subscribe((m) => {
+        const a = console.log(this.Form.value);
+        if (m.respStatus) {
+          this.Form.reset();
+          this._snackBar.open('New donation added successfully', "Okay", {
+            duration: 3000,
+          });
+        }
+      });
+    } else {
+      for (let i in this.Form.controls) {
+        this.Form.controls[i].markAsTouched();
       }
-    });
+      this._snackBar.open('Please fill required fields', "Okay", {
+        duration: 3000,
+      });
+    }
+
   }
   update() {
     let data =this.Form.value;
     let data1 = JSON.parse(JSON.stringify(data));
     data1.id = this.gl.setRowDataArray[0].id;
-    this.srv.update(data1).subscribe((m) => {
-      if (m.respStatus) {
-        this.nav.navigateByUrl("/admin/donations");
-        console.log(m.respStatus, "paged");
-        //this.updateFlag = false;
-        this.Form.reset();
-        // this._snackBar.open('Selected donation updated successfully', "Okay", {
-        //   duration: 3000,
-        // });
+    if (this.Form.valid) {
+      this.srv.update(data1).subscribe((m) => {
+        if (m.respStatus) {
+          this.nav.navigateByUrl("/admin/donations");
+          this.Form.reset();
+          this._snackBar.open('Selected donation updated successfully', "Okay", {
+            duration: 3000,
+          });
+        }
+      });
+    } else {
+      for (let i in this.Form.controls) {
+        this.Form.controls[i].markAsTouched();
       }
-    });
+      this._snackBar.open('Please fill required fields', "Okay", {
+        duration: 3000,
+      });
+    }
   }
   
   onModeSelect(mode:any) {
@@ -119,9 +138,8 @@ export class AddDonationsComponent implements OnInit {
   }
 
   save() {
-    console.log('dfsdfdfg');
-    
-    if (this.gl.setRowDataArray[0]) {
+    console.log(this.Form.valid, "this.Form.valid", findInvalidControls(this.Form.controls));
+    if (this.gl.setRowDataArray[0] != undefined) {
       this.update();
     } else {
       this.add();
@@ -129,6 +147,7 @@ export class AddDonationsComponent implements OnInit {
   }
 
   itemChangeKeyup(event:any) {
+    this.Form.controls['donorName'].setErrors({'incorrect': true});
     let self = this;
     if (event.target.value == '') {
       this.itemListFlag = false;
@@ -164,6 +183,9 @@ export class AddDonationsComponent implements OnInit {
       // this.Form.controls["referedById"].setValue(selected?.volunteerID);
       this.Form.controls["donorName"].setValue(name);
       this.Form.controls["donorId"].setValue(selected.volunteerID);
+      // this.Form.controls['donorName'].setErrors({'incorrect': false});
+      this.Form.controls['donorName'].valid;
+      this.Form.controls['donorName'].markAsPristine();
     }
   }
 

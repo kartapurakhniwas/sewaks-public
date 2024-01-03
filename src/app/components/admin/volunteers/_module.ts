@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatRadioModule} from '@angular/material/radio';
-
+import {MatIconModule} from '@angular/material/icon';
 @NgModule({
   declarations: [
     VolunteersComponent,
@@ -22,6 +22,7 @@ import {MatRadioModule} from '@angular/material/radio';
   ],
 
   imports: [
+    MatIconModule,
     CommonModule,
     NgSelectModule ,
     FormsModule ,

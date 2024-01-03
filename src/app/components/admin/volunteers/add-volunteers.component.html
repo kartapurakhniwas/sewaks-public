@@ -2,10 +2,10 @@
     <h3>Add Volunteers</h3>
     <div class="d-flex justify-content-between">
         <button class="btn" routerLink="/admin/volunteers">
-          <i class="fa-solid fa-chevron-left mr-1"></i> Back
+          <mat-icon>arrow_back</mat-icon> Back
         </button>
         <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
-          <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+          <mat-icon>save</mat-icon> Save
         </button>
     </div>
 </div>
@@ -76,6 +76,16 @@
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Address</mat-label>
                 <input formControlName="address" matInput placeholder="Address">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Address <span class="red">*</span></label>
+                <input formControlName="address" type="text" class="form-control" placeholder="Address">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>PAN No</mat-label>
+                <input formControlName="panNo" matInput placeholder="PAN No">
               </mat-form-field>
             </div>
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
@@ -163,6 +173,25 @@
               </mat-form-field>
             </div>
 
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <div class="form-check d-block p-0 ">
+                <!-- <input formControlName="wantRebate" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="true"> -->
+                <label class="form-check-label">Need 80G Exemption ?</label>
+              </div>
+              <!-- <div class="form-check form-check-inline">
+                <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio1" [value]="true">
+                <label class="form-check-label" for="inlineRadio1">Yes</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio2" [value]="false">
+                <label class="form-check-label" for="inlineRadio2">No</label>
+              </div> -->
+              <mat-radio-group formControlName="wantRebate" aria-label="Need 80G Exemption ?">
+                <mat-radio-button [value]="true">Yes</mat-radio-button>
+                <mat-radio-button [value]="false">No</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
         </div>
         <div class="">
           <!-- <div class="form-check " style="width: 140px;
@@ -175,22 +204,7 @@
             </div>
           </div> -->
           
-          <div class="form-check d-block pl-2 mt-3">
-            <!-- <input formControlName="wantRebate" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="true"> -->
-            <label class="form-check-label">Need 80G Exemption ?</label>
-          </div>
-          <!-- <div class="form-check form-check-inline">
-            <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio1" [value]="true">
-            <label class="form-check-label" for="inlineRadio1">Yes</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio2" [value]="false">
-            <label class="form-check-label" for="inlineRadio2">No</label>
-          </div> -->
-          <mat-radio-group formControlName="wantRebate" aria-label="Need 80G Exemption ?">
-            <mat-radio-button [value]="true">Yes</mat-radio-button>
-            <mat-radio-button [value]="false">No</mat-radio-button>
-          </mat-radio-group>
+          
         </div>
     </form>
 </div>

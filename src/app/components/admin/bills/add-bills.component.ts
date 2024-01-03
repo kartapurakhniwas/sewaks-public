@@ -28,7 +28,9 @@ export class AddBillsComponent implements OnInit {
     { value: 1, viewValue: "Cash" },
     { value: 2, viewValue: "Cheque" },
     { value: 3, viewValue: "NEFT" },
-
+    { value: 4, viewValue: "UPI" },
+    { value: 5, viewValue: "IMPS" },
+    { value: 6, viewValue: "RTGS" }
   ];
 
   Form = new FormGroup({
@@ -69,7 +71,9 @@ export class AddBillsComponent implements OnInit {
     let self = this;
     self.srv.GetById(this.gl.setRowData.id).subscribe((m:any) => {
       if (m.respStatus) {
-        this.setValue(m.lstModel[0]);
+        this.setValue(m.model);
+        console.log(m.model);
+        
       }
     });
   }
@@ -105,7 +109,7 @@ export class AddBillsComponent implements OnInit {
   }
 
   add() {
-    console.log('asfd');
+    console.log('add');
     let data = JSON.parse(JSON.stringify(this.Form.value));
     data.status = Number(data.status);
     data.mode = Number(data.mode);
@@ -154,7 +158,7 @@ export class AddBillsComponent implements OnInit {
   }
 
   update() {
-    console.log('asfd');
+    console.log('update');
 
     if(this.Form.value.mode == 1)
     {this.Form.controls["chequeNo"].setValue("null");
@@ -177,10 +181,12 @@ export class AddBillsComponent implements OnInit {
     
     //this.Form.controls["status"].setValue(1);
     // this.Form.controls["clientid"].setValue(this.gl.selectedClient);
+    let data = JSON.parse(JSON.stringify(this.Form.value));
+    data.id = this.gl.setRowData.id;
     let self = this;
-    self.srv.Add(this.Form.value).subscribe((m:any) => {
+    self.srv.update(data).subscribe((m:any) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/admin/bill");
+        this.nav.navigateByUrl("/admin/bills");
         console.log(m.respStatus, "paged");
         this.Form.reset();
         // this._snackBar.open('New Bill added successfully', "Okay", {

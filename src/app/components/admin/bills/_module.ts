@@ -13,7 +13,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-
+import {MatIconModule} from '@angular/material/icon';
 
 
 @NgModule({
@@ -23,6 +23,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
   ],
 
   imports: [
+    MatIconModule,
     CommonModule,
     NgSelectModule ,
     FormsModule ,

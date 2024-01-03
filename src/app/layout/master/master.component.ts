@@ -31,7 +31,7 @@ export class MasterComponent implements OnInit {
   logout() {
     this.st.remove("listoken");
     this.st.remove("userDetail");
-    this.nav.navigateByUrl("/");
+    this.nav.navigateByUrl("/login");
   }
 
 }

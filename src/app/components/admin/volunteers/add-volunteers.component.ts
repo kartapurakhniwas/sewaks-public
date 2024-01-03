@@ -68,11 +68,12 @@ export class AddVolunteersComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     primaryContact: new FormControl('', Validators.required),
     address: new FormControl('', Validators.required),
+    panNo: new FormControl('', Validators.required),
     referedBy: new FormControl('', Validators.required),
     referedById: new FormControl(2,  {nonNullable: true}),
     donationMoney: new FormControl(0,  {nonNullable: true}),
     emailNotification: new FormControl(true,  {nonNullable: true}),
-    notes: new FormControl('', Validators.required),
+    notes: new FormControl(''),
     autoDebitSystem: new FormControl(false,  {nonNullable: true}),
     bloodGroupTypeId: new FormControl(1,   {nonNullable: true}),
     lastGivenDate: new FormControl(new Date, Validators.required),
@@ -85,6 +86,7 @@ export class AddVolunteersComponent implements OnInit {
   setValue(data:any) {
     this.Form.controls["firstName"].setValue(data?.firstName);
     this.Form.controls["lastName"].setValue(data?.lastName);
+    this.Form.controls["panNo"].setValue(data?.panNo);
     this.Form.controls["dateOfBirth"].setValue(data?.dateOfBirth);
     this.Form.controls["email"].setValue(data?.email);
     this.Form.controls["primaryContact"].setValue(data?.primaryContact);

@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     MatDatepickerModule,
     MatDialogModule,
     MatTabsModule,
+    MatIconModule,
     MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,

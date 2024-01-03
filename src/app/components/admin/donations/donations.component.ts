@@ -226,7 +226,7 @@ export class DonationsComponent implements OnInit {
 
 
 
-
+import * as converter from "number-to-words";
 
 @Component({
   selector: 'print-receipt-dialog',
@@ -251,14 +251,14 @@ export class PrintReceiptPopup {
     
     let self = this;
     if (this.gl.setRowDataArray.length > 1) {
-      this.gl.setRowDataArray.forEach((element:any) => {
-        self.vol.GetById(element.donorId).subscribe((m: any) => {
-          if (m) {
-            console.log(m, "dataatatat");
-            element.address = m.lstModel[0].address;
-          }
-        });
-      });
+      // this.gl.setRowDataArray.forEach((element:any) => {
+      //   self.vol.GetById(element.donorId).subscribe((m: any) => {
+      //     if (m.respStatus) {
+      //       console.log(m, "dataatatat");
+      //       element.address = m.lstModel[0].address;
+      //     }
+      //   });
+      // });
       
     }
   }
@@ -276,8 +276,8 @@ export class PrintReceiptPopup {
       this.gl.printReceipt(this.myDiv.nativeElement.innerHTML)
       );
       // window.print();
-      popupWin.document.print();
-    popupWin.document.close();
+      popupWin.print();
+    popupWin.close();
   }
 
   onNoClick(): void {
@@ -291,5 +291,13 @@ export class PrintReceiptPopup {
  isEven(n:any) {
   return n % 2 == 0
  }
+
+ inWords(item:any) {
+  return converter.toWords(item)
+ }
+
+ numberWithCommas(x:any) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 }

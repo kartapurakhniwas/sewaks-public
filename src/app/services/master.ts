@@ -10,7 +10,7 @@ export class MasterService {
   sidebar: boolean = false;
   setRowData: any = null;
   setPaymentData: any = null;
-  setRowDataArray: any;
+  setRowDataArray: any = [];
   token: string = '';
   selectedWarehouse: any;
   selectedClient: any;

@@ -2,10 +2,10 @@
     <h3>Add Bills</h3>
     <div class="d-flex justify-content-between">
         <button class="btn" routerLink="/admin/bills">
-          <i class="fa-solid fa-chevron-left mr-1"></i> Back
+          <mat-icon>arrow_back</mat-icon> Back
         </button>
         <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
-          <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+          <mat-icon>save</mat-icon> Save
         </button>
     </div>
 </div>
@@ -63,7 +63,7 @@
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Bill Type</mat-label>
-                <mat-select formControlName="billAmount">
+                <mat-select formControlName="billType">
                   <mat-option *ngFor="let type of billType" [value]="type.value">{{ type.viewValue }}</mat-option>
                 </mat-select>
               </mat-form-field>
@@ -151,7 +151,7 @@
               </div> -->
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Status</mat-label>
-                <mat-select formControlName="mode">
+                <mat-select formControlName="status">
                   <mat-option *ngFor="let type of status" [value]="type.value">{{ type.viewValue }}</mat-option>
                 </mat-select>
               </mat-form-field>

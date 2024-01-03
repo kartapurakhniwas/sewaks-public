@@ -25,7 +25,7 @@
 	<div id="sidebar" [ngClass]="sidebarFlag == true ? 'inactive' : 'active'">
 		<div class="logo-section" >
 			<!-- <h3 style="margin: 0;color: white;font-size: 1.4em !important;font-weight:500;">LOGO</h3> -->
-			<img src="../../../assets/images/logo.png" alt="" class="logo">
+			<img src="../../../assets/images/logo_light.png" alt="" class="logo">
 			<button (click)="toggleSidebar()" >
 			  <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<g clip-path="url(#clip0_29_131)">
@@ -69,9 +69,9 @@
   
 	  <ul class="nav">
 		<li><a href="javascript:void(0)" routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/bills" routerLinkActive="active">Bills</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/donations" routerLinkActive="active">Donations</a></li>
 		<li><a href="javascript:void(0)" routerLink="/admin/volunteers" routerLinkActive="active">Volunteers</a></li>
+		<li><a href="javascript:void(0)" routerLink="/admin/donations" routerLinkActive="active">Donations</a></li>
+		<li><a href="javascript:void(0)" routerLink="/admin/bills" routerLinkActive="active">Bills</a></li>
 		<li><a href="javascript:void(0)" routerLink="/admin/contact-us-list" routerLinkActive="active">Contact Us</a></li>
 	  </ul>
 
