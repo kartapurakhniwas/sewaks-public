@@ -62,7 +62,7 @@
 <!-- Start Contact Area -->
 <div class="main-contact-area ptb-100">
     <div class="container">
-        <form id="contactForm">
+        <form id="contactForm" [formGroup]="Form">
             <div class="row">
                 <div class="col-lg-6">
                     <h3>Get in touch with us</h3>
@@ -71,7 +71,7 @@
                         <div class="col-lg-6 col-sm-6">
                             <div class="form-group">
                                 <label>Your name</label>
-                                <input type="text" name="name" id="name" class="form-control" required data-error="Please enter your name">
+                                <input formControlName="name" type="text" name="name" id="name" class="form-control" required data-error="Please enter your name">
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                         <div class="col-lg-6 col-sm-6">
                             <div class="form-group">
                                 <label>Your email</label>
-                                <input type="email" name="email" id="email" class="form-control" required data-error="Please enter your email">
+                                <input formControlName="email" type="email" name="email" id="email" class="form-control" required data-error="Please enter your email">
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
@@ -87,15 +87,15 @@
                         <div class="col-lg-6 col-sm-6">
                             <div class="form-group">
                                 <label>Your phone</label>
-                                <input type="text" name="phone_number" id="phone_number" required data-error="Please enter your number" class="form-control">
+                                <input formControlName="mobileNo" type="text" name="phone_number" id="phone_number" required data-error="Please enter your number" class="form-control">
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
 
                         <div class="col-lg-6 col-sm-6">
                             <div class="form-group">
-                                <label>Subject</label>
-                                <input type="text" name="msg_subject" id="msg_subject" class="form-control" required data-error="Please enter your subject">
+                                <label>How Did You Hear About Us? </label>
+                                <input  formControlName="referralSource" type="text" name="msg_subject" id="msg_subject" class="form-control" required data-error="How Did You Hear About Us?">
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Your message</label>
-                                <textarea name="message" class="form-control" id="message" cols="30" rows="8" required data-error="Write your message"></textarea>
+                                <textarea formControlName="notes" name="message" class="form-control" id="message" cols="30" rows="8" required data-error="Write your message"></textarea>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
@@ -112,13 +112,13 @@
                             <div class="form-group checkboxs">
                                 <input type="checkbox" id="chb2">
                                 <p>
-                                    I have read and completely accept the <a href="terms-of-service.html">Terms of service</a> And <a href="privacy-policy.html">Privacy policy.</a>
+                                    I have read and completely accept the <a href="javascript:void(0)" routerLink="/terms">Terms of service</a> And <a href="javascript:void(0)" routerLink="/privacy">Privacy policy.</a>
                                 </p>
                             </div>
                         </div>
 
                         <div class="col-lg-12 col-md-12">
-                            <button type="submit" class="default-btn">
+                            <button type="button" class="default-btn" (click)="save()">
                                 SEND MESSAGE
                             </button>
                             <div id="msgSubmit" class="h3 text-center hidden"></div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ContactComponent } from './contact.component';
+import { ReactiveFormsModule } from '@angular/forms';
 // import { CarouselModule } from '../../../../node_modules/';
 
 
@@ -12,6 +13,7 @@ import { ContactComponent } from './contact.component';
 
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     RouterModule.forChild([
       { path: '', component: ContactComponent }
     ])
