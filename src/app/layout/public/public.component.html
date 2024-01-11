@@ -17,6 +17,16 @@
 						<img src="../../../assets/images/logo.png" alt="logo">
 					</a>
 				</div>
+				<button mat-icon-button [matMenuTriggerFor]="menu">
+					<mat-icon>menu</mat-icon>
+				  </button>
+				<mat-menu #menu="matMenu" xPosition="before">
+					<button mat-menu-item routerLink="/">HOME</button>
+					<button mat-menu-item routerLink="/about">ABOUT</button>
+					<button mat-menu-item routerLink="/contact">CONTACT</button>
+					<button mat-menu-item routerLink="/donation">DONATE NOW</button>
+					<button mat-menu-item routerLink="/login">LOGIN</button>
+				</mat-menu>
 			</div>
 		</div>
 	</div>
@@ -29,7 +39,6 @@
 				</a>
 
 				
-
 				<div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
 					<ul class="navbar-nav m-auto">
 						<li class="nav-item">
@@ -207,6 +216,8 @@
 
 	<div class="others-option-for-responsive">
 		<div class="container">
+			
+
 			<div class="dot-menu">
 				<div class="inner">
 					<div class="circle circle-one"></div>

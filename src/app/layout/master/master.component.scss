@@ -85,8 +85,20 @@
         transition: all 0.2s ease-in;
         &.inactive {
             left: calc(-1 * (var(--sidebar_width) - 10px));
-            &:hover {
-                left: 0;
+        }
+        .menuBtn {
+            background: white;
+            height: 30px;
+            width: 30px;
+            border-radius: 30px;
+            position: absolute;
+            right: -11px;
+            box-shadow: 1px 1px 6px 0px #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .rotated {
+                transform: rotate(180deg);
             }
         }
     }

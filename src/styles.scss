@@ -280,3 +280,22 @@ button:focus {outline: none !important;}
 .mdc-form-field>label {
     margin-bottom: 0 !important;
 }
+
+.mobile-responsive-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-menu {
+    display: none;
+}
+
+@media only screen and (max-width: 991px) {
+    .dot-menu {
+        display: none;
+    }
+    .custom-menu {
+        display: inline-block;
+    }
+}

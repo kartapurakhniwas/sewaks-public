@@ -14,7 +14,9 @@ import { MasterComponent } from './layout/master/master.component';
 import { PublicComponent } from './layout/public/public.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialog } from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,10 @@ import { MatDialog } from '@angular/material/dialog';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule
   ],
   providers: [
     AuthService,
