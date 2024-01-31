@@ -119,7 +119,7 @@ gridOptions: GridOptions;
       },
       {
         headerName: 'Blood Group',
-        field: 'bloodGroupName',
+        field: 'bloodGroup',
         width: 120,
       },
       // {
@@ -159,7 +159,7 @@ gridOptions: GridOptions;
       "pageSize": 100000,
       "monthlyDonation": 0
     }
-    self.vol.SearchVol(data).subscribe((m:any) => {
+    self.vol.GetAllByPagination().subscribe((m:any) => {
         if (m.respStatus) {
           this.getpaged = m.lstModel;
         }

@@ -66,14 +66,15 @@ export class MasterService {
     .divider {
       height: 1px;
       border-bottom: 1px dashed #000;
-      margin-top: 17px;
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
     @media print {
       .pagebreak { page-break-before: always; } /* page-break-after works, as well */
   }
-    h1,h2,h4,h5 {
-        margin-bottom: 5px;
-        margin-top: 5px;
+    h1,h2,h3,h4,h5,h6 {
+        margin-bottom: 0px;
+        margin-top: 2px;
     }
     .wrap {
         max-width: 1000px;
@@ -105,14 +106,18 @@ export class MasterService {
         color: #000;
        // padding: 3px 6px;
        // border-radius: 5px;
-        font-size: 15px
+        font-size: 13px
     }
     .boxed {
-        text-align: center;
-        display: inline-block;
-        border: 2px solid #000000;
-        padding: 5px 10px;
-        border-radius: 5px;
+      text-align: center;
+      display: inline-block;
+      border: 2px solid #000000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 800;
+      color: #000;
     }
     .rupees {
         font-size: 30px;

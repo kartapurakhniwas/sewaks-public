@@ -157,8 +157,8 @@
               </div> -->
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Blood Group</mat-label>
-                <mat-select formControlName="bloodGroupTypeId">
-                  <mat-option *ngFor="let i of bloodList" [value]="i.bloodGroupTypeId">{{i.bloodGroupName}}</mat-option>
+                <mat-select formControlName="bloodGroup">
+                  <mat-option *ngFor="let i of bloodList" [value]="i">{{i}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>

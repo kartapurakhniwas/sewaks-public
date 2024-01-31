@@ -6,10 +6,10 @@
             <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
          </ng-select> -->
          <button *ngIf="gl.setRowData" routerLink="/admin/volunteers/add" class="btn" style="background-color: #f5b324; color: #ffffff;">
-            <mat-icon>edit</mat-icon>  EDIT
+            <mat-icon>edit</mat-icon>  Edit
         </button>
         <button *ngIf="gl.setRowData" (click)="delete()" class="btn" style="background-color: #ffcecd !important; color: #ffffff;">
-            <mat-icon>delete</mat-icon>  delete
+            <mat-icon>delete</mat-icon>  Delete
         </button>
         <button (click)="exportAsExcel()" class="btn" > <mat-icon>description</mat-icon> Export to Excel</button>
         <button routerLink="/admin/volunteers/add" class="btn" style="background-color: #f5b324; color: #ffffff;">

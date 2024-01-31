@@ -99,13 +99,28 @@ export class DonationsComponent implements OnInit {
         },
       },
       {
-        headerName: 'date of Bank Credit',
-        field: 'dateofBankCredit',
-        width: 130,
+        headerName: 'Cheque No',
+        field: 'chequeNo',
+        width: 180,
+      },
+      {
+        headerName: 'Cheque Date',
+        field: 'chequeDate',
+        width: 180,
         valueGetter: (data:any) => {
-          return this.datepipe.transform(data.data.dateofBankCredit, 'dd-MM-yyyy');
+          return this.datepipe.transform(data.data.chequeDate, 'dd-MM-yyyy');
         },
       },
+      
+      
+      // {
+      //   headerName: 'date of Bank Credit',
+      //   field: 'dateofBankCredit',
+      //   width: 130,
+      //   valueGetter: (data:any) => {
+      //     return this.datepipe.transform(data.data.dateofBankCredit, 'dd-MM-yyyy');
+      //   },
+      // },
       {
         headerName: 'comments',
         field: 'comments',
@@ -264,10 +279,11 @@ export class PrintReceiptPopup {
   }
 
   printPage() {
-    console.log(this.myDiv.nativeElement.innerHTML, "this.myDiv");
+    console.log(this.gl.setRowDataArray, "this.gl.setRowDataArray");
     
-    let doc = document as any;
-    let printContents, popupWin:any;
+    console.log(this.myDiv.nativeElement.innerHTML, "this.myDiv");
+  
+    let popupWin:any;
     // printContents = doc.getElementById('print-section').innerHTML;
 
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
@@ -285,7 +301,7 @@ export class PrintReceiptPopup {
   }
 
   isOdd(n:any) {
-    return Math.abs(n % 2) == 1;
+    return n % 3 == 0;
  }
 
  isEven(n:any) {

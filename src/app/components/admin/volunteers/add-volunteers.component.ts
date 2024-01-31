@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AddVolunteersComponent implements OnInit {
   selectedCar:any;
-  bloodList: any;
+  bloodList: any = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
   itemListFlag: boolean = false;
   volList: any = [];
 
@@ -24,20 +24,20 @@ export class AddVolunteersComponent implements OnInit {
   }
 
   refresh() {
-    this.GetBloodList();
+    this.GetVolList();
     
   }
   
-  GetBloodList() {
-    let self = this;
-    self.vol.AllBloodGroup().subscribe((m:any) => {
-        if (m.respStatus) {
-          this.bloodList = m.lstModel;
-          this.GetVolList();
-        }
-      }
-    );
-  }
+  // GetBloodList() {
+  //   let self = this;
+  //   self.vol.AllBloodGroup().subscribe((m:any) => {
+  //       if (m.respStatus) {
+  //         this.bloodList = m.lstModel;
+  //         this.GetVolList();
+  //       }
+  //     }
+  //   );
+  // }
 
   GetVolList() {
     let self = this;
@@ -75,9 +75,9 @@ export class AddVolunteersComponent implements OnInit {
     emailNotification: new FormControl(true,  {nonNullable: true}),
     notes: new FormControl(''),
     autoDebitSystem: new FormControl(false,  {nonNullable: true}),
-    bloodGroupTypeId: new FormControl(1,   {nonNullable: true}),
+    bloodGroup: new FormControl(''),
     lastGivenDate: new FormControl(new Date, Validators.required),
-    donationDate: new FormControl(''),
+    donationDate: new FormControl(new Date),
     joinDate: new FormControl(new Date, Validators.required),
     scheduleTypeId: new FormControl(1,  {nonNullable: true}),
     wantRebate: new FormControl(false,  {nonNullable: true}),
@@ -97,7 +97,7 @@ export class AddVolunteersComponent implements OnInit {
     this.Form.controls["emailNotification"].setValue(data?.emailNotification);
     this.Form.controls["notes"].setValue(data?.notes);
     this.Form.controls["autoDebitSystem"].setValue(data?.autoDebitSystem);
-    this.Form.controls["bloodGroupTypeId"].setValue(Number(data?.bloodGroupTypeId));
+    this.Form.controls["bloodGroup"].setValue(data?.bloodGroup);
     this.Form.controls["lastGivenDate"].setValue(data?.lastGivenDate);
     this.Form.controls["donationDate"].setValue(data?.donationDate);
     this.Form.controls["joinDate"].setValue(data?.joinDate);
@@ -122,7 +122,6 @@ export class AddVolunteersComponent implements OnInit {
     data.dateOfBirth = new Date(data.dateOfBirth);
     data.donationDate = new Date(data.donationDate);
     data.scheduleTypeId = Number(data.scheduleTypeId);
-    data.bloodGroupTypeId = Number(data.bloodGroupTypeId);
     console.log(this.Form);
     
     if (this.Form.valid) {
@@ -151,7 +150,6 @@ export class AddVolunteersComponent implements OnInit {
     data.dateOfBirth = new Date(data.dateOfBirth);
     data.donationDate = new Date(data.donationDate);
     data.scheduleTypeId = Number(data.scheduleTypeId);
-    data.bloodGroupTypeId = Number(data.bloodGroupTypeId);
     if (this.Form.valid) {
       self.vol.Add(data).subscribe((m) => {
         if (m.respStatus) {
@@ -179,7 +177,7 @@ export class AddVolunteersComponent implements OnInit {
       let data = {
         "firstName": event.target.value,
         "referedById": 0,
-        "bloodGroupTypeId": 0,
+        "bloodGroup": 0,
         "pageNumber": 1,
         "pageSize": 10000,
         "donationMoney": 0

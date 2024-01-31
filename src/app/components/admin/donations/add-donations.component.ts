@@ -32,11 +32,13 @@ export class AddDonationsComponent implements OnInit {
     receiptNo: new FormControl("",Validators.required),
     receiptDate: new FormControl(new Date(),Validators.required),
     receiptAmount: new FormControl(null as any,Validators.required),
-    bankAmount: new FormControl(null as any,Validators.required),
+    bankAmount: new FormControl(0),
     mode: new FormControl(null as any,Validators.required),
+    chequeNo: new FormControl(''),
+    chequeDate: new FormControl(new Date()),
     image: new FormControl(""),
     comments: new FormControl(""),
-    dateofBankCredit: new FormControl("",Validators.required),
+    dateofBankCredit: new FormControl(new Date),
     status: new FormControl(1),
   });
 
@@ -44,6 +46,9 @@ export class AddDonationsComponent implements OnInit {
   modeSelected: any;
   itemListFlag: boolean = false;
   volList: any = [];
+  cashFlag: boolean = false;
+  chequeFlag: boolean = false;
+  neftFlag: boolean = false;
 
   constructor(public gl: MasterService, private srv: DonationService, private nav: Router,
     private customAlertService: CustomAlertService,  private vol: VolunteerService, private _snackBar: MatSnackBar) { }
@@ -87,6 +92,24 @@ export class AddDonationsComponent implements OnInit {
     let self = this;
     let data = this.Form.value;
     data.mode = Number(data.mode);
+
+    if(data.mode == 1) {
+      data.chequeNo = null;
+      data.chequeDate = '0001-01-01';
+      data.dateofBankDebit = '0001-01-01';
+      data.neftAmount = '0';
+      data.neftDate = '0001-01-01';
+  }
+
+  if(this.Form.value.mode == 2) {
+    data.neftAmount = '0';
+    data.neftDate = '0001-01-01';
+  }
+
+  if(this.Form.value.mode == 3){
+    data.chequeNo = '0';
+    data.chequeDate = '0001-01-01';
+  }
     
     if (this.Form.valid) {
       self.srv.Add(data).subscribe((m) => {
@@ -96,6 +119,7 @@ export class AddDonationsComponent implements OnInit {
           this._snackBar.open('New donation added successfully', "Okay", {
             duration: 3000,
           });
+          this.nav.navigateByUrl('/admin/donations');
         }
       });
     } else {
@@ -112,6 +136,24 @@ export class AddDonationsComponent implements OnInit {
     let data =this.Form.value;
     let data1 = JSON.parse(JSON.stringify(data));
     data1.id = this.gl.setRowDataArray[0].id;
+
+    if(data1.mode == 1) {
+      data1.chequeNo = null;
+      data1.chequeDate = '0001-01-01';
+      data1.dateofBankDebit = '0001-01-01';
+      data1.neftAmount = '0';
+      data1.neftDate = '0001-01-01';
+  }
+
+  if(this.Form.value.mode == 2) {
+    data1.neftAmount = '0';
+    data1.neftDate = '0001-01-01';
+  }
+
+  if(this.Form.value.mode == 3){
+    data1.chequeNo = '0';
+    data1.chequeDate = '0001-01-01';
+  }
     if (this.Form.valid) {
       this.srv.update(data1).subscribe((m) => {
         if (m.respStatus) {
@@ -186,6 +228,20 @@ export class AddDonationsComponent implements OnInit {
       // this.Form.controls['donorName'].setErrors({'incorrect': false});
       this.Form.controls['donorName'].valid;
       this.Form.controls['donorName'].markAsPristine();
+    }
+  }
+
+  changePaymentMode(event:any) {
+    this.cashFlag = false;
+    this.chequeFlag = false;
+    this.neftFlag = false;
+    console.log(event.value);
+    if (event.value == 1) {
+      this.cashFlag = true;
+    } else if (event.value == 2) {
+      this.chequeFlag = true;
+    } else {
+      this.neftFlag = true
     }
   }
 

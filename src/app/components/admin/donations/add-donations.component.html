@@ -73,26 +73,41 @@
               </div> -->
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Receipt Mode</mat-label>
-                <mat-select formControlName="mode">
+                <mat-select formControlName="mode" (selectionChange)="changePaymentMode($event)">
                   <mat-option *ngFor="let type of mode" [value]="type.value">{{ type.viewValue }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
               <!-- <div class="form-group">
-                <label  class="form-label">Bank Amount <span class="red">*</span></label>
-                <input formControlName="bankAmount" type="number" class="form-control" placeholder="Bank Amount">
+                <label  class="form-label">Cheque No </label>
+                <input formControlName="chequeNo" type="text" class="form-control" placeholder="Cheque No">
               </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Cheque No</mat-label>
+                <input formControlName="chequeNo" matInput placeholder="Cheque No">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
+              <!-- <div class="form-group">
+                <label  class="form-label">Cheque Date </label>
+                <input formControlName="chequeDate" type="date" class="form-control" placeholder="Cheque Date">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Cheque Date</mat-label>
+                <input formControlName="chequeDate" matInput [matDatepicker]="picker3" readonly>
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                <mat-datepicker #picker3></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Bank Amount</mat-label>
                 <input formControlName="bankAmount" type="number" matInput placeholder="Bank Amount">
               </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
-                <label  class="form-label">Date of Bank Credit <span class="red">*</span></label>
-                <input formControlName="dateofBankCredit" type="date" class="form-control" placeholder="Date of Bank Credit">
-              </div> -->
+            </div> -->
+            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Date of Bank Credit</mat-label>
                 <input formControlName="dateofBankCredit" matInput [matDatepicker]="picker98" readonly>
@@ -100,7 +115,7 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker98"></mat-datepicker-toggle>
                 <mat-datepicker #picker98></mat-datepicker>
               </mat-form-field>
-            </div>
+            </div> -->
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <!-- <div class="form-group">
                 <label  class="form-label">Comments</label>
