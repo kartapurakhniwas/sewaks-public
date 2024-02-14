@@ -26,6 +26,38 @@ export interface zipFile {
 }
 
 export class TableUtil {
+
+  static importExcel (event: any) {
+    const reader = new FileReader();
+    reader.onload = (e:any) => {
+      const arrayBuffer = e.target.result;
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+        dateNF: 'YYYY-MM-DD',
+        defval: (value:any) => typeof value === 'string' ? value.replace(/ /g, '_') : value
+      });
+      let sjsonData:any = jsonData;
+      sjsonData.forEach( (obj:any) => {
+
+        Object.keys(obj).forEach((key) => {
+          var replacedKey = key.trim().replace('./', '_').replace(' ', '_').replace('Ref_No_Cheque No.', 'Ref_No_Chq_No');
+          if (key !== replacedKey) { 
+            obj[replacedKey] = obj[key];
+             delete obj[key];
+          }
+       });
+      } );
+      console.log(sjsonData, "sjsonData");
+      
+    };
+    reader.readAsArrayBuffer(event.target.files[0]);
+  }
+
+  
+
+
   static exportTableToExcel(tableId: string, name?: any) {
     let { sheetName, fileName } = getFileName(name);
     let targetTableElm = document.getElementById(tableId);

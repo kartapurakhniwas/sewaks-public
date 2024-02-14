@@ -12,6 +12,10 @@
         <button *ngIf="gl.setRowDataArray.length == 1" (click)="delete()" class="btn" style="background-color: #ffcecd !important; color: #ffffff;">
             <mat-icon>delete</mat-icon>  Delete
         </button>
+
+        <!-- <input type="file" id="import" (change)="importExcel($event)" style="display: none">
+        <label for="import" class="btn" > <mat-icon>upload_file</mat-icon> Upload Excel</label> -->
+
         <button (click)="exportAsExcel()" class="btn" > <mat-icon>description</mat-icon> Export to Excel</button>
         <button (click)="addNew()" class="btn" style="background-color: #f5b324; color: #ffffff;">
             <mat-icon>add_circle</mat-icon>  Add New

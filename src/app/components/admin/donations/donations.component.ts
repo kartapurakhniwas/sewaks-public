@@ -191,6 +191,11 @@ export class DonationsComponent implements OnInit {
     
   }
 
+  importExcel(event:any) {
+    console.log(TableUtil.importExcel(event));
+     
+  }
+
   exportAsExcel() {
     let data = this.getpaged;
     console.log(data, "Data");

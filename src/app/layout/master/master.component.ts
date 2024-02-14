@@ -10,9 +10,9 @@ export class MasterComponent implements OnInit {
   sidebarFlag: boolean = false;
   user: any;
   constructor(private st: StorageService,private nav: Router) {
-    // if (this.st.get("userDetail") == null || undefined) {
-    //   this.nav.navigateByUrl("/");
-    // }
+    if (this.st.get("userDetail") == null || undefined) {
+      this.nav.navigateByUrl("/login");
+    }
   }
 
   ngOnInit(): void {
