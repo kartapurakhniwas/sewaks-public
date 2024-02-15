@@ -1,6 +1,8 @@
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 import * as JSZip from "jszip";
+import { MasterService } from "src/app/services";
+import { Injectable } from "@angular/core";
 
 const EXCEL_TYPE =
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -25,11 +27,18 @@ export interface zipFile {
   fileName: string;
 }
 
+@Injectable()
+
 export class TableUtil {
 
-  static importExcel (event: any) {
+
+
+  constructor(private gl: MasterService){}
+
+   importExcel (event: any) {
     const reader = new FileReader();
     reader.onload = (e:any) => {
+      this.gl.xlsxData = null;
       const arrayBuffer = e.target.result;
       const workbook = XLSX.read(arrayBuffer, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
@@ -50,9 +59,12 @@ export class TableUtil {
        });
       } );
       console.log(sjsonData, "sjsonData");
+      this.gl.xlsxData = sjsonData;
+      console.log(this.gl.xlsxData, "this.gl.xlsxData");
       
     };
     reader.readAsArrayBuffer(event.target.files[0]);
+    
   }
 
   

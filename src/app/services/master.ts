@@ -9,6 +9,7 @@ import { IfStmt } from "@angular/compiler";
 export class MasterService {
   sidebar: boolean = false;
   setRowData: any = null;
+  xlsxData: any = [];
   setPaymentData: any = null;
   setRowDataArray: any = [];
   token: string = '';

@@ -61,7 +61,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'admin/debit-list',
+    path: 'admin/xlsx',
     component: MasterComponent,
     data: { title: ' ALS - Donations' },
     loadChildren: () =>

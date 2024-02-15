@@ -192,7 +192,7 @@ export class DonationsComponent implements OnInit {
   }
 
   importExcel(event:any) {
-    console.log(TableUtil.importExcel(event));
+    // console.log(TableUtil.importExcel(event));
      
   }
 

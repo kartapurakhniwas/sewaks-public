@@ -34,9 +34,11 @@ gridOptions: GridOptions;
   isfilter: any;
   getPaged: any;
   getpaged: any;
+  excelData: any = [];
+  loader: boolean = false;
 
   constructor(public gl: MasterService, private vol: JoinService, public datepipe: DatePipe,
-    private _snackBar: MatSnackBar) {
+    private _snackBar: MatSnackBar, private tblUtl: TableUtil) {
     this.columnDefs = [
       {
         headerName: 'Name',
@@ -168,8 +170,58 @@ gridOptions: GridOptions;
   }
 
   importExcel(event:any) {
-    console.log(TableUtil.importExcel(event));
-     
+    this.loader = true;
+    this.tblUtl.importExcel(event);
+    setTimeout(()=>{               
+      this.gl.xlsxData.forEach((m:any, index:any) => {
+        if (m.Debit != (null || ' ' || '')) {
+          
+          delete m.Credit;
+          delete m.Balance;
+          delete m.Value_Date;
+
+          m.BillAmount = String(m.Debit).trim();
+          delete m.Debit;
+
+          m.PaymentDate = String(m.Txn_Date).trim();
+          delete m.Txn_Date;
+
+          let a = String(m.Description).split('TO TRANSFER-INB ');
+          // let ab = String(m.Description).split('TO TRANSFER-INB ', 4);
+          console.log(index, "sodufh 1");
+          // console.log(a[1], "sodufh 2");
+          // console.log(a[1][0], "sodufh 3");
+         if (a.length >= 2) {
+          console.log(a, "ppp");
+          
+          if (a[1][0] == 'N' && a[1][1] == 'E') {
+            // console.log('New osdfn');
+            let b = a[1].split('--');
+            // console.log(b, "bbbbbbb");
+            m.NameOfSupplier = String(b[1]).trim();
+          } else {
+            let b = a[1].split('--');
+            console.log(b, "4444444444");
+            
+            m.NameOfSupplier = String(b[0]).trim();
+          }
+        } else {
+          m = {};
+        }
+        m.BillNo = '';
+        m.Items = '';
+        delete m.Description;
+        delete m.Ref_No_Chq_No;
+        this.excelData.push(m);
+
+        }
+      });
+      console.log(this.excelData, "this.excelData");
+      if (this.excelData) {
+        TableUtil.exportArrayToExcel(this.excelData, 'Sewaks');
+        this.loader = false;
+      }
+    }, 3000);
   }
 
 }
