@@ -1,0 +1,16 @@
+
+
+<div class="d-flex align-items-center justify-content-center" style="height: 90vh; width: 100%" >
+    <div>
+        <div>
+            <input type="file" id="import" (change)="importExcel($event)" style="display: none">
+            
+            <button class="btn" style="background-color: #f5b324; color: #ffffff;">
+                <label for="import"> <mat-icon>upload_file</mat-icon> Upload Excel</label>
+            </button>
+        </div>
+        <h4 style="margin-top: 20px;
+        color: #00000075;
+        text-align: center;" *ngIf="loader">Loading ...</h4>
+    </div>
+</div>

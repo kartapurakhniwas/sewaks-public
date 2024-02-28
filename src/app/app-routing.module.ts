@@ -69,6 +69,16 @@ const routes: Routes = [
         (m) => m.DebitListModule
       ),
   },
+  {
+    path: 'admin/donatins-xlsx',
+    component: MasterComponent,
+    data: { title: ' ALS - Donations' },
+    loadChildren: () =>
+      import('./components/admin/credit-list-xlsx/_module').then(
+        (m) => m.CreditListModule
+      ),
+  },
+  
   
 
 

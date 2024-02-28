@@ -60,7 +60,7 @@ export class TableUtil {
       } );
       console.log(sjsonData, "sjsonData");
       this.gl.xlsxData = sjsonData;
-      console.log(this.gl.xlsxData, "this.gl.xlsxData");
+      // console.log(this.gl.xlsxData, "this.gl.xlsxData");
       
     };
     reader.readAsArrayBuffer(event.target.files[0]);
