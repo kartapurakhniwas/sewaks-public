@@ -48,11 +48,11 @@ export class DonationsComponent implements OnInit {
         width: 140,
       },
       {
-        headerName: 'receipt Date',
-        field: 'receiptDate',
+        headerName: 'Created Date',
+        field: 'dateofBankCredit',
         width: 130,
         valueGetter: (data:any) => {
-          return this.datepipe.transform(data.data.receiptDate, 'dd-MM-yyyy');
+          return this.datepipe.transform(data.data.dateofBankCredit, 'dd-MM-yyyy');
         },
       },
       {
@@ -76,7 +76,7 @@ export class DonationsComponent implements OnInit {
               break;
             }
             case 3: {
-              return 'NEFT';
+              return 'Online';
               break;
             }
             case 4: {
@@ -296,9 +296,9 @@ export class PrintReceiptPopup {
     popupWin.document.write(
       this.gl.printReceipt(this.myDiv.nativeElement.innerHTML)
       );
-      // window.print();
       popupWin.print();
-    popupWin.close();
+      // popupWin.close();
+      // window.print();
   }
 
   onNoClick(): void {

@@ -17,10 +17,7 @@ export class AddDonationsComponent implements OnInit {
   mode: any[] = [
 
     { value: 2, viewValue: "Cheque" },
-    { value: 3, viewValue: "NEFT" },
-    { value: 4, viewValue: "UPI" },
-    { value: 5, viewValue: "IMPS" },
-    { value: 6, viewValue: "RTGS" },
+    { value: 3, viewValue: "Online" }
     
   ];
 
@@ -38,7 +35,7 @@ export class AddDonationsComponent implements OnInit {
     chequeDate: new FormControl(new Date()),
     image: new FormControl(""),
     comments: new FormControl(""),
-    dateofBankCredit: new FormControl(new Date),
+    dateofBankCredit: new FormControl(new Date()),
     status: new FormControl(1),
   });
 
@@ -95,22 +92,23 @@ export class AddDonationsComponent implements OnInit {
 
     if(data.mode == 1) {
       data.chequeNo = null;
-      data.chequeDate = '0001-01-01';
-      data.dateofBankDebit = '0001-01-01';
+      data.chequeDate = new Date();
+      data.dateofBankDebit = new Date();
       data.neftAmount = '0';
-      data.neftDate = '0001-01-01';
+      data.neftDate = new Date();
   }
 
   if(this.Form.value.mode == 2) {
     data.neftAmount = '0';
-    data.neftDate = '0001-01-01';
+    data.neftDate = new Date();
   }
 
   if(this.Form.value.mode == 3){
     data.chequeNo = '0';
-    data.chequeDate = '0001-01-01';
+    data.chequeDate = new Date();
   }
     
+  console.log("🚀 ~ AddDonationsComponent ~ self.srv.Add ~ data:", data)
     if (this.Form.valid) {
       self.srv.Add(data).subscribe((m) => {
         const a = console.log(this.Form.value);
@@ -139,20 +137,20 @@ export class AddDonationsComponent implements OnInit {
 
     if(data1.mode == 1) {
       data1.chequeNo = null;
-      data1.chequeDate = '0001-01-01';
-      data1.dateofBankDebit = '0001-01-01';
+      data1.chequeDate = new Date();
+      data1.dateofBankDebit = new Date();
       data1.neftAmount = '0';
-      data1.neftDate = '0001-01-01';
+      data1.neftDate = new Date();
   }
 
   if(this.Form.value.mode == 2) {
     data1.neftAmount = '0';
-    data1.neftDate = '0001-01-01';
+    data1.neftDate = new Date();
   }
 
   if(this.Form.value.mode == 3){
     data1.chequeNo = '0';
-    data1.chequeDate = '0001-01-01';
+    data1.chequeDate = new Date();
   }
     if (this.Form.valid) {
       this.srv.update(data1).subscribe((m) => {
