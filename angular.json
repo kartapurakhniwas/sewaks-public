@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "sewaks-public",
             "outputPath": "dist/sewaks-public",
             "index": "src/index.html",
             "main": "src/main.ts",
