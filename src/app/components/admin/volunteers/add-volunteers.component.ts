@@ -64,6 +64,7 @@ export class AddVolunteersComponent implements OnInit {
   Form = new FormGroup({
     firstName: new FormControl('', Validators.required ),
     lastName: new FormControl('', Validators.required),
+    nickName: new FormControl(''),
     dateOfBirth: new FormControl(new Date),
     email: new FormControl('', [Validators.email]),
     primaryContact: new FormControl(''),

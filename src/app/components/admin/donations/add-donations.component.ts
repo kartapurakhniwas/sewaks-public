@@ -24,7 +24,7 @@ export class AddDonationsComponent implements OnInit {
   Form:any = new FormGroup({
     id: new FormControl(0),
     donorName: new FormControl("",Validators.required),
-    donorId: new FormControl(null as any,Validators.required),
+    donorId: new FormControl(0),
     donorAddress: new FormControl(""),
     receiptNo: new FormControl("",Validators.required),
     receiptDate: new FormControl(new Date(),Validators.required),
@@ -187,7 +187,7 @@ export class AddDonationsComponent implements OnInit {
   }
 
   itemChangeKeyup(event:any) {
-    this.Form.controls['donorName'].setErrors({'incorrect': true});
+    // this.Form.controls['donorName'].setErrors({'incorrect': true});
     let self = this;
     if (event.target.value == '') {
       this.itemListFlag = false;

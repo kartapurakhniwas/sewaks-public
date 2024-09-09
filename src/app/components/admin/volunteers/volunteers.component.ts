@@ -44,7 +44,11 @@ gridOptions: GridOptions;
         sortingOrder: ["asc", "desc"],
         width: 180,
         valueGetter: (data:any) => {
-          return data.data.firstName + ' ' + data.data.lastName;
+          if(data.data.nickName != null) {
+            return data.data.firstName + ' ' + data.data.lastName + ' ('+ data.data.nickName + ')';
+          } else {
+            return data.data.firstName + ' ' + data.data.lastName;
+          }
         },
       },
       {

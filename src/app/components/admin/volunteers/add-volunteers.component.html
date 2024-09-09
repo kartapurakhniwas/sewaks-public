@@ -33,6 +33,12 @@
               </mat-form-field>
             </div>
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Nick Name</mat-label>
+                <input formControlName="nickName" matInput placeholder="Nick Name">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <div class="custom-droplist">
                 <mat-form-field appearance="fill" class="w-100 mb-2">
                   <mat-label>Referred By</mat-label>
@@ -42,7 +48,7 @@
                   <li (click)="itemListFlag = false" class="text-end">Close</li>
                   <li *ngIf="volList.length==0" class="text-center">No Records Found</li>
                   <li *ngFor="let i of volList" (click)="itemSelected(i)">
-                    {{i.firstName}} {{i.lastName}}
+                    {{i.firstName}} {{i.lastName}} ({{i.nickName}})
                   </li>
                  </ul>
               </div>
