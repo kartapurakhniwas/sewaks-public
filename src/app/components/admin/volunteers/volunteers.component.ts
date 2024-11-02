@@ -42,9 +42,9 @@ gridOptions: GridOptions;
         headerCheckboxSelectionFilteredOnly: true,
         checkboxSelection: true,
         sortingOrder: ["asc", "desc"],
-        width: 180,
+        width: 200,
         valueGetter: (data:any) => {
-          if(data.data.nickName != null) {
+          if(data.data.nickName != null || '') {
             return data.data.firstName + ' ' + data.data.lastName + ' ('+ data.data.nickName + ')';
           } else {
             return data.data.firstName + ' ' + data.data.lastName;
@@ -52,9 +52,9 @@ gridOptions: GridOptions;
         },
       },
       {
-        headerName: 'Referred By',
-        field: 'referedBy',
-        width: 140,
+        headerName: 'Address',
+        field: 'address',
+        width: 300,
       },
       {
         headerName: 'Phone Number',
@@ -65,11 +65,6 @@ gridOptions: GridOptions;
         headerName: 'Email',
         field: 'email',
         width: 170,
-      },
-      {
-        headerName: 'Address',
-        field: 'address',
-        width: 180,
       },
       {
         headerName: 'Donation (INR)',
@@ -95,6 +90,11 @@ gridOptions: GridOptions;
             return 'No'
           }
         }
+      },
+      {
+        headerName: 'Referred By',
+        field: 'referedBy',
+        width: 140,
       },
       {
         headerName: 'Schedule Type',

@@ -48,11 +48,11 @@ export class DonationsComponent implements OnInit {
         width: 140,
       },
       {
-        headerName: 'Created Date',
-        field: 'dateofBankCredit',
-        width: 130,
+        headerName: 'receipt date',
+        field: 'receiptDate',
+        width: 140,
         valueGetter: (data:any) => {
-          return this.datepipe.transform(data.data.dateofBankCredit, 'dd-MM-yyyy');
+          return this.datepipe.transform(data.data.receiptDate, 'dd-MM-yyyy');
         },
       },
       {
@@ -61,10 +61,18 @@ export class DonationsComponent implements OnInit {
         width: 170,
       },
       {
-        headerName: 'razor pay ID',
-        field: 'bankAmount',
-        width: 180,
+        headerName: 'Created Date',
+        field: 'dateofBankCredit',
+        width: 130,
+        valueGetter: (data:any) => {
+          return this.datepipe.transform(data.data.dateofBankCredit, 'dd-MM-yyyy');
+        },
       },
+      // {
+      //   headerName: 'razor pay ID',
+      //   field: 'bankAmount',
+      //   width: 180,
+      // },
       {
         headerName: 'mode',
         field: 'mode',
@@ -246,7 +254,7 @@ export class DonationsComponent implements OnInit {
 
 
 
-import * as converter from "number-to-words";
+// import * as converter from "number-to-words";
 
 @Component({
   selector: 'print-receipt-dialog',
@@ -314,11 +322,74 @@ export class PrintReceiptPopup {
  }
 
  inWords(item:any) {
-  return converter.toWords(item)
+  return this.numberToWords(item)
  }
 
  numberWithCommas(x:any) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// converting from numbers to words
+
+ numberToWords(num: number): string {
+  const belowTwenty = [
+      '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+      'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+  ];
+
+  const tens = [
+      '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+  ];
+
+  const scales = ['', 'Thousand', 'Lakh', 'Crore'];
+
+  if (num === 0) return 'Zero';
+
+  function convertBelowThousand(n: number): string {
+      let result = '';
+
+      if (n >= 100) {
+          result += belowTwenty[Math.floor(n / 100)] + ' Hundred ';
+          n %= 100;
+      }
+
+      if (n >= 20) {
+          result += tens[Math.floor(n / 10)] + ' ' + belowTwenty[n % 10] + ' ';
+      } else if (n > 0) {
+          result += belowTwenty[n] + ' ';
+      }
+
+      return result.trim();
+  }
+
+  let result = '';
+  let scaleIndex = 0;
+
+  while (num > 0) {
+      let part = 0;
+
+      // For the first iteration (thousands), we take the last three digits,
+      // and for further iterations, we take the next two digits at a time.
+      if (scaleIndex === 0) {
+          part = num % 1000;
+          num = Math.floor(num / 1000);
+      } else {
+          part = num % 100;
+          num = Math.floor(num / 100);
+      }
+
+      if (part > 0) {
+          let partInWords = convertBelowThousand(part);
+          if (scaleIndex > 0) {
+              partInWords += ' ' + scales[scaleIndex];
+          }
+          result = partInWords + ' ' + result; 
+      }
+
+      scaleIndex++;
+  }
+
+  return result.trim();
 }
 
 }

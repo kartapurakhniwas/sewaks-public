@@ -1,113 +1,113 @@
 <div class="admin-header">
-    <h3>Add Donations</h3>
-    <div class="d-flex justify-content-between">
-        <button class="btn" routerLink="/admin/donations">
-          <mat-icon>arrow_back</mat-icon> Back
-        </button>
-        <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
-          <mat-icon>save</mat-icon> Save
-        </button>
-    </div>
+  <h3>Add Donations</h3>
+  <div class="d-flex justify-content-between">
+    <button class="btn" routerLink="/admin/donations">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+    <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Save
+    </button>
+  </div>
 </div>
 <div class="add-form-wrap">
-    <form class="form mat-form mt-3 mb-5" [formGroup]="Form">
-        <div class="row">
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+  <form class="form mat-form mt-3 mb-5" [formGroup]="Form">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Donor Name <span class="red">*</span></label>
                 <input formControlName="donorName" type="text" class="form-control" placeholder="Donor Name">
               </div> -->
-              <div class="custom-droplist">
-                <mat-form-field appearance="fill" class="w-100 mb-2">
-                  <mat-label>Donor Name</mat-label>
-                  <input (keyup)="itemChangeKeyup($event)" formControlName="donorName" matInput placeholder="Donor Name">
-                </mat-form-field>
-                <ul class="options" *ngIf="itemListFlag">
-                  <li (click)="itemListFlag = false" class="text-end">Close</li>
-                  <li *ngIf="volList.length==0" class="text-center">No Records Found</li>
-                  <li *ngFor="let i of volList" (click)="itemSelected(i)">
-                    {{i.firstName}} {{i.lastName}} ({{i.nickName}})
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+        <div class="custom-droplist">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>Donor Name</mat-label>
+            <input (keyup)="itemChangeKeyup($event)" formControlName="donorName" matInput placeholder="Donor Name">
+          </mat-form-field>
+          <ul class="options" *ngIf="itemListFlag">
+            <li (click)="itemListFlag = false" class="text-end">Close</li>
+            <li *ngIf="volList.length==0" class="text-center">No Records Found</li>
+            <li *ngFor="let i of volList" (click)="itemSelected(i)">
+              {{i.firstName}} {{i.lastName}} <span *ngIf="i.nickName">({{i.nickName}})</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Receipt No <span class="red">*</span></label>
                 <input formControlName="receiptNo" type="text" class="form-control" placeholder="Receipt No">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Receipt No</mat-label>
-                <input formControlName="receiptNo" matInput placeholder="Receipt No">
-              </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Receipt No</mat-label>
+          <input formControlName="receiptNo" matInput placeholder="Receipt No">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Receipt Date <span class="red">*</span></label>
                 <input formControlName="receiptDate" type="date" class="form-control" placeholder="Receipt Date">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Receipt Date</mat-label>
-                <input formControlName="receiptDate" matInput [matDatepicker]="picker" readonly>
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Receipt Date</mat-label>
+          <input formControlName="receiptDate" matInput [matDatepicker]="picker" readonly>
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Receipt Amount <span class="red">*</span></label>
                 <input formControlName="receiptAmount" type="number" class="form-control" placeholder="Receipt Amount">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Receipt Amount</mat-label>
-                <input formControlName="receiptAmount"  type="number" matInput placeholder="Receipt Amount">
-              </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Receipt Amount</mat-label>
+          <input formControlName="receiptAmount" type="number" matInput placeholder="Receipt Amount">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Receipt Mode <span class="red">*</span></label>
                 <select formControlName="mode" name="" id="" class="form-control" >
                     <option *ngFor="let type of mode" [value]="type.value">{{ type.viewValue }}</option>
                 </select>
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Receipt Mode</mat-label>
-                <mat-select formControlName="mode" (selectionChange)="changePaymentMode($event)">
-                  <mat-option *ngFor="let type of mode" [value]="type.value">{{ type.viewValue }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
-              <!-- <div class="form-group">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Receipt Mode</mat-label>
+          <mat-select formControlName="mode" (selectionChange)="changePaymentMode($event)">
+            <mat-option *ngFor="let type of mode" [value]="type.value">{{ type.viewValue }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
+        <!-- <div class="form-group">
                 <label  class="form-label">Cheque No </label>
                 <input formControlName="chequeNo" type="text" class="form-control" placeholder="Cheque No">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Cheque No</mat-label>
-                <input formControlName="chequeNo" matInput placeholder="Cheque No">
-              </mat-form-field>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
-              <!-- <div class="form-group">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Cheque No</mat-label>
+          <input formControlName="chequeNo" matInput placeholder="Cheque No">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
+        <!-- <div class="form-group">
                 <label  class="form-label">Cheque Date </label>
                 <input formControlName="chequeDate" type="date" class="form-control" placeholder="Cheque Date">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Cheque Date</mat-label>
-                <input formControlName="chequeDate" matInput [matDatepicker]="picker3" readonly>
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-                <mat-datepicker #picker3></mat-datepicker>
-              </mat-form-field>
-            </div>
-            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Cheque Date</mat-label>
+          <input formControlName="chequeDate" matInput [matDatepicker]="picker3" readonly>
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+          <mat-datepicker #picker3></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Bank Amount</mat-label>
                 <input formControlName="bankAmount" type="number" matInput placeholder="Bank Amount">
               </mat-form-field>
             </div> -->
-            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+      <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Date of Bank Credit</mat-label>
                 <input formControlName="dateofBankCredit" matInput [matDatepicker]="picker98" readonly>
@@ -116,18 +116,18 @@
                 <mat-datepicker #picker98></mat-datepicker>
               </mat-form-field>
             </div> -->
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <!-- <div class="form-group">
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Comments</label>
                 <input formControlName="comments" type="text" class="form-control" placeholder="Comments">
               </div> -->
-              <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Comments</mat-label>
-                <input formControlName="comments" matInput placeholder="Comments">
-              </mat-form-field>
-            </div>
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Comments</mat-label>
+          <input formControlName="comments" matInput placeholder="Comments">
+        </mat-form-field>
+      </div>
 
-        </div>
-        
-    </form>
+    </div>
+
+  </form>
 </div>
