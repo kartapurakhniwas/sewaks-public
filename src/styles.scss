@@ -299,3 +299,11 @@ button:focus {outline: none !important;}
         display: inline-block;
     }
 }
+.donation-filter {
+    .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+    }
+    .mat-mdc-form-field {
+        margin-bottom: 10px !important;
+    }
+}

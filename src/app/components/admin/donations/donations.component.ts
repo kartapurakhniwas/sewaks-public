@@ -1,13 +1,13 @@
-import { VolunteerService } from './../../../services/volunteer.service';
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
 import { MasterService } from 'src/app/services';
 import { DonationService } from 'src/app/services/donations.service';
 import { TableUtil } from 'src/shared/tableUtil';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { VolunteerService } from './../../../services/volunteer.service';
 
 @Component({
   selector: 'app-donations',
@@ -16,6 +16,10 @@ import { Router } from '@angular/router';
 })
 export class DonationsComponent implements OnInit {
   @ViewChild("agGrid") agGrid: AgGridAngular | undefined;
+
+  fromDate:any = new Date();
+  toDate:any = new Date();
+
   selectedCar:any;
 
   public gridApi: any;
@@ -27,11 +31,20 @@ export class DonationsComponent implements OnInit {
   rowSelection: string;
   statusValue: any;
   isfilter: any;
-  getPaged: any;
   getpaged: any;
+  filteredDonations: any[] = [];
+  donorNameFilter: string = '';
 
   constructor(public gl: MasterService, private vol: DonationService, public datepipe: DatePipe, public dialog: MatDialog,
     private nav: Router) {
+      const currentYear = new Date().getFullYear();
+    
+    // Set fromDate to Jan 1 of current year
+    this.fromDate = new Date(currentYear, 0, 1); // Month is 0-indexed (0 = January)
+    
+    // Set toDate to Dec 31 of current year
+    this.toDate = new Date(currentYear, 11, 31); // 11 = December
+
     this.columnDefs = [
       {
         headerName: 'Donnor Name',
@@ -81,28 +94,22 @@ export class DonationsComponent implements OnInit {
           switch (data.data.mode) {
             case 2: {
               return 'Cheque';
-              break;
             }
             case 3: {
               return 'Online';
-              break;
             }
             case 4: {
               return 'UPI';
-              break;
             }
             case 5: {
               return 'IMPS';
-              break;
             }
             case 6: {
               return 'RTGS';
-              break;
             }
           
             default:
               return 'No Data';
-              break;
           }
         },
       },
@@ -152,6 +159,42 @@ export class DonationsComponent implements OnInit {
     this.gl.setRowDataArray = [];
   }
 
+  searchDonations() {
+    this.filteredDonations = this.filterDonations(
+      this.getpaged,
+      this.fromDate,
+      this.toDate,
+      this.donorNameFilter
+    );
+  }
+
+  private filterDonations(
+    items: any,
+    fromDate: Date,
+    toDate: Date,
+    nameFilter: string
+  ): any {
+    return items
+      .filter((item:any) => {
+        // Date filter
+        if (!item.receiptDate) return false;
+        const receiptDate = new Date(item.receiptDate);
+        const dateMatch = receiptDate >= fromDate && receiptDate <= toDate;
+        
+        // Name filter (case insensitive partial match)
+        const nameMatch = item.donorName.toLowerCase().includes(nameFilter.toLowerCase());
+        
+        return dateMatch && (nameFilter === '' || nameMatch);
+      })
+      .sort((a:any, b:any) => +a.receiptNo - +b.receiptNo); // Numerical sort
+  }
+
+  clearSearchFilter() {
+    this.donorNameFilter = '';
+    this.filteredDonations = this.getpaged;
+    this.gridApi?.setRowData(this.getpaged);
+  }
+
   ngOnInit(): void {
     this.refresh();
   }
@@ -161,6 +204,7 @@ export class DonationsComponent implements OnInit {
     self.vol.GetAllByPagination().subscribe((m:any) => {
         if (m.respStatus) {
           this.getpaged = m.lstModel;
+          this.filteredDonations = m.lstModel;
         }
       }
     );
@@ -169,7 +213,7 @@ export class DonationsComponent implements OnInit {
   onGridReady(params:any) {
     this.gridApi = params.api;
     this.gidColumnApi = params.columnApi;
-    params.api.setRowData(this.getPaged);
+    params.api.setRowData(this.filteredDonations);
   }
 
   clearFilter() {
@@ -205,7 +249,7 @@ export class DonationsComponent implements OnInit {
   }
 
   exportAsExcel() {
-    let data = this.getpaged;
+    let data = this.filteredDonations;
     console.log(data, "Data");
     let d = [];
     let data1 = {};
@@ -320,6 +364,10 @@ export class PrintReceiptPopup {
  isEven(n:any) {
   return n % 2 == 0
  }
+
+ isFourth(n: any) {
+  return n % 4 == 0;
+}
 
  inWords(item:any) {
   return this.numberToWords(item)
