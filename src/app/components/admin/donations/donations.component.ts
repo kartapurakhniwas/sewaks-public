@@ -256,22 +256,35 @@ export class DonationsComponent implements OnInit {
 
     for (var i = 0; i < data.length; i++) {
       data1 = {
-        Name: data[i].firstName + ' ' + data[i].lastName,
-        "Refered By": data[i].referedBy,
-        "Primary Contact": data[i].primaryContact,
-        "Email": data[i].email,
-        "Address": data[i].address,
-        "Donation (INR)": data[i].donationMoney,
-        "Donation Date": data[i].donationDate,
-        "Want Rebate": data[i].wantRebate,
-        "Schedule Type": data[i].scheduleType,
-        "Blood Group": data[i].bloodGroupName
+        "Name": data[i].donorName,
+        "Reciept No": data[i].receiptNo,
+        "Receipt Date": data[i].receiptDate,
+        "Receipt Amount": data[i].receiptAmount,
+        "Created Date": data[i].dateofBankCredit,
+        "Mode": (() => {
+          switch (data[i].mode) {
+            case 2:
+              return 'Cheque';
+            case 3:
+              return 'Online';
+            case 4:
+              return 'UPI';
+            case 5:
+              return 'IMPS';
+            case 6:
+              return 'RTGS';
+            default:
+              return 'No Data';
+          }
+        })(),
+        "PAN No": data[i].panNo,
+        "Donor Address": data[i].donorAddress
       };
       d.push(data1);
     }
     console.log(d, "D");
 
-    TableUtil.exportAgGridToExcel(d, "KPN Volunteer");
+    TableUtil.exportAgGridToExcel(d, "KPN Donations");
   }
 
   printReciept(): void {
