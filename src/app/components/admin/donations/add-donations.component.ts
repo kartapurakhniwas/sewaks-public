@@ -1,13 +1,13 @@
-import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MasterService } from 'src/app/services';
-import { CustomAlertService } from 'src/shared/alert.service';
-import { DonationService } from 'src/app/services/donations.service';
-import { VolunteerService } from 'src/app/services/volunteer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { findInvalidControls } from 'src/app/services/globalFunctions';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { MasterService } from 'src/app/services';
+import { DonationService } from 'src/app/services/donations.service';
+import { findInvalidControls } from 'src/app/services/globalFunctions';
+import { VolunteerService } from 'src/app/services/volunteer.service';
+import { CustomAlertService } from 'src/shared/alert.service';
 @Component({
   selector: 'app-add-donations',
   templateUrl: './add-donations.component.html',
@@ -28,7 +28,7 @@ export class AddDonationsComponent implements OnInit {
     receiptDate: new FormControl(new Date(), Validators.required),
     receiptAmount: new FormControl(null as any, Validators.required),
     bankAmount: new FormControl(0),
-    mode: new FormControl(null as any, Validators.required),
+    mode: new FormControl(3, Validators.required),
     chequeNo: new FormControl(''),
     chequeDate: new FormControl(new Date()),
     image: new FormControl(''),
@@ -63,7 +63,7 @@ export class AddDonationsComponent implements OnInit {
       this.gl.setRowDataArray,
       'this.gl.setRowDatathis.gl.setRowDatathis.gl.setRowData'
     );
-
+    this.getAllDonationsForRecieptNo();
     if (this.gl.setRowDataArray[0]) {
       this.GetByID();
     }
@@ -76,6 +76,16 @@ export class AddDonationsComponent implements OnInit {
         this.setValue(m.model);
       }
     });
+  }
+
+  getAllDonationsForRecieptNo() {
+    let self = this;
+    self.srv.GetAllByPagination().subscribe((m:any) => {
+        if (m.respStatus) {
+          this.Form.controls['receiptNo'].setValue(Number(m.lstModel[0]?.receiptNo) + 1);
+        }
+      }
+    );
   }
 
   setValue(data: any) {
