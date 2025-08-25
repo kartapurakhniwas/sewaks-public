@@ -31,10 +31,10 @@
                     <div><b>Towards: </b> Charitable Donation</div>
                      <div><b>Payment Mode: </b> <span [ngSwitch]="item?.mode">
                         <span *ngSwitchCase="2">Cheque</span>
-                        <span *ngSwitchCase="3">NEFT</span>
-                        <span *ngSwitchCase="4">UPI</span>
+                        <span *ngSwitchCase="3">Online</span>
+                        <!-- <span *ngSwitchCase="4">UPI</span>
                         <span *ngSwitchCase="5">IMPS</span>
-                        <span *ngSwitchCase="6">RTGS</span>
+                        <span *ngSwitchCase="6">RTGS</span> -->
                     </span> </div>
                     <div *ngIf="item?.mode == 2"><b>Cheque No: </b> {{item?.chequeNo}}</div>
                     <div *ngIf="item?.mode == 2"><b>Cheque Date: </b> {{item?.chequeDate | date:'dd/MM/YYYY'}}</div>

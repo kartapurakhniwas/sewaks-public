@@ -8,11 +8,32 @@ import { DonationService } from 'src/app/services/donations.service';
 import { findInvalidControls } from 'src/app/services/globalFunctions';
 import { VolunteerService } from 'src/app/services/volunteer.service';
 import { CustomAlertService } from 'src/shared/alert.service';
+import * as XLSX from 'xlsx';
+
+interface DonationData {
+  donorName: string;
+  amount: number;
+  mode: number; // 1 = Cash, 2 = Cheque, 3 = NEFT/UPI
+  receiptDate: string;
+  chequeNo?: string;
+  chequeDate?: string;
+  neftDate?: string;
+  neftAmount?: string;
+  rowNumber: number;
+  rawRow?: any; // store original row for reference
+}
+
+interface IgnoreRow {
+  rowNumber: number;
+  rowData: any;
+  reason: string;
+}
 @Component({
   selector: 'app-add-donations',
   templateUrl: './add-donations.component.html',
   styleUrls: ['../style.scss'],
 })
+
 export class AddDonationsComponent implements OnInit {
   mode: any[] = [
     { value: 2, viewValue: 'Cheque' },
@@ -131,6 +152,8 @@ export class AddDonationsComponent implements OnInit {
     }
 
     console.log('🚀 ~ AddDonationsComponent ~ self.srv.Add ~ data:', data);
+    data.receiptNo = String(data.receiptNo );
+    console.log("🚀 ~ AddDonationsComponent ~ add ~ data.recieptNo:", data.recieptNo)
     
     if (this.Form.valid) {
       data.receiptDate = data.receiptDate ? moment(data.receiptDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
@@ -279,5 +302,203 @@ export class AddDonationsComponent implements OnInit {
     } else {
       this.neftFlag = true;
     }
+  }
+donationsList: DonationData[] = [];
+  ignoreList: IgnoreRow[] = [];
+
+  private MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+
+  /** ---- helpers ---- */
+  private parseNumber(v: any): number | null {
+    if (v === null || v === undefined) return null;
+    const s = String(v).replace(/[, ]/g, '');
+    const n = Number(s);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  private looksLikeDateHeader(h: string): boolean {
+    h = h.toLowerCase();
+    return (h.includes('date') && !h.includes('value date')) || h === 'date';
+  }
+
+  private looksLikeValueDateHeader(h: string): boolean {
+    h = h.toLowerCase();
+    return h.includes('value') && h.includes('date');
+  }
+
+  private looksLikeNarrationHeader(h: string): boolean {
+    h = h.toLowerCase();
+    return ['description', 'narration', 'particulars', 'details']
+      .some(k => h.includes(k));
+  }
+
+  private looksLikeCreditHeader(h: string): boolean {
+    h = h.toLowerCase();
+    return h.includes('credit') || h.includes('cr amt') || h.endsWith('cr');
+  }
+
+  private looksLikeDebitHeader(h: string): boolean {
+    h = h.toLowerCase();
+    return h.includes('debit') || h.includes('dr amt') || h.endsWith('dr');
+  }
+private normalizeText(s: string): string {
+  return s
+    .replace(/["“”]+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+  /** Extract donor name specifically from narration/description text */
+extractDonorNameFromNarration(narr: string): { name?: string; confidence: number } {
+  const n = this.normalizeText(narr);
+
+  // 1) BY TRANSFER-<REF>-<NAME>-- (most common in your screenshot)
+  const byTransfer = /BY\s+TRANSFER[-–—]\s*([A-Z0-9]+)\s*[-–—]+\s*([A-Za-z][A-Za-z\s.'-]{2,}?)(?:[-–—]{1,}|$)/i;
+  const m1 = n.match(byTransfer);
+  if (m1?.[2]) {
+    const name = m1[2].replace(/[-–—]+$/,'').trim();
+    return { name, confidence: 0.95 };
+  }
+
+  // 2) UPI/<RRN>/<NAME> or UPI-<RRN>-<NAME>
+  const upiLike = /UPI[\/-][A-Z0-9]+[\/-]\s*([A-Za-z][A-Za-z\s.'-]{2,})/i;
+  const m2 = n.match(upiLike);
+  if (m2?.[1]) return { name: m2[1].trim(), confidence: 0.9 };
+
+  // 3) NEFT/IMPS <REF> <NAME> or NEFT-<UTR>-<NAME>
+  const neftLike = /(NEFT|IMPS)[\s-]+[A-Z0-9]+(?:\s|-)+([A-Za-z][A-Za-z\s.'-]{2,})/i;
+  const m3 = n.match(neftLike);
+  if (m3?.[2]) return { name: m3[2].trim(), confidence: 0.85 };
+
+  // 4) TRANSFER FROM <ACCNO> - <NAME>
+  const transferFrom = /TRANSFER\s+FROM\s+\d{6,}\s*[-:–—]*\s*([A-Za-z][A-Za-z\s.'-]{2,})/i;
+  const m4 = n.match(transferFrom);
+  if (m4?.[1]) return { name: m4[1].trim(), confidence: 0.8 };
+
+  // 5) fragile fallback: last alpha run at end (avoid months, keywords)
+  const tailAlpha = /([A-Za-z][A-Za-z\s.'-]{2,})$/i;
+  const m5 = n.match(tailAlpha);
+  if (m5?.[1]) {
+    const cand = m5[1].trim();
+    const lc = cand.toLowerCase();
+    const bad =
+      lc.length < 3 ||
+      this.MONTHS.some(m => lc.includes(m)) ||
+      /(sbi|by transfer|neft|imps|upi|utr|ref|rrn|from|to|acct|acc|a\/c)/i.test(lc);
+    if (!bad) return { name: cand, confidence: 0.5 };
+  }
+
+  return { confidence: 0 };
+}
+
+/** infer mode from narration */
+inferMode(narr: string): number {
+  const s = narr.toUpperCase();
+  if (s.includes('CASH') || s.includes('CDM')) return 1;
+  if (s.includes('CHEQUE') || s.includes('CHQ')) return 2;
+  // UPI/NEFT/IMPS/BY TRANSFER => 3
+  return 3;
+}
+
+/** pick a date string -> ISO */
+toIsoDate(d: any): string {
+  // try dd-mm-yyyy / dd/mm/yyyy / Excel serials
+  if (d instanceof Date) return moment(d).format('YYYY-MM-DDTHH:mm:ss');
+  const s = String(d ?? '').trim();
+
+  // excel serial number?
+  const maybeNum = Number(s);
+  if (Number.isFinite(maybeNum) && maybeNum > 20000 && maybeNum < 60000) {
+    // rough guardrails: excel serials in recent years
+    const excelEpoch = new Date(1899, 11, 30);
+    const ms = excelEpoch.getTime() + maybeNum * 24 * 60 * 60 * 1000;
+    return moment(ms).format('YYYY-MM-DDTHH:mm:ss');
+  }
+
+  const m = moment(s, ['DD-MM-YYYY','DD/MM/YYYY','YYYY-MM-DD','D MMM YYYY','DD MMM YYYY'], true);
+  if (m.isValid()) return m.format('YYYY-MM-DDTHH:mm:ss');
+
+  // last resort: now
+  return moment(new Date()).format('YYYY-MM-DDTHH:mm:ss');
+}
+  /** ---- main method ---- */
+  processBankStatement(event: any) {
+    const file = event.target.files[0];
+    const reader: FileReader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
+
+      if (!rows.length) return;
+
+      const header = (rows[0] || []).map((h: any) => String(h ?? '').trim());
+      let col = {
+        date: -1,
+        valueDate: -1,
+        narration: -1,
+        credit: -1,
+        debit: -1
+      };
+
+      header.forEach((h, i) => {
+        if (col.narration === -1 && this.looksLikeNarrationHeader(h)) col.narration = i;
+        if (col.credit === -1 && this.looksLikeCreditHeader(h)) col.credit = i;
+        if (col.debit === -1 && this.looksLikeDebitHeader(h)) col.debit = i;
+        if (col.date === -1 && this.looksLikeDateHeader(h)) col.date = i;
+        if (col.valueDate === -1 && this.looksLikeValueDateHeader(h)) col.valueDate = i;
+      });
+
+      this.donationsList = [];
+      this.ignoreList = [];
+
+      for (let r = 1; r < rows.length; r++) {
+        const row = rows[r] || [];
+        const rowNumber = r + 1;
+
+        const creditVal = col.credit >= 0 ? this.parseNumber(row[col.credit]) : null;
+        if ((creditVal ?? 0) <= 0) continue; // not incoming donation
+
+        const narration = col.narration >= 0 
+          ? String(row[col.narration] ?? '') 
+          : '';
+
+        const { name: donorName, confidence } = this.extractDonorNameFromNarration(narration);
+        const mode = this.inferMode(narration);
+        const dateCell = (col.valueDate >= 0 ? row[col.valueDate] : null) ?? (col.date >= 0 ? row[col.date] : null);
+        const receiptDate = this.toIsoDate(dateCell);
+
+        if (donorName && confidence >= 0.8) {
+          const iso = moment(receiptDate).format('YYYY-MM-DDTHH:mm:ss');
+          const amount = Number(creditVal);
+
+          this.donationsList.push({
+            donorName,
+            amount,
+            mode,
+            receiptDate: iso,
+            chequeNo: mode === 2 ? 'UNKNOWN' : '0',
+            chequeDate: mode === 2 ? iso : '',
+            neftAmount: mode === 3 ? String(amount) : '0',
+            neftDate: mode === 3 ? iso : '',
+            rawRow: row,
+            rowNumber
+          });
+        } else {
+          this.ignoreList.push({
+            rowNumber,
+            rowData: row,
+            reason: donorName ? `Low confidence name (${Math.round(confidence*100)}%)` : 'Donor name not found'
+          });
+        }
+      }
+
+      console.log('Donations:', this.donationsList);
+      console.log('Ignore list:', this.ignoreList);
+    };
+
+    reader.readAsBinaryString(file);
   }
 }

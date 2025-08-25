@@ -1,6 +1,8 @@
 <div class="admin-header">
   <h3>Add Donations</h3>
   <div class="d-flex justify-content-between">
+
+    <!-- <input type="file" (change)="processBankStatement($event)"> -->
     <button class="btn" routerLink="/admin/donations">
       <mat-icon>arrow_back</mat-icon> Back
     </button>
@@ -33,6 +35,16 @@
       </div>
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <!-- <div class="form-group">
+                <label  class="form-label">Receipt Amount <span class="red">*</span></label>
+                <input formControlName="receiptAmount" type="number" class="form-control" placeholder="Receipt Amount">
+              </div> -->
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Receipt Amount</mat-label>
+          <input formControlName="receiptAmount" type="number" matInput placeholder="Receipt Amount">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <!-- <div class="form-group">
                 <label  class="form-label">Receipt No <span class="red">*</span></label>
                 <input formControlName="receiptNo" type="text" class="form-control" placeholder="Receipt No">
               </div> -->
@@ -52,16 +64,6 @@
           <mat-hint>MM/DD/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
-      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Receipt Amount <span class="red">*</span></label>
-                <input formControlName="receiptAmount" type="number" class="form-control" placeholder="Receipt Amount">
-              </div> -->
-        <mat-form-field appearance="fill" class="w-100 mb-2">
-          <mat-label>Receipt Amount</mat-label>
-          <input formControlName="receiptAmount" type="number" matInput placeholder="Receipt Amount">
         </mat-form-field>
       </div>
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
