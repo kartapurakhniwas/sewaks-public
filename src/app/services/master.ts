@@ -67,19 +67,21 @@ export class MasterService {
     .divider {
       height: 1px;
       border-bottom: 1px dashed #000;
-      margin-top: 5px;
-      margin-bottom: 5px;
+      margin-top: 50px;
+      margin-bottom: 0x;
     }
     @media print {
       .pagebreak { page-break-before: always; } /* page-break-after works, as well */
   }
     h1,h2,h3,h4,h5,h6 {
         margin-bottom: 0px;
-        margin-top: 2px;
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
     .wrap {
         max-width: 1000px;
         margin: auto;
+        padding: 20px 0px;
     }
     .d-flex {
         display: flex;
