@@ -36,6 +36,7 @@ interface IgnoreRow {
 
 export class AddDonationsComponent implements OnInit {
   mode: any[] = [
+    { value: 1, viewValue: 'Cash' },
     { value: 2, viewValue: 'Cheque' },
     { value: 3, viewValue: 'Online' },
   ];
@@ -104,22 +105,42 @@ export class AddDonationsComponent implements OnInit {
     self.srv.GetAllByPagination().subscribe((m:any) => {
         if (m.respStatus) {
           this.Form.controls['receiptNo'].setValue(Number(m.lstModel[0]?.receiptNo) + 1);
+          this.Form.controls['receiptDate'].setValue(m.lstModel[0]?.receiptDate);
+          this.Form.controls['chequeDate'].setValue(m.lstModel[0]?.receiptDate);
         }
       }
     );
   }
 
   setValue(data: any) {
-    this.Form.controls['donorName'].setValue(data?.donorName);
-    this.Form.controls['donorId'].setValue(data?.donorId);
-    this.Form.controls['receiptNo'].setValue(data?.receiptNo);
-    this.Form.controls['receiptDate'].setValue(data?.receiptDate);
-    this.Form.controls['receiptAmount'].setValue(data?.receiptAmount);
-    this.Form.controls['bankAmount'].setValue(data?.bankAmount);
-    this.Form.controls['mode'].setValue(data?.mode);
-    this.Form.controls['image'].setValue(data?.image);
-    this.Form.controls['comments'].setValue(data?.comments);
-    this.Form.controls['dateofBankCredit'].setValue(data?.dateofBankCredit);
+    // this.Form.controls['donorName'].setValue(data?.donorName);
+    // this.Form.controls['donorId'].setValue(data?.donorId);
+    // this.Form.controls['receiptNo'].setValue(data?.receiptNo);
+    // this.Form.controls['receiptDate'].setValue(data?.receiptDate);
+    // this.Form.controls['receiptAmount'].setValue(data?.receiptAmount);
+    // this.Form.controls['bankAmount'].setValue(data?.bankAmount);
+    // this.Form.controls['mode'].setValue(data?.mode);
+    // this.Form.controls['image'].setValue(data?.image);
+    // this.Form.controls['comments'].setValue(data?.comments);
+    // this.Form.controls['dateofBankCredit'].setValue(data?.dateofBankCredit);
+
+
+  this.Form.controls['id'].setValue(data?.id);
+this.Form.controls['donorName'].setValue(data?.donorName);
+this.Form.controls['donorId'].setValue(data?.donorId);
+this.Form.controls['donorAddress'].setValue(data?.donorAddress);
+this.Form.controls['receiptNo'].setValue(data?.receiptNo);
+this.Form.controls['receiptDate'].setValue(data?.receiptDate ? new Date(data.receiptDate) : new Date());
+this.Form.controls['receiptAmount'].setValue(data?.receiptAmount);
+this.Form.controls['bankAmount'].setValue(data?.bankAmount);
+this.Form.controls['mode'].setValue(data?.mode);
+this.Form.controls['chequeNo'].setValue(data?.chequeNo);
+this.Form.controls['chequeDate'].setValue(data?.chequeDate ? new Date(data.chequeDate) : new Date());
+this.Form.controls['image'].setValue(data?.image);
+this.Form.controls['comments'].setValue(data?.comments);
+this.Form.controls['dateofBankCredit'].setValue(data?.dateofBankCredit ? new Date(data.dateofBankCredit) : new Date());
+this.Form.controls['status'].setValue(data?.status);
+
   }
 
   add() {
@@ -204,6 +225,7 @@ export class AddDonationsComponent implements OnInit {
       // data.chequeDate = new Date();
       data.chequeDate = data.chequeDate ? moment(data.chequeDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
     }
+ data.receiptNo = String(data.receiptNo );
     if (this.Form.valid) {
       data1.receiptDate = data1.receiptDate ? moment(data1.receiptDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
       this.srv.update(data1).subscribe((m) => {
