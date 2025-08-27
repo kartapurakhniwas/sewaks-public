@@ -232,13 +232,16 @@ export class DonationsComponent implements OnInit {
   delete() {
     let self = this;
     if (confirm("Are you sure you want to Delete?")) {
-      self.vol.Delete(this.gl.setRowDataArray[0].id).subscribe((m:any) => {
-        if (m.respStatus) {
-            this.refresh();
-            this.gl.setRowDataArray = [];
-        }
+      for (let index = 0; index < this.gl.setRowDataArray?.length; index++) {
+        setTimeout(() => {
+          self.vol.Delete(this.gl.setRowDataArray[index].id).subscribe((m:any) => {
+            if (m.respStatus) {
+                this.refresh();
+                this.gl.setRowDataArray = [];
+            }
+          });
+        }, 100);
       }
-    );
     }
     
   }
