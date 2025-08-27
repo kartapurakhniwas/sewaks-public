@@ -9,7 +9,7 @@
          <button *ngIf="gl.setRowDataArray.length == 1" routerLink="/admin/donations/add" class="btn" style="background-color: #f5b324; color: #ffffff;">
             <mat-icon>edit</mat-icon>  Edit
         </button>
-        <button *ngIf="gl.setRowDataArray.length == 1" (click)="delete()" class="btn" style="    margin-right: 15px;background-color: #ffcecd !important; color: #ffffff;">
+        <button *ngIf="gl.setRowDataArray.length" (click)="delete()" class="btn" style="    margin-right: 15px;background-color: #ffcecd !important; color: #ffffff;">
             <mat-icon>delete</mat-icon>  Delete
         </button>
 
