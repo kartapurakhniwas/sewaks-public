@@ -14,7 +14,7 @@ const routes: Routes = [
         (m) => m.HomepageModule
       ),
   },
-  
+
   {
     path: 'admin/dashboard',
     component: MasterComponent,
@@ -52,6 +52,15 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'admin/suppliers',
+    component: MasterComponent,
+    data: { title: ' ALS - Suppliers' },
+    loadChildren: () =>
+      import('./components/admin/suppliers/_module').then(
+        (m) => m.SuppliersModule
+      ),
+  },
+  {
     path: 'admin/donations',
     component: MasterComponent,
     data: { title: ' ALS - Donations' },
@@ -78,8 +87,8 @@ const routes: Routes = [
         (m) => m.CreditListModule
       ),
   },
-  
-  
+
+
 
 
   {
@@ -239,10 +248,10 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     data: { title: ' ALS - Contact' },
-    
+
   },
-  
-  
+
+
 ];
 
 @NgModule({

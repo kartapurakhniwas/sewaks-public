@@ -1,0 +1,208 @@
+<div class="admin-header">
+    <h3>Add Volunteers</h3>
+    <div class="d-flex justify-content-between">
+        <button class="btn" routerLink="/admin/volunteers">
+          <mat-icon>arrow_back</mat-icon> Back
+        </button>
+        <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+          <mat-icon>save</mat-icon> Save
+        </button>
+    </div>
+</div>
+<div class="add-form-wrap">
+    <form class="form mat-form mt-3 mb-5" [formGroup]="Form">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">First Name <span class="red">*</span></label>
+                <input formControlName="firstName" type="text" class="form-control" placeholder="First Name">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>First Name</mat-label>
+                <input formControlName="firstName" matInput placeholder="First Name">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Last Name <span class="red">*</span></label>
+                <input formControlName="lastName" type="text" class="form-control" placeholder="Last Name">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Last Name</mat-label>
+                <input formControlName="lastName" matInput placeholder="Last Name">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Nick Name</mat-label>
+                <input formControlName="nickName" matInput placeholder="Nick Name">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <div class="custom-droplist">
+                <mat-form-field appearance="fill" class="w-100 mb-2">
+                  <mat-label>Referred By</mat-label>
+                  <input (keyup)="itemChangeKeyup($event)" formControlName="referedBy" matInput placeholder="Referred By">
+                </mat-form-field>
+                <ul class="options" *ngIf="itemListFlag">
+                  <li (click)="itemListFlag = false" class="text-end">Close</li>
+                  <li *ngIf="volList.length==0" class="text-center">No Records Found</li>
+                  <li *ngFor="let i of volList" (click)="itemSelected(i)">
+                    {{i.firstName}} {{i.lastName}} ({{i.nickName}})
+                  </li>
+                 </ul>
+              </div>
+              
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label"> <span class="red">*</span></label>
+                <input formControlName="primaryContact" type="number" class="form-control" placeholder="Contact Number">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Contact Number</mat-label>
+                <input formControlName="primaryContact" matInput placeholder="Contact Number">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Email <span class="red">*</span></label>
+                <input formControlName="email" type="email" class="form-control" placeholder="Email">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Email</mat-label>
+                <input formControlName="email" matInput placeholder="Email">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Address <span class="red">*</span></label>
+                <input formControlName="address" type="text" class="form-control" placeholder="Address">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Address</mat-label>
+                <input formControlName="address" matInput placeholder="Address">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Address <span class="red">*</span></label>
+                <input formControlName="address" type="text" class="form-control" placeholder="Address">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>PAN No</mat-label>
+                <input formControlName="panNo" matInput placeholder="PAN No">
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Donation Date <span class="red">*</span></label>
+                <input formControlName="donationDate" type="date" class="form-control" placeholder="Donation Date">
+              </div> -->
+              <!-- <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Donation Date</mat-label>
+                <input formControlName="donationDate" matInput placeholder="Donation Date">
+              </mat-form-field> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Donation Date</mat-label>
+                <input formControlName="donationDate" matInput [matDatepicker]="picker22" readonly>
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker22"></mat-datepicker-toggle>
+                <mat-datepicker #picker22></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Donation Amount <span class="red">*</span></label>
+                <input formControlName="donationMoney" type="number" class="form-control" placeholder="Donation Amount">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Donation Amount</mat-label>
+                <input formControlName="donationMoney" type="number" matInput placeholder="Donation Amount">
+              </mat-form-field>
+            </div>
+            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Donation Period</mat-label>
+                <mat-select formControlName="scheduleTypeId">
+                  <mat-option [value]="1">Monthly</mat-option>
+                  <mat-option [value]="2">Quaterly</mat-option>
+                  <mat-option [value]="3">Yearly</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div> -->
+            
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Date Of Birth <span class="red">*</span></label>
+                <input formControlName="dateOfBirth" type="date" class="form-control" placeholder="Date Of Birth">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Date Of Birth</mat-label>
+                <input formControlName="dateOfBirth" matInput [matDatepicker]="picker2" readonly>
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+            </div>
+            
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Blood Group <span class="red">*</span></label>
+                <select formControlName="bloodGroupTypeId" name="" id="" class="form-control" >
+                    <option *ngFor="let i of bloodList" [value]="i.bloodGroupTypeId">{{i.bloodGroupName}}</option>
+                </select>
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Blood Group</mat-label>
+                <mat-select formControlName="bloodGroup">
+                  <mat-option *ngFor="let i of bloodList" [value]="i">{{i}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <!-- <div class="form-group">
+                <label  class="form-label">Remarks</label>
+                <input formControlName="notes" type="text" class="form-control" placeholder="Remarks">
+              </div> -->
+              <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Remarks</mat-label>
+                <input formControlName="notes" matInput placeholder="Remarks">
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+              <div class="form-check d-block p-0 ">
+                <!-- <input formControlName="wantRebate" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="true"> -->
+                <label class="form-check-label">Need 80G Exemption ?</label>
+              </div>
+              <!-- <div class="form-check form-check-inline">
+                <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio1" [value]="true">
+                <label class="form-check-label" for="inlineRadio1">Yes</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input formControlName="wantRebate" class="form-check-input" type="radio" name="wantRebate" id="inlineRadio2" [value]="false">
+                <label class="form-check-label" for="inlineRadio2">No</label>
+              </div> -->
+              <mat-radio-group formControlName="wantRebate" aria-label="Need 80G Exemption ?">
+                <mat-radio-button [value]="true">Yes</mat-radio-button>
+                <mat-radio-button [value]="false">No</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+        </div>
+        <div class="">
+          <!-- <div class="form-check " style="width: 140px;
+          margin: auto;">
+            <div class="d-flex align-items-center">
+              <input formControlName="wantRebate" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+              <label class="form-check-label" for="flexCheckDefault">
+                Need 80G Exemption?
+              </label>
+            </div>
+          </div> -->
+          
+          
+        </div>
+    </form>
+</div>
