@@ -21,55 +21,56 @@
 
 <div id="MasterWrap">
 
-	
-	<div id="sidebar" [ngClass]="sidebarFlag == true ? 'inactive' : 'active'">
-		<div class="logo-section" >
-			<!-- <h3 style="margin: 0;color: white;font-size: 1.4em !important;font-weight:500;">LOGO</h3> -->
-			<img src="../../../assets/images/logo_light.png" alt="" class="logo">
-			<button (click)="toggleSidebar()" class="menuBtn">
-				<mat-icon style="color: #082450" [class.rotated]="!sidebarFlag">chevron_right</mat-icon>
-			</button>
-		  </div>
-	  <div class="divider"></div>
-  
-	  <div class="user-section">
-		<div class="user-img">
-		  <div class="img">
-			<i class="fa-solid fa-user"></i>
-		  </div>
-		  <p class="user-name">
-			<!-- {{user.firstName}} {{user.lastName}} -->
-		  </p>
-		</div>
-		<!-- <div>
+
+  <div id="sidebar" [ngClass]="sidebarFlag == true ? 'inactive' : 'active'">
+    <div class="logo-section">
+      <!-- <h3 style="margin: 0;color: white;font-size: 1.4em !important;font-weight:500;">LOGO</h3> -->
+      <img src="../../../assets/images/logo_light.png" alt="" class="logo">
+      <button (click)="toggleSidebar()" class="menuBtn">
+        <mat-icon style="color: #082450" [class.rotated]="!sidebarFlag">chevron_right</mat-icon>
+      </button>
+    </div>
+    <div class="divider"></div>
+
+    <div class="user-section">
+      <div class="user-img">
+        <div class="img">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <p class="user-name">
+          <!-- {{user.firstName}} {{user.lastName}} -->
+        </p>
+      </div>
+      <!-- <div>
 		  <button mat-icon-button color="primary">
 			<i class="fa-solid fa-angle-down"></i>
 		  </button>
 		</div> -->
-	  </div>
-  
-	  <div class="divider"></div>
-  
-	  <ul class="nav">
-		<li><a href="javascript:void(0)" routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/volunteers" routerLinkActive="active">Volunteers</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/donations" routerLinkActive="active">Donations</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/bills" routerLinkActive="active">Bills</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/xlsx" routerLinkActive="active">Bills to XLSX</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/donatins-xlsx" routerLinkActive="active">Donations to XLSX</a></li>
-		<li><a href="javascript:void(0)" routerLink="/admin/contact-us-list" routerLinkActive="active">Contact Us</a></li>
-	  </ul>
+    </div>
 
-	  <ul class="nav logout">
-		<li><a href="javascript:void(0)" routerLink="/">Go To Website</a></li>
-		<li><a href="javascript:void(0)" (click)="logout()">Logout</a></li>
-	  </ul>
-  
+    <div class="divider"></div>
 
-	</div>
-  
-	<div class="content-wrap active" [ngClass]="sidebarFlag != true ? 'col-close' : 'col-open'">
-	  <router-outlet></router-outlet>
-	</div>
+    <ul class="nav">
+      <li><a href="javascript:void(0)" routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/volunteers" routerLinkActive="active">Volunteers</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/donations" routerLinkActive="active">Donations</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/bills" routerLinkActive="active">Bills</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/suppliers" routerLinkActive="active">Suppliers</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/xlsx" routerLinkActive="active">Bills to XLSX</a></li>
+      <li><a href="javascript:void(0)" routerLink="/admin/donatins-xlsx" routerLinkActive="active">Donations to XLSX</a>
+      </li>
+      <li><a href="javascript:void(0)" routerLink="/admin/contact-us-list" routerLinkActive="active">Contact Us</a></li>
+    </ul>
+
+    <ul class="nav logout">
+      <li><a href="javascript:void(0)" routerLink="/">Go To Website</a></li>
+      <li><a href="javascript:void(0)" (click)="logout()">Logout</a></li>
+    </ul>
+
+
   </div>
-  
+
+  <div class="content-wrap active" [ngClass]="sidebarFlag != true ? 'col-close' : 'col-open'">
+    <router-outlet></router-outlet>
+  </div>
+</div>
