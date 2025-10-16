@@ -66,6 +66,7 @@ export class AddDonationsComponent implements OnInit {
   cashFlag: boolean = false;
   chequeFlag: boolean = false;
   neftFlag: boolean = false;
+  updateFlag: boolean = false;
 
   constructor(
     public gl: MasterService,
@@ -85,9 +86,10 @@ export class AddDonationsComponent implements OnInit {
       this.gl.setRowDataArray,
       'this.gl.setRowDatathis.gl.setRowDatathis.gl.setRowData'
     );
-    this.getAllDonationsForRecieptNo();
     if (this.gl.setRowDataArray[0]) {
       this.GetByID();
+    } else {
+      this.getAllDonationsForRecieptNo();
     }
   }
 
@@ -123,8 +125,7 @@ export class AddDonationsComponent implements OnInit {
     // this.Form.controls['image'].setValue(data?.image);
     // this.Form.controls['comments'].setValue(data?.comments);
     // this.Form.controls['dateofBankCredit'].setValue(data?.dateofBankCredit);
-
-
+this.updateFlag = true;
   this.Form.controls['id'].setValue(data?.id);
 this.Form.controls['donorName'].setValue(data?.donorName);
 this.Form.controls['donorId'].setValue(data?.donorId);
@@ -202,34 +203,35 @@ this.Form.controls['status'].setValue(data?.status);
     let data1 = JSON.parse(JSON.stringify(data));
     data1.id = this.gl.setRowDataArray[0].id;
 
-    if (data.mode == 1) {
-      data.chequeNo = null;
-      // data.chequeDate = new Date();
-      // data.dateofBankDebit = new Date();
-      data.chequeDate = data.chequeDate ? moment(data.chequeDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
-      data.dateofBankDebit = data.dateofBankDebit ? moment(data.dateofBankDebit).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
-      data.neftAmount = '0';
-      // data.neftDate = new Date();
-      data.neftDate = data.neftDate ? moment(data.neftDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
+  if (data1.mode == 1) {
+      data1.chequeNo = null;
+      // data1.chequeDate = new Date();
+      // data1.dateofBankDebit = new Date();
+      data1.chequeDate = data1.chequeDate ? moment(data1.chequeDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
+      data1.dateofBankDebit = data1.dateofBankDebit ? moment(data1.dateofBankDebit).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
+      data1.neftAmount = '0';
+      // data1.neftDate = new Date();
+      data1.neftDate = data1.neftDate ? moment(data1.neftDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
     }
 
     if (this.Form.value.mode == 2) {
-      data.neftAmount = '0';
-      // data.neftDate = new Date();
-      data.neftDate = data.neftDate ? moment(data.neftDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
+      data1.neftAmount = '0';
+      // data1.neftDate = new Date();
+      data1.neftDate = data1.neftDate ? moment(data1.neftDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
       
     }
 
     if (this.Form.value.mode == 3) {
-      data.chequeNo = '0';
-      // data.chequeDate = new Date();
-      data.chequeDate = data.chequeDate ? moment(data.chequeDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
+      data1.chequeNo = '0';
+      // data1.chequeDate = new Date();
+      data1.chequeDate = data1.chequeDate ? moment(data1.chequeDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
     }
- data.receiptNo = String(data.receiptNo );
+ data1.receiptNo = data1.receiptNo.toString();
     if (this.Form.valid) {
       data1.receiptDate = data1.receiptDate ? moment(data1.receiptDate).format('YYYY-MM-DDTHH:mm:ss') : moment(new Date()).format('YYYY-MM-DDTHH:mm:ss')
       this.srv.update(data1).subscribe((m) => {
         if (m.respStatus) {
+          this.updateFlag = false;
           this.nav.navigateByUrl('/admin/donations');
           this.Form.reset();
           this._snackBar.open(
@@ -242,6 +244,7 @@ this.Form.controls['status'].setValue(data?.status);
         }
       });
     } else {
+      this.updateFlag = false;
       for (let i in this.Form.controls) {
         this.Form.controls[i].markAsTouched();
       }

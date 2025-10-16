@@ -6,7 +6,10 @@
     <button class="btn" routerLink="/admin/donations">
       <mat-icon>arrow_back</mat-icon> Back
     </button>
-    <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+    <button *ngIf="updateFlag" (click)="update()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Update
+    </button>
+    <button *ngIf="!updateFlag" (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
       <mat-icon>save</mat-icon> Save
     </button>
   </div>
