@@ -1,49 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MasterService } from 'src/app/services';
-import { VolunteerService } from 'src/app/services/volunteer.service';
+import { SupplierService } from 'src/app/services/supplier.service';
 import { CustomAlertService } from 'src/shared/alert.service';
-@Component({
-  selector: 'app-add-suppliers',
-  templateUrl: './add-suppliers.component.html',
-  styleUrls: ['../style.scss']
-})
-export class AddSuppliersComponent implements OnInit {
-  selectedCar:any;
-  bloodList: any = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
-  itemListFlag: boolean = false;
-  volList: any = [];
+// import { MasterService } from '../services/master.service';
+// import { SupplierService } from '../services/supplier.service';
+// import { CustomAlertService } from '../services/custom-alert.service';
 
-  constructor(public gl: MasterService, private vol: VolunteerService, private nav: Router,
-    private customAlertService: CustomAlertService, private _snackBar: MatSnackBar) { }
+@Component({
+  selector: 'app-add-supplier',
+  templateUrl: './add-suppliers.component.html'
+})
+export class AddSuppliersComponent {
+  selectedSupplier: any;
+  supplierTypeList: any = [
+    { id: 1, name: 'Electricity' },
+    { id: 2, name: 'Milk' },
+    { id: 3, name: 'Cow Feed' },
+    { id: 4, name: 'Construction Material' },
+    { id: 5, name: 'Salary' },
+    { id: 6, name: 'Hospital Expenses' }
+  ];
+  itemListFlag: boolean = false;
+  supplierList: any = [];
+
+  constructor(
+    public gl: MasterService, 
+    private supplierService: SupplierService, 
+    private nav: Router,
+    private customAlertService: CustomAlertService, 
+    private _snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
-    this.refresh()
+    this.refresh();
   }
 
   refresh() {
-    this.GetVolList();
-    
+    this.GetSupplierList();
   }
-  
-  // GetBloodList() {
-  //   let self = this;
-  //   self.vol.AllBloodGroup().subscribe((m:any) => {
-  //       if (m.respStatus) {
-  //         this.bloodList = m.lstModel;
-  //         this.GetVolList();
-  //       }
-  //     }
-  //   );
-  // }
 
-  GetVolList() {
+  GetSupplierList() {
     let self = this;
-    self.vol.GetAllByPagination().subscribe((m:any) => {
+    self.supplierService.GetAllByPagination().subscribe((m: any) => {
       if (m.respStatus) {
-        this.volList = m.lstModel;
+        this.supplierList = m.lstModel;
         if (this.gl.setRowData) {
           this.GetByID();
         }
@@ -53,62 +56,36 @@ export class AddSuppliersComponent implements OnInit {
 
   GetByID() {
     let self = this;
-    self.vol.GetById(this.gl.setRowData.volunteerID).subscribe((m:any) => {
+    self.supplierService.GetById(this.gl.setRowData.supplierId).subscribe((m: any) => {
       if (m.respStatus) {
         this.setValue(m.lstModel[0]);
       }
     });
   }
 
-
-  Form = new FormGroup({
-    firstName: new FormControl('', Validators.required ),
-    lastName: new FormControl('', Validators.required),
-    nickName: new FormControl(''),
-    dateOfBirth: new FormControl(new Date),
-    email: new FormControl('', [Validators.email]),
-    primaryContact: new FormControl(''),
-    address: new FormControl(''),
-    panNo: new FormControl(''),
-    referedBy: new FormControl(''),
-    referedById: new FormControl(2,  {nonNullable: true}),
-    donationMoney: new FormControl(0,  {nonNullable: true}),
-    emailNotification: new FormControl(true,  {nonNullable: true}),
+  supplierForm = new FormGroup({
+    supplierName: new FormControl('', Validators.required),
+    supplierType: new FormControl('', Validators.required),
+    contactEmail: new FormControl('', [Validators.email]),
+    contactPhone: new FormControl('', Validators.required),
+    address: new FormControl('', Validators.required),
     notes: new FormControl(''),
-    autoDebitSystem: new FormControl(false,  {nonNullable: true}),
-    bloodGroup: new FormControl(''),
-    lastGivenDate: new FormControl(new Date),
-    donationDate: new FormControl(new Date),
-    joinDate: new FormControl(new Date),
-    scheduleTypeId: new FormControl(1,  {nonNullable: true}),
-    wantRebate: new FormControl(false,  {nonNullable: true}),
+    isActive: new FormControl(true, { nonNullable: true }),
+    createdOn: new FormControl(new Date())
   } as any);
 
-  setValue(data:any) {
-    this.Form.controls["firstName"].setValue(data?.firstName);
-    this.Form.controls["lastName"].setValue(data?.lastName);
-    this.Form.controls["panNo"].setValue(data?.panNo);
-    this.Form.controls["dateOfBirth"].setValue(data?.dateOfBirth);
-    this.Form.controls["email"].setValue(data?.email);
-    this.Form.controls["primaryContact"].setValue(data?.primaryContact);
-    this.Form.controls["address"].setValue(data?.address);
-    this.Form.controls["referedBy"].setValue(data?.referedBy);
-    this.Form.controls["referedById"].setValue(data?.referedById);
-    this.Form.controls["donationMoney"].setValue(data?.donationMoney);
-    this.Form.controls["emailNotification"].setValue(data?.emailNotification);
-    this.Form.controls["notes"].setValue(data?.notes);
-    this.Form.controls["autoDebitSystem"].setValue(data?.autoDebitSystem);
-    this.Form.controls["bloodGroup"].setValue(data?.bloodGroup);
-    this.Form.controls["lastGivenDate"].setValue(data?.lastGivenDate);
-    this.Form.controls["donationDate"].setValue(data?.donationDate);
-    this.Form.controls["joinDate"].setValue(data?.joinDate);
-    this.Form.controls["scheduleTypeId"].setValue(data?.scheduleTypeId);
-    this.Form.controls["wantRebate"].setValue(data?.wantRebate);
+  setValue(data: any) {
+    this.supplierForm.controls["supplierName"].setValue(data?.supplierName);
+    this.supplierForm.controls["supplierType"].setValue(data?.supplierType);
+    this.supplierForm.controls["contactEmail"].setValue(data?.contactEmail);
+    this.supplierForm.controls["contactPhone"].setValue(data?.contactPhone);
+    this.supplierForm.controls["address"].setValue(data?.address);
+    this.supplierForm.controls["notes"].setValue(data?.notes);
+    this.supplierForm.controls["isActive"].setValue(data?.isActive);
+    this.supplierForm.controls["createdOn"].setValue(data?.createdOn);
   }
 
   save() {
-    console.log('dfsdfdfg');
-    
     if (this.gl.setRowData) {
       this.update();
     } else {
@@ -118,93 +95,93 @@ export class AddSuppliersComponent implements OnInit {
 
   add() {
     let self = this;
-    let data = this.Form.value;
-    data.primaryContact = String(data.primaryContact);
-    data.dateOfBirth = new Date(data.dateOfBirth);
-    data.donationDate = new Date(data.donationDate);
-    data.scheduleTypeId = Number(data.scheduleTypeId);
-    console.log(this.Form);
-    
-    if (this.Form.valid) {
-      self.vol.Add(data).subscribe((m) => {
+    let data = this.supplierForm.value;
+    data.supplierType = Number(data.supplierType);
+    data.createdOn = new Date(data.createdOn);
+
+    if (this.supplierForm.valid) {
+      self.supplierService.Add(data).subscribe((m: any) => {
         if (m.respStatus) {
-          this.Form.reset();
-          this._snackBar.open("Added Successfully", "Okay", { 'duration': 3000 });
-          this.nav.navigateByUrl('/admin/volunteers');
-          // window.alert('Added Successfully');
+          this.supplierForm.reset();
+          this._snackBar.open("Supplier Added Successfully", "Okay", { 'duration': 3000 });
+          this.nav.navigateByUrl('/admin/suppliers');
         }
       });
     } else {
-      for (let i in this.Form.controls) {
-        this.Form.controls[i].markAsTouched();
+      for (let i in this.supplierForm.controls) {
+        this.supplierForm.controls[i].markAsTouched();
       }
-      
       this._snackBar.open("Please fill required fields", "Okay", { 'duration': 3000 });
     }
   }
 
   update() {
     let self = this;
-    let data = this.Form.value;
-    data.volunteerID = this.gl.setRowData.volunteerID;
-    data.primaryContact = String(data.primaryContact);
-    data.dateOfBirth = new Date(data.dateOfBirth);
-    data.donationDate = new Date(data.donationDate);
-    data.scheduleTypeId = Number(data.scheduleTypeId);
-    if (this.Form.valid) {
-      self.vol.Add(data).subscribe((m) => {
+    let data = this.supplierForm.value;
+    data.supplierId = this.gl.setRowData.supplierId;
+    data.supplierType = Number(data.supplierType);
+    data.createdOn = new Date(data.createdOn);
+
+    if (this.supplierForm.valid) {
+      self.supplierService.update(data).subscribe((m: any) => {
         if (m.respStatus) {
-          this.Form.reset();
-          this._snackBar.open("Added Successfully", "Okay", { 'duration': 3000 });
-          this.nav.navigateByUrl('/admin/volunteers');
-          // this.nav.navigateByUrl('/volunteers');
-          // window.alert('Update Successfully');
+          this.supplierForm.reset();
+          this._snackBar.open("Supplier Updated Successfully", "Okay", { 'duration': 3000 });
+          this.nav.navigateByUrl('/admin/suppliers');
         }
       });
     } else {
-      for (let i in this.Form.controls) {
-        this.Form.controls[i].markAsTouched();
+      for (let i in this.supplierForm.controls) {
+        this.supplierForm.controls[i].markAsTouched();
       }
       this._snackBar.open("Please fill required fields", "Okay", { 'duration': 3000 });
     }
   }
 
-  itemChangeKeyup(event:any) {
+  // Optional: If you need search functionality for suppliers
+  itemChangeKeyup(event: any) {
     let self = this;
     if (event.target.value == '') {
       this.itemListFlag = false;
     } else {
       this.itemListFlag = true;
-      let data = {
-        "firstName": event.target.value,
-        "referedById": 0,
-        "bloodGroup": 0,
+      let searchData = {
+        "supplierName": event.target.value,
         "pageNumber": 1,
-        "pageSize": 10000,
-        "donationMoney": 0
+        "pageSize": 10000
       }
 
-      // USABLE
-      self.vol.SearchVol(data).subscribe((m: any) => {
+      self.supplierService.SearchSuppliers(searchData).subscribe((m: any) => {
         if (m.respStatus) {
-          console.log(m);
-          this.volList = m.lstModel;
+          this.supplierList = m.lstModel;
         } else {
-          this.volList = []
+          this.supplierList = []
         }
       });
     }
   }
 
-  itemSelected(selected:any) {
+  itemSelected(selected: any) {
     let self = this;
-    console.log(selected);
     if (selected) {
-      let name = selected.firstName + ' ' + selected.lastName;
       this.itemListFlag = false;
-      this.Form.controls["referedById"].setValue(selected?.volunteerID);
-      this.Form.controls["referedBy"].setValue(name);
+      // If you need to set reference to another supplier
+      // this.supplierForm.controls["referredById"].setValue(selected?.supplierId);
+      // this.supplierForm.controls["referredBy"].setValue(selected?.supplierName);
     }
   }
 
+  // Reset form
+  resetForm() {
+    this.supplierForm.reset({
+      supplierName: '',
+      supplierType: '',
+      contactEmail: '',
+      contactPhone: '',
+      address: '',
+      notes: '',
+      isActive: true,
+      createdOn: new Date()
+    });
+  }
 }

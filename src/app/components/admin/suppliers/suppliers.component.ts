@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
 import { MasterService } from 'src/app/services';
+import { SupplierService } from 'src/app/services/supplier.service';
 import { VolunteerService } from 'src/app/services/volunteer.service';
 import { TableUtil } from 'src/shared/tableUtil';
 
@@ -33,23 +34,16 @@ gridOptions: GridOptions;
   getPaged: any;
   getpaged: any;
 
-  constructor(public gl: MasterService, private vol: VolunteerService, public datepipe: DatePipe) {
+  constructor(public gl: MasterService, private vol: SupplierService, public datepipe: DatePipe) {
     this.columnDefs = [
       {
         headerName: 'Name',
-        field: 'firstName',
+        field: 'supplierName',
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         checkboxSelection: true,
         sortingOrder: ["asc", "desc"],
         width: 200,
-        valueGetter: (data:any) => {
-          if(data.data.nickName != null || '') {
-            return data.data.firstName + ' ' + data.data.lastName + ' ('+ data.data.nickName + ')';
-          } else {
-            return data.data.firstName + ' ' + data.data.lastName;
-          }
-        },
       },
       {
         headerName: 'Address',
@@ -58,80 +52,48 @@ gridOptions: GridOptions;
       },
       {
         headerName: 'Phone Number',
-        field: 'primaryContact',
+        field: 'contactPhone',
         width: 140,
       },
       {
         headerName: 'Email',
-        field: 'email',
+        field: 'contactEmail',
         width: 170,
       },
       {
-        headerName: 'Donation (INR)',
-        field: 'donationMoney',
-        width: 130,
-      },
-      {
-        headerName: 'Donation Date',
-        field: 'donationDate',
+        headerName: 'Supplier Type',
+        field: 'supplierType',
         width: 130,
         valueGetter: (data:any) => {
-          return this.datepipe.transform(data.data.donationDate, 'dd-MM-yyyy');
-        },
-      },
-      {
-        headerName: 'Want Rebate?',
-        field: 'wantRebate',
-        width: 130,
-        valueGetter: (data:any) => {
-          if (data.data.wantRebate) {
-            return 'Yes'
-          } else {
-            return 'No'
-          }
-        }
-      },
-      {
-        headerName: 'Referred By',
-        field: 'referedBy',
-        width: 140,
-      },
-      {
-        headerName: 'Schedule Type',
-        field: 'scheduleTypeId',
-        width: 130,
-        valueGetter: (data:any) => {
-          switch (data.data.scheduleTypeId) {
+          switch (data.data.supplierType) {
             case 1: {
-              return 'Monthly';
-              break;
+              return 'Electricity';
             }
             case 2: {
-              return 'Quaterly';
-              break;
+              return 'Milk';
             }
             case 3: {
-              return 'Yearly';
-              break;
+              return 'Cow Feed';
             }
-
+            case 4: {
+              return 'Construction Material';
+            }
+            case 5: {
+              return 'Salary';
+            }
+            case 6: {
+              return 'Hostpital Expenses';
+            }
             default:
-              return 'No Data';
-              break;
+              return '-';
           }
         },
       },
       {
-        headerName: 'Blood Group',
-        field: 'bloodGroup',
-        width: 120,
+        headerName: 'Notes',
+        field: 'notes',
+        width: 170,
       },
-      // {
-      //   headerName: 'Total Pallet/Items',
-      //   field: 'pallet',
-      //   width: 100
-      // },
-
     ];
     this.defaultColDef = {
       editable: false,
