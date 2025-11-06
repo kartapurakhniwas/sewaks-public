@@ -12,10 +12,7 @@ export class SupplierService {
     return this.srv.get(`Supplier/GetAllSupplier`);
   }
   Add(data:any) {
-    return this.srv.post(data, "Supplier/AddUpdateSupplier");
-  }
-  update(data:any) {
-    return this.srv.put(data, "Supplier/AddUpdateSupplier");
+    return this.srv.post(data, "Supplier/CreateUpdateSupplier");
   }
   GetById(id:any) {
     // console.log("User ID", data);
@@ -23,7 +20,7 @@ export class SupplierService {
   }
   Delete(id:any) {
     // console.log("User ID", data);
-    return this.srv.delete(`Supplier?SupplierId=${id}`);
+    return this.srv.delete(`Supplier/DeleteSupplier?Id=${id}`);
   }
   AllBloodGroup() {
     return this.srv.get(`Supplier/GetAllBloodGroups`);

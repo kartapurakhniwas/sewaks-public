@@ -1,7 +1,7 @@
 <div class="admin-header">
     <h3>Add Supplier</h3>
     <div class="d-flex justify-content-between">
-        <button class="btn" routerLink="/admin/volunteers">
+        <button class="btn" routerLink="/admin/suppliers">
           <mat-icon>arrow_back</mat-icon> Back
         </button>
         <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
@@ -25,12 +25,12 @@
       <mat-form-field appearance="fill" class="w-100 mb-2">
         <mat-label>Supplier Type</mat-label>
         <mat-select formControlName="supplierType">
-          <mat-option [value]="1">Electricity</mat-option>
-          <mat-option [value]="2">Milk</mat-option>
-          <mat-option [value]="3">Cow Feed</mat-option>
-          <mat-option [value]="4">Construction Material</mat-option>
-          <mat-option [value]="5">Salary</mat-option>
-          <mat-option [value]="6">Hospital Expenses</mat-option>
+          <mat-option value="Electricity">Electricity</mat-option>
+          <mat-option value="Milk">Milk</mat-option>
+          <mat-option value="Cow">Cow Feed</mat-option>
+          <mat-option value="Construction">Construction</mat-option>
+          <mat-option value="Salary">Salary</mat-option>
+          <mat-option value="Hospital">Hospital Expenses</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

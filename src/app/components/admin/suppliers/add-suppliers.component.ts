@@ -96,9 +96,7 @@ export class AddSuppliersComponent {
   add() {
     let self = this;
     let data = this.supplierForm.value;
-    data.supplierType = Number(data.supplierType);
     data.createdOn = new Date(data.createdOn);
-
     if (this.supplierForm.valid) {
       self.supplierService.Add(data).subscribe((m: any) => {
         if (m.respStatus) {
@@ -119,11 +117,9 @@ export class AddSuppliersComponent {
     let self = this;
     let data = this.supplierForm.value;
     data.supplierId = this.gl.setRowData.supplierId;
-    data.supplierType = Number(data.supplierType);
     data.createdOn = new Date(data.createdOn);
-
     if (this.supplierForm.valid) {
-      self.supplierService.update(data).subscribe((m: any) => {
+      self.supplierService.Add(data).subscribe((m: any) => {
         if (m.respStatus) {
           this.supplierForm.reset();
           this._snackBar.open("Supplier Updated Successfully", "Okay", { 'duration': 3000 });

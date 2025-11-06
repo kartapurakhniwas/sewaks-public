@@ -66,22 +66,22 @@ gridOptions: GridOptions;
         width: 130,
         valueGetter: (data:any) => {
           switch (data.data.supplierType) {
-            case 1: {
+            case 'Electricity': {
               return 'Electricity';
             }
-            case 2: {
+            case 'Milk': {
               return 'Milk';
             }
-            case 3: {
+            case 'Cow Feed': {
               return 'Cow Feed';
             }
-            case 4: {
-              return 'Construction Material';
+            case 'Construction': {
+              return 'Construction';
             }
-            case 5: {
+            case 'Salary': {
               return 'Salary';
             }
-            case 6: {
+            case 'Hospital Expenses': {
               return 'Hostpital Expenses';
             }
             default:
@@ -157,8 +157,8 @@ gridOptions: GridOptions;
   delete() {
     let self = this;
     if (confirm("Are you sure you want to Delete?")) {
-      self.vol.Delete(this.gl.setRowData.volunteerID).subscribe((m:any) => {
-        if (m.respStatus) {
+      self.vol.Delete(this.gl.setRowData.supplierId).subscribe((m:any) => {
+        if (m == true) {
             this.refresh();
             this.gl.setRowData = null;
         }
