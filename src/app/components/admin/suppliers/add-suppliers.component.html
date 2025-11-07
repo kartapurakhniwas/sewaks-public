@@ -1,12 +1,15 @@
 <div class="admin-header">
     <h3>Add Supplier</h3>
     <div class="d-flex justify-content-between">
-        <button class="btn" routerLink="/admin/suppliers">
-          <mat-icon>arrow_back</mat-icon> Back
-        </button>
-        <button (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
-          <mat-icon>save</mat-icon> Save
-        </button>
+    <button class="btn" routerLink="/admin/suppliers">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+    <button *ngIf="updateFlag" (click)="update()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Update
+    </button>
+    <button *ngIf="!updateFlag" (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Save
+    </button>
     </div>
 </div>
 <div class="add-form-wrap">
@@ -32,6 +35,13 @@
           <mat-option value="Salary">Salary</mat-option>
           <mat-option value="Hospital">Hospital Expenses</mat-option>
         </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+      <mat-form-field appearance="fill" class="w-100 mb-2">
+        <mat-label>GST No</mat-label>
+        <input formControlName="gstNo" type="text" matInput placeholder="GST No">
       </mat-form-field>
     </div>
 

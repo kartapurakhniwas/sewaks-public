@@ -56,8 +56,8 @@ gridOptions: GridOptions;
         width: 140,
       },
       {
-        headerName: 'Email',
-        field: 'contactEmail',
+        headerName: 'GST No',
+        field: 'gstNo',
         width: 170,
       },
       {
@@ -72,7 +72,7 @@ gridOptions: GridOptions;
             case 'Milk': {
               return 'Milk';
             }
-            case 'Cow Feed': {
+            case 'Cow': {
               return 'Cow Feed';
             }
             case 'Construction': {
@@ -81,13 +81,18 @@ gridOptions: GridOptions;
             case 'Salary': {
               return 'Salary';
             }
-            case 'Hospital Expenses': {
+            case 'Hospital': {
               return 'Hostpital Expenses';
             }
             default:
               return '-';
           }
         },
+      },
+      {
+        headerName: 'Email',
+        field: 'contactEmail',
+        width: 170,
       },
       {
         headerName: 'Notes',

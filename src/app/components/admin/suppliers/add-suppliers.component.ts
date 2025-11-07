@@ -25,6 +25,7 @@ export class AddSuppliersComponent {
   ];
   itemListFlag: boolean = false;
   supplierList: any = [];
+  updateFlag: boolean = false;
 
   constructor(
     public gl: MasterService, 
@@ -39,7 +40,11 @@ export class AddSuppliersComponent {
   }
 
   refresh() {
-    this.GetSupplierList();
+    if (this.gl.setRowDataArray[0]) {
+      this.GetByID();
+    } else {
+      this.GetSupplierList();
+    }
   }
 
   GetSupplierList() {
@@ -64,19 +69,22 @@ export class AddSuppliersComponent {
   }
 
   supplierForm = new FormGroup({
-    supplierName: new FormControl('', Validators.required),
-    supplierType: new FormControl('', Validators.required),
+    supplierName: new FormControl(''),
+    supplierType: new FormControl(''),
     contactEmail: new FormControl('', [Validators.email]),
-    contactPhone: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
+    contactPhone: new FormControl(''),
+    gstNo: new FormControl(''),
+    address: new FormControl(''),
     notes: new FormControl(''),
     isActive: new FormControl(true, { nonNullable: true }),
     createdOn: new FormControl(new Date())
   } as any);
 
   setValue(data: any) {
+    this.updateFlag = true;
     this.supplierForm.controls["supplierName"].setValue(data?.supplierName);
     this.supplierForm.controls["supplierType"].setValue(data?.supplierType);
+    this.supplierForm.controls["gstNo"].setValue(data?.gstNo);
     this.supplierForm.controls["contactEmail"].setValue(data?.contactEmail);
     this.supplierForm.controls["contactPhone"].setValue(data?.contactPhone);
     this.supplierForm.controls["address"].setValue(data?.address);
