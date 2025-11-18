@@ -259,6 +259,7 @@ export class DonationsComponent implements OnInit {
 
     for (var i = 0; i < data.length; i++) {
       data1 = {
+        "Known/Unknown": data[i].donorId == 0 ? 'Unknown' : '',
         "Name": data[i].donorName,
         "Reciept No": data[i].receiptNo,
         "Receipt Date": data[i].receiptDate,
