@@ -47,7 +47,7 @@ export class DonationsComponent implements OnInit {
 
     this.columnDefs = [
       {
-        headerName: 'Donnor Name',
+        headerName: 'Donor Name',
         field: 'donorName',
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
