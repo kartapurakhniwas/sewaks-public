@@ -291,6 +291,48 @@ export class DonationsComponent implements OnInit {
     TableUtil.exportAgGridToExcel(d, "KPN Donations");
   }
 
+  exportAsExcelUnknown() {
+    let data = this.filteredDonations;
+    console.log(data, "Data");
+    let d = [];
+    let data1 = {};
+
+    for (var i = 0; i < data.length; i++) {
+      data1 = {
+        "Known/Unknown": data[i].donorId == 0 ? 'Unknown' : '',
+        "Name": data[i].donorName,
+        "Reciept No": data[i].receiptNo,
+        "Receipt Date": data[i].receiptDate,
+        "Receipt Amount": data[i].receiptAmount,
+        "Created Date": data[i].dateofBankCredit,
+        "Mode": (() => {
+          switch (data[i].mode) {
+            case 2:
+              return 'Cheque';
+            case 3:
+              return 'Online';
+            case 4:
+              return 'UPI';
+            case 5:
+              return 'IMPS';
+            case 6:
+              return 'RTGS';
+            default:
+              return 'No Data';
+          }
+        })(),
+        "PAN No": data[i]?.panNo,
+        "Donor Address": data[i]?.donorAddress
+      };
+      if(data[i].donorId == 0 || data[i].donorId == undefined) {
+        d.push(data1);
+      }
+    }
+    console.log(d, "D");
+
+    TableUtil.exportAgGridToExcel(d, "KPN Donations");
+  }
+
   printReciept(): void {
     console.log(this.gl.setRowDataArray, "this.gl.setRowData");
     
