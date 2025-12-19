@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import * as saveAs from 'file-saver';
 import { MasterService } from 'src/app/services';
 import { Billservice } from 'src/app/services/bills.service';
+import { SupplierService } from 'src/app/services/supplier.service';
 @Component({
   selector: 'app-add-Bills',
   templateUrl: './add-bills.component.html',
@@ -58,8 +59,10 @@ export class AddBillsComponent implements OnInit {
   cashFlag: boolean = false;
   neftFlag: boolean = false;
   uploadFilesData: any = [];
+  itemListFlag: boolean = false;
+  suppList: any[] = [];
 
-  constructor(public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar) { }
+  constructor(private supp: SupplierService, public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     if (this.gl.setRowData) {
@@ -257,6 +260,46 @@ export class AddBillsComponent implements OnInit {
   deletePhotos(i:any) {
     this.uploadFilesData.splice(i, 1);
     this._snackBar.open("Deleted Successfully!", "Okay", { 'duration': 3000 });
+  }
+
+  itemChangeKeyup(event: any) {
+    let self = this;
+    if (event.target.value == '') {
+      this.itemListFlag = false;
+    } else {
+      this.itemListFlag = true;
+      let data = {
+        firstName: event.target.value,
+        referedById: 0,
+        bloodGroupTypeId: 0,
+        pageNumber: 1,
+        pageSize: 10000,
+        donationMoney: 0,
+      };
+
+      // USABLE
+      self.supp.SearchSuppliers(data).subscribe((m: any) => {
+        if (m.respStatus) {
+          console.log(m);
+          this.suppList = m.lstModel;
+        } else {
+          this.suppList = [];
+        }
+      });
+    }
+  }
+
+  itemSelected(selected: any) {
+    let self = this;
+    console.log(selected);
+    if (selected) {
+      let name = selected.firstName + ' ' + selected.lastName;
+      this.itemListFlag = false;
+      this.Form.controls['supplierName'].setValue(name);
+      // this.Form.controls['donorId'].setValue(selected.volunteerID);
+      this.Form.controls['supplierName'].valid;
+      this.Form.controls['supplierName'].markAsPristine();
+    }
   }
 }
  

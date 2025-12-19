@@ -273,7 +273,6 @@ this.Form.controls['status'].setValue(data?.status);
   }
 
   itemChangeKeyup(event: any) {
-    // this.Form.controls['donorName'].setErrors({'incorrect': true});
     let self = this;
     if (event.target.value == '') {
       this.itemListFlag = false;

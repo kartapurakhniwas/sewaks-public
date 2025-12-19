@@ -13,10 +13,25 @@
     <form class="form mat-form mt-3 mb-3" [formGroup]="Form">
         <div class="row">
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-              <mat-form-field appearance="fill" class="w-100 mb-2">
+
+        <div class="custom-droplist">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+                <mat-label>Supplier Name</mat-label>
+            <input (keyup)="itemChangeKeyup($event)" formControlName="supplierName" matInput placeholder="Supplier Name">
+          </mat-form-field>
+          <ul class="options" *ngIf="itemListFlag">
+            <li (click)="itemListFlag = false" class="text-end">Close</li>
+            <li *ngIf="suppList.length==0" class="text-center">No Records Found</li>
+            <li *ngFor="let i of suppList" (click)="itemSelected(i)">
+              {{i.supplierName}}
+            </li>
+          </ul>
+        </div>
+
+              <!-- <mat-form-field appearance="fill" class="w-100 mb-2">
                 <mat-label>Supplier Name</mat-label>
                 <input formControlName="supplierName" matInput placeholder="Supplier Name">
-              </mat-form-field>
+              </mat-form-field> -->
             </div>
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
               <mat-form-field appearance="fill" class="w-100 mb-2">
