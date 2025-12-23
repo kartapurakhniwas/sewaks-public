@@ -57,7 +57,7 @@ gridOptions: GridOptions;
       },
       {
         headerName: 'GST No',
-        field: 'gstNo',
+        field: 'gst',
         width: 170,
       },
       {

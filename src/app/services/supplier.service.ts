@@ -16,7 +16,7 @@ export class SupplierService {
   }
   GetById(id:any) {
     // console.log("User ID", data);
-    return this.srv.get(`Supplier/GetSupplierById?SupplierId=${id}`);
+    return this.srv.get(`Supplier/GetSupplierById?Id=${id}`);
   }
   Delete(id:any) {
     // console.log("User ID", data);

@@ -12,15 +12,15 @@ import { SupplierService } from 'src/app/services/supplier.service';
   styleUrls: ['../style.scss']
 })
 export class AddBillsComponent implements OnInit {
-  billType : any[] = [
+  billType: any[] = [
     { value: 1, viewValue: "Water" },
     { value: 2, viewValue: "Electricity" },
     { value: 3, viewValue: "Milk" },
     { value: 4, viewValue: "Grocery" },
     { value: 5, viewValue: "Miscellaneous" }
   ];
-  
-  status : any[] = [
+
+  status: any[] = [
     { value: 2, viewValue: "Pending" },
     { value: 1, viewValue: "Paid" }
   ];
@@ -35,22 +35,24 @@ export class AddBillsComponent implements OnInit {
   ];
 
   Form = new FormGroup({
-    supplierName: new FormControl('',Validators.required),
-    billNo: new FormControl('',Validators.required),
-    billDate: new FormControl('',Validators.required),
-    billAmount: new FormControl('',Validators.required),
-    dueDate: new FormControl('',Validators.required),
+    supplierName: new FormControl('', Validators.required),
+    supplierId: new FormControl(''),
+
+    billNo: new FormControl('', Validators.required),
+    billDate: new FormControl('', Validators.required),
+    billAmount: new FormControl('', Validators.required),
+    dueDate: new FormControl('', Validators.required),
     billType: new FormControl(Validators.required),
     status: new FormControl(0, Validators.required),
-    image: new FormControl('',Validators.required),
+    image: new FormControl('', Validators.required),
     comments: new FormControl(''),
-    paymentDate: new FormControl('',Validators.required),
+    paymentDate: new FormControl('', Validators.required),
     mode: new FormControl(0, Validators.required),
-    chequeNo: new FormControl('',Validators.required),
-    chequeDate: new FormControl('',Validators.required),
-    dateofBankDebit: new FormControl('',Validators.required),
-    neftAmount: new FormControl(0,Validators.required),
-    neftDate: new FormControl('',Validators.required)
+    chequeNo: new FormControl('', Validators.required),
+    chequeDate: new FormControl('', Validators.required),
+    dateofBankDebit: new FormControl('', Validators.required),
+    neftAmount: new FormControl(0, Validators.required),
+    neftDate: new FormControl('', Validators.required)
   });
 
   dummy_date: any = new Date(2020, 3, 1);
@@ -68,20 +70,33 @@ export class AddBillsComponent implements OnInit {
     if (this.gl.setRowData) {
       this.GetByID();
     }
-  }  
+    // get suplliers name list 
+    this.getSupplier();
 
-  GetByID() {
+  }
+
+  getSupplier() {
     let self = this;
-    self.srv.GetById(this.gl.setRowData.id).subscribe((m:any) => {
+    self.supp.GetAllByPagination().subscribe((m: any) => {
       if (m.respStatus) {
-        this.setValue(m.model);
-        console.log(m.model);
-        
+         this.suppList = m.lstModel;
+
       }
     });
   }
 
-  setValue(data:any) {
+  GetByID() {
+    let self = this;
+    self.srv.GetById(this.gl.setRowData.id).subscribe((m: any) => {
+      if (m.respStatus) {
+        this.setValue(m.model);
+        console.log(m.model);
+
+      }
+    });
+  }
+
+  setValue(data: any) {
     this.Form.controls["supplierName"].setValue(data?.supplierName);
     this.Form.controls["billNo"].setValue(data?.billNo);
     this.Form.controls["billDate"].setValue(data?.billDate);
@@ -103,7 +118,7 @@ export class AddBillsComponent implements OnInit {
 
   save() {
     console.log('dfsdfdfg');
-    
+
     if (this.gl.setRowData) {
       this.update();
     } else {
@@ -124,30 +139,30 @@ export class AddBillsComponent implements OnInit {
     data.neftDate = new Date(data.neftDate);
     data.image = JSON.stringify(this.uploadFilesData);
 
-    if(data.mode == 1) {
-          data.chequeNo = null;
-          data.chequeDate = '0001-01-01';
-          data.dateofBankDebit = '0001-01-01';
-          data.neftAmount = 0;
-          data.neftDate = '0001-01-01';
-      }
+    if (data.mode == 1) {
+      data.chequeNo = null;
+      data.chequeDate = '0001-01-01';
+      data.dateofBankDebit = '0001-01-01';
+      data.neftAmount = 0;
+      data.neftDate = '0001-01-01';
+    }
 
-      if(this.Form.value.mode == 2) {
-        data.neftAmount = 0;
-        data.neftDate = '0001-01-01';
-      }
+    if (this.Form.value.mode == 2) {
+      data.neftAmount = 0;
+      data.neftDate = '0001-01-01';
+    }
 
-      if(this.Form.value.mode == 3){
-        data.chequeNo = null;
-        data.chequeDate = '0001-01-01';
-      }
-    
+    if (this.Form.value.mode == 3) {
+      data.chequeNo = null;
+      data.chequeDate = '0001-01-01';
+    }
+
     //this.Form.controls["status"].setValue(1);
     // this.Form.controls["clientid"].setValue(this.gl.selectedClient);
     let self = this;
     console.log(data, 'dataaaa');
-    
-    self.srv.Add(data).subscribe((m:any) => {
+
+    self.srv.Add(data).subscribe((m: any) => {
       if (m.respStatus) {
         this.nav.navigateByUrl("/admin/bills");
         console.log(m.respStatus, "paged");
@@ -163,31 +178,30 @@ export class AddBillsComponent implements OnInit {
   update() {
     console.log('update');
 
-    if(this.Form.value.mode == 1)
-    {this.Form.controls["chequeNo"].setValue("null");
-    this.Form.controls["chequeDate"].setValue("0001-01-01");
-    this.Form.controls["dateofBankDebit"].setValue("0001-01-01");
-    this.Form.controls["neftAmount"].setValue(0);
-    this.Form.controls["neftDate"].setValue("0001-01-01");
-  }
+    if (this.Form.value.mode == 1) {
+      this.Form.controls["chequeNo"].setValue("null");
+      this.Form.controls["chequeDate"].setValue("0001-01-01");
+      this.Form.controls["dateofBankDebit"].setValue("0001-01-01");
+      this.Form.controls["neftAmount"].setValue(0);
+      this.Form.controls["neftDate"].setValue("0001-01-01");
+    }
 
-  if(this.Form.value.mode == 2)
-    {
-    this.Form.controls["neftAmount"].setValue(0);
-    this.Form.controls["neftDate"].setValue("0001-01-01");
-  }
+    if (this.Form.value.mode == 2) {
+      this.Form.controls["neftAmount"].setValue(0);
+      this.Form.controls["neftDate"].setValue("0001-01-01");
+    }
 
-  if(this.Form.value.mode == 3)
-    {this.Form.controls["chequeNo"].setValue("null");
-    this.Form.controls["chequeDate"].setValue("0001-01-01");
-  }
-    
+    if (this.Form.value.mode == 3) {
+      this.Form.controls["chequeNo"].setValue("null");
+      this.Form.controls["chequeDate"].setValue("0001-01-01");
+    }
+
     //this.Form.controls["status"].setValue(1);
     // this.Form.controls["clientid"].setValue(this.gl.selectedClient);
     let data = JSON.parse(JSON.stringify(this.Form.value));
     data.id = this.gl.setRowData.id;
     let self = this;
-    self.srv.update(data).subscribe((m:any) => {
+    self.srv.update(data).subscribe((m: any) => {
       if (m.respStatus) {
         this.nav.navigateByUrl("/admin/bills");
         console.log(m.respStatus, "paged");
@@ -200,7 +214,7 @@ export class AddBillsComponent implements OnInit {
     })
   }
 
-  changePaymentMode(event:any) {
+  changePaymentMode(event: any) {
     this.cashFlag = false;
     this.chequeFlag = false;
     this.neftFlag = false;
@@ -221,26 +235,26 @@ export class AddBillsComponent implements OnInit {
     fileType: new FormControl()
   });
 
-  upload(event:any) {
+  upload(event: any) {
     let data = this.invoiceDocument.value;
     const file = event.target.files[0];
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-        data.fileName = event.target.files[0].name;
-        data.uploadDate = new Date();
-        data.fileData = reader.result;
-        data.fileType = file.type;
-        this.uploadFilesData.push(JSON.parse(JSON.stringify(data)));
+      data.fileName = event.target.files[0].name;
+      data.uploadDate = new Date();
+      data.fileData = reader.result;
+      data.fileType = file.type;
+      this.uploadFilesData.push(JSON.parse(JSON.stringify(data)));
     };
     console.log(this.uploadFilesData);
-    
+
   }
 
-  async downloadPhotos(data:any): Promise<void> {
+  async downloadPhotos(data: any): Promise<void> {
     console.log(data, "dasfdg");
-    
+
     const base64Data = data.fileData; // Replace with your base64 data
 
     const response = await fetch(base64Data);
@@ -257,35 +271,35 @@ export class AddBillsComponent implements OnInit {
     document.body.removeChild(a);
   }
 
-  deletePhotos(i:any) {
+  deletePhotos(i: any) {
     this.uploadFilesData.splice(i, 1);
     this._snackBar.open("Deleted Successfully!", "Okay", { 'duration': 3000 });
   }
 
   itemChangeKeyup(event: any) {
     let self = this;
-    if (event.target.value == '') {
+    if (event.target.value.trim() == '') {
       this.itemListFlag = false;
     } else {
       this.itemListFlag = true;
-      let data = {
-        firstName: event.target.value,
-        referedById: 0,
-        bloodGroupTypeId: 0,
-        pageNumber: 1,
-        pageSize: 10000,
-        donationMoney: 0,
-      };
+      // let data = {
+      //   firstName: event.target.value,
+      //   referedById: 0,
+      //   bloodGroupTypeId: 0,
+      //   pageNumber: 1,
+      //   pageSize: 10000,
+      //   donationMoney: 0,
+      // };
 
-      // USABLE
-      self.supp.SearchSuppliers(data).subscribe((m: any) => {
-        if (m.respStatus) {
-          console.log(m);
-          this.suppList = m.lstModel;
-        } else {
-          this.suppList = [];
-        }
-      });
+      // // USABLE
+      // self.supp.SearchSuppliers(data).subscribe((m: any) => {
+      //   if (m.respStatus) {
+      //     console.log(m);
+      //     this.suppList = m.lstModel;
+      //   } else {
+      //     this.suppList = [];
+      //   }
+      // });
     }
   }
 
@@ -293,13 +307,12 @@ export class AddBillsComponent implements OnInit {
     let self = this;
     console.log(selected);
     if (selected) {
-      let name = selected.firstName + ' ' + selected.lastName;
       this.itemListFlag = false;
-      this.Form.controls['supplierName'].setValue(name);
-      // this.Form.controls['donorId'].setValue(selected.volunteerID);
+      this.Form.controls['supplierName'].setValue(selected.supplierName); 
+      this.Form.controls['supplierId'].setValue(selected.supplierId);
       this.Form.controls['supplierName'].valid;
       this.Form.controls['supplierName'].markAsPristine();
+
     }
   }
 }
- 
