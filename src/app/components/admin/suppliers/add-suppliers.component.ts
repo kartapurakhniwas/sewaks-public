@@ -69,7 +69,7 @@ export class AddSuppliersComponent {
   }
 
   supplierForm = new FormGroup({
-    supplierName: new FormControl(''),
+    supplierName: new FormControl('', Validators.required),
     supplierType: new FormControl(''),
     contactEmail: new FormControl('', [Validators.email]),
     contactPhone: new FormControl(''),

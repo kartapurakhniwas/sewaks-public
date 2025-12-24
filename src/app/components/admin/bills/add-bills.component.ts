@@ -21,17 +21,18 @@ export class AddBillsComponent implements OnInit {
   ];
 
   status: any[] = [
+    { value: 0, viewValue: "Active" },
     { value: 2, viewValue: "Pending" },
     { value: 1, viewValue: "Paid" }
   ];
 
   mode: any[] = [
-    { value: 1, viewValue: "Cash" },
-    { value: 2, viewValue: "Cheque" },
-    { value: 3, viewValue: "NEFT" },
-    { value: 4, viewValue: "UPI" },
-    { value: 5, viewValue: "IMPS" },
-    { value: 6, viewValue: "RTGS" }
+    { value: 1, viewValue: "Online" },
+    { value: 2, viewValue: "Cash" }
+    // { value: 3, viewValue: "NEFT" },
+    // { value: 4, viewValue: "UPI" },
+    // { value: 5, viewValue: "IMPS" },
+    // { value: 6, viewValue: "RTGS" }
   ];
 
   Form = new FormGroup({
@@ -39,15 +40,15 @@ export class AddBillsComponent implements OnInit {
     supplierId: new FormControl(''),
 
     billNo: new FormControl('', Validators.required),
-    billDate: new FormControl('', Validators.required),
+    billDate: new FormControl(new Date().toISOString().substring(0, 10), Validators.required),
     billAmount: new FormControl('', Validators.required),
-    dueDate: new FormControl('', Validators.required),
+    dueDate: new FormControl(''),
     billType: new FormControl(Validators.required),
     status: new FormControl(0, Validators.required),
     image: new FormControl('', Validators.required),
     comments: new FormControl(''),
-    paymentDate: new FormControl('', Validators.required),
-    mode: new FormControl(0, Validators.required),
+    paymentDate: new FormControl(''),
+    mode: new FormControl(1, Validators.required),
     chequeNo: new FormControl('', Validators.required),
     chequeDate: new FormControl('', Validators.required),
     dateofBankDebit: new FormControl('', Validators.required),
@@ -63,6 +64,7 @@ export class AddBillsComponent implements OnInit {
   uploadFilesData: any = [];
   itemListFlag: boolean = false;
   suppList: any[] = [];
+  filteredSuppList: any[] = [];
 
   constructor(private supp: SupplierService, public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar) { }
 
@@ -79,7 +81,7 @@ export class AddBillsComponent implements OnInit {
     let self = this;
     self.supp.GetAllByPagination().subscribe((m: any) => {
       if (m.respStatus) {
-         this.suppList = m.lstModel;
+        this.suppList = m.lstModel;
 
       }
     });
@@ -117,13 +119,30 @@ export class AddBillsComponent implements OnInit {
 
 
   save() {
-    console.log('dfsdfdfg');
+    //console.log('dfsdfdfg');
+    if (this.Form.valid) {
+      if (this.gl.setRowData) {
+        this.update();
+      } else {
+        this.add();
+      }
+ 
+    }else{
+ 
+      // for (let i in this.Form.controls) {
+      //   this.Form.controls[i].markAsTouched();
+      // }
+      this.Form.markAllAsTouched(); // show validation errors
+   
 
-    if (this.gl.setRowData) {
-      this.update();
-    } else {
-      this.add();
+      this._snackBar.open('Please fill required fields', 'Okay', {
+        duration: 3000,
+      });
+
+       return; // ⛔ stop API call
+     
     }
+
   }
 
   add() {
@@ -282,6 +301,9 @@ export class AddBillsComponent implements OnInit {
       this.itemListFlag = false;
     } else {
       this.itemListFlag = true;
+      let input = event.target.value.trim();
+      this.filteredSuppList = this.suppList.filter(s => s.supplierName?.toLowerCase().includes(input));
+
       // let data = {
       //   firstName: event.target.value,
       //   referedById: 0,
@@ -308,7 +330,7 @@ export class AddBillsComponent implements OnInit {
     console.log(selected);
     if (selected) {
       this.itemListFlag = false;
-      this.Form.controls['supplierName'].setValue(selected.supplierName); 
+      this.Form.controls['supplierName'].setValue(selected.supplierName);
       this.Form.controls['supplierId'].setValue(selected.supplierId);
       this.Form.controls['supplierName'].valid;
       this.Form.controls['supplierName'].markAsPristine();
