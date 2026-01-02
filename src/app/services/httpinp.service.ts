@@ -34,7 +34,7 @@ export class APIInterceptor implements HttpInterceptor {
   private handleAuthError(err: HttpErrorResponse): Observable<any> {
     //handle your auth error or rethrow
     this.master.Processing = false;
-    if (err.status === 401 || err.status === 403) {
+    if (err.status === 401 || err.status === 403 || err.status === 0) {
       //navigate /delete cookies or whatever
       // console.log("errror");
       if (!this.router.url.includes("/public"))

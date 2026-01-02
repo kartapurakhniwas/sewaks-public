@@ -27,19 +27,21 @@ export class AddBillsComponent implements OnInit {
   ];
 
   mode: any[] = [
-    { value: 1, viewValue: "Online" },
-    { value: 2, viewValue: "Cash" }
+    { value: 1, viewValue: "Online" }
+    // { value: 2, viewValue: "Cash" }
     // { value: 3, viewValue: "NEFT" },
     // { value: 4, viewValue: "UPI" },
     // { value: 5, viewValue: "IMPS" },
     // { value: 6, viewValue: "RTGS" }
   ];
 
+  imageList = [];
+
   Form = new FormGroup({
     supplierName: new FormControl('', Validators.required),
     supplierId: new FormControl(''),
 
-    billNo: new FormControl('', Validators.required),
+    billNo: new FormControl(0, Validators.required),
     billDate: new FormControl(new Date().toISOString().substring(0, 10), Validators.required),
     billAmount: new FormControl('', Validators.required),
     dueDate: new FormControl(''),
@@ -49,11 +51,11 @@ export class AddBillsComponent implements OnInit {
     comments: new FormControl(''),
     paymentDate: new FormControl(''),
     mode: new FormControl(1, Validators.required),
-    chequeNo: new FormControl('', Validators.required),
-    chequeDate: new FormControl('', Validators.required),
+    chequeNo: new FormControl(''),
+    chequeDate: new FormControl(''),
     dateofBankDebit: new FormControl('', Validators.required),
-    neftAmount: new FormControl(0, Validators.required),
-    neftDate: new FormControl('', Validators.required)
+    neftAmount: new FormControl(0),
+    neftDate: new FormControl('')
   });
 
   dummy_date: any = new Date(2020, 3, 1);
@@ -71,10 +73,21 @@ export class AddBillsComponent implements OnInit {
   ngOnInit(): void {
     if (this.gl.setRowData) {
       this.GetByID();
+    }else{
+      this.getBillNextNo();
     }
     // get suplliers name list 
     this.getSupplier();
 
+  }
+
+  getBillNextNo(){
+    let self = this;
+    self.srv.GetAllByPagination().subscribe((m: any) => {
+      if (m.respStatus) {
+          this.Form.controls['billNo'].setValue( Number(m.lstModel[0]?.billNo) + 1);
+      }
+    });
   }
 
   getSupplier() {
@@ -83,6 +96,7 @@ export class AddBillsComponent implements OnInit {
       if (m.respStatus) {
         this.suppList = m.lstModel;
 
+       // this.Form.controls['billNo'].setValue(m.lstModel[0]?.billNo + 1);
       }
     });
   }
@@ -115,6 +129,9 @@ export class AddBillsComponent implements OnInit {
     this.Form.controls["dateofBankDebit"].setValue(data?.dateofBankDebit);
     this.Form.controls["neftAmount"].setValue(data?.neftAmount);
     this.Form.controls["neftDate"].setValue(data?.neftDate);
+    
+    this.uploadFilesData = JSON.parse(data?.image);
+    //this.imageList = JSON.parse(data?.image);
   }
 
 
@@ -129,17 +146,24 @@ export class AddBillsComponent implements OnInit {
  
     }else{
  
+    Object.keys(this.Form.controls).forEach(key => {
+      const control = this.Form.get(key);
+    
+      if (control?.invalid) {
+        console.log(key, control.errors);
+      }
+    });
+
       // for (let i in this.Form.controls) {
       //   this.Form.controls[i].markAsTouched();
       // }
-      this.Form.markAllAsTouched(); // show validation errors
-   
+      this.Form.markAllAsTouched(); // show validation errors 
 
       this._snackBar.open('Please fill required fields', 'Okay', {
         duration: 3000,
       });
 
-       return; // ⛔ stop API call
+       //return; // ⛔ stop API call
      
     }
 
@@ -149,6 +173,7 @@ export class AddBillsComponent implements OnInit {
     console.log('add');
     let data = JSON.parse(JSON.stringify(this.Form.value));
     data.status = Number(data.status);
+    data.billNo = String(data.billNo);
     data.mode = Number(data.mode);
     data.billDate = new Date(data.billDate);
     data.dueDate = new Date(data.dueDate);
@@ -217,7 +242,10 @@ export class AddBillsComponent implements OnInit {
 
     //this.Form.controls["status"].setValue(1);
     // this.Form.controls["clientid"].setValue(this.gl.selectedClient);
+
     let data = JSON.parse(JSON.stringify(this.Form.value));
+     data.billNo = String(data.billNo);
+     data.image = JSON.stringify(this.uploadFilesData);
     data.id = this.gl.setRowData.id;
     let self = this;
     self.srv.update(data).subscribe((m: any) => {

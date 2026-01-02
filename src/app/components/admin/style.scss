@@ -56,3 +56,13 @@ i[class^="fa"] {
 label .red {
     // color: red;
 }
+
+.btn-round {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #082450;
+    border-radius: 50%;
+}
