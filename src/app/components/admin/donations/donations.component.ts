@@ -35,7 +35,7 @@ export class DonationsComponent implements OnInit {
   filteredDonations: any[] = [];
   donorNameFilter: string = '';
 
-  constructor(public gl: MasterService, private vol: DonationService, public datepipe: DatePipe, public dialog: MatDialog,
+  constructor(private datePipe: DatePipe,public gl: MasterService, private vol: DonationService, public datepipe: DatePipe, public dialog: MatDialog,
     private nav: Router) {
       const currentYear = new Date().getFullYear();
     
@@ -302,7 +302,7 @@ export class DonationsComponent implements OnInit {
         "Known/Unknown": data[i].donorId == 0 ? 'Unknown' : '',
         "Name": data[i].donorName,
         "Reciept No": data[i].receiptNo,
-        "Receipt Date": data[i].receiptDate,
+        "Receipt Date": this.datePipe.transform(data[i].receiptDate, 'dd-MM-yyyy'),
         "Receipt Amount": data[i].receiptAmount,
         "Created Date": data[i].dateofBankCredit,
         "Mode": (() => {
@@ -369,7 +369,7 @@ export class PrintReceiptPopup {
   @ViewChild('myDiv') myDiv: ElementRef = null as any;
   htmlContent: any = '';
 
-  constructor(public gl: MasterService, private srv: DonationService, private vol: VolunteerService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintReceiptPopup>) {
+  constructor( public gl: MasterService, private srv: DonationService, private vol: VolunteerService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintReceiptPopup>) {
    
   }
 
