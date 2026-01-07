@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
 import { MasterService } from 'src/app/services';
@@ -33,7 +34,7 @@ gridOptions: GridOptions;
   getPaged: any;
   getpaged: any;
 
-  constructor(public gl: MasterService, private vol: Billservice, public datepipe: DatePipe) {
+  constructor(public gl: MasterService, private vol: Billservice, public datepipe: DatePipe, private nav:Router) {
     this.columnDefs = [
       {
         headerName: 'Supplier Name',
@@ -244,8 +245,16 @@ gridOptions: GridOptions;
       }
     );
     }
-    
+ 
   }
+
+   editBill(){
+      if(this.gl.setRowData){
+        this.nav.navigateByUrl("admin/bills/edit/"+this.gl.setRowData.id)
+      }
+
+
+    }
 
   exportAsExcel() {
     let data = this.getpaged;

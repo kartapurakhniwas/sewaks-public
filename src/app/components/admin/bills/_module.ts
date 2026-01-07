@@ -39,7 +39,8 @@ import {MatIconModule} from '@angular/material/icon';
     MatSelectModule,
     RouterModule.forChild([
       { path: '', component: BillsComponent },
-      { path: 'add', component: AddBillsComponent }
+      { path: 'add', component: AddBillsComponent },
+       { path: 'edit/:billId', component: AddBillsComponent }
     ])
   ],
   providers: [DatePipe,MatSnackBarModule],
