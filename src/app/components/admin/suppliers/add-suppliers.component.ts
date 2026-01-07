@@ -63,7 +63,7 @@ export class AddSuppliersComponent {
     let self = this;
     self.supplierService.GetById(this.gl.setRowData.supplierId).subscribe((m: any) => {
       if (m.respStatus) {
-        this.setValue(m.lstModel[0]);
+        this.setValue(m.model);
       }
     });
   }
