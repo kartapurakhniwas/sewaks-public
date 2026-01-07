@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as saveAs from 'file-saver';
 import { MasterService } from 'src/app/services';
 import { Billservice } from 'src/app/services/bills.service';
@@ -67,11 +67,13 @@ export class AddBillsComponent implements OnInit {
   itemListFlag: boolean = false;
   suppList: any[] = [];
   filteredSuppList: any[] = [];
+  billId: any;
 
-  constructor(private supp: SupplierService, public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar) { }
+  constructor(private supp: SupplierService, public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar, private routeParam: ActivatedRoute) { }
 
   ngOnInit(): void {
-    if (this.gl.setRowData) {
+    this.billId = this.routeParam.snapshot.paramMap.get("billId");
+    if (this.billId) {
       this.GetByID();
     }else{
       this.getBillNextNo();
@@ -103,7 +105,7 @@ export class AddBillsComponent implements OnInit {
 
   GetByID() {
     let self = this;
-    self.srv.GetById(this.gl.setRowData.id).subscribe((m: any) => {
+    self.srv.GetById(this.billId).subscribe((m: any) => {
       if (m.respStatus) {
         this.setValue(m.model);
         console.log(m.model);
@@ -138,7 +140,7 @@ export class AddBillsComponent implements OnInit {
   save() {
     //console.log('dfsdfdfg');
     if (this.Form.valid) {
-      if (this.gl.setRowData) {
+      if (this.billId) {
         this.update();
       } else {
         this.add();
@@ -246,7 +248,7 @@ export class AddBillsComponent implements OnInit {
     let data = JSON.parse(JSON.stringify(this.Form.value));
      data.billNo = String(data.billNo);
      data.image = JSON.stringify(this.uploadFilesData);
-    data.id = this.gl.setRowData.id;
+    data.id = this.billId;
     let self = this;
     self.srv.update(data).subscribe((m: any) => {
       if (m.respStatus) {
@@ -319,8 +321,13 @@ export class AddBillsComponent implements OnInit {
   }
 
   deletePhotos(i: any) {
-    this.uploadFilesData.splice(i, 1);
-    this._snackBar.open("Deleted Successfully!", "Okay", { 'duration': 3000 });
+    if(confirm('Are you sure to remove this document ? ')){
+      this.uploadFilesData.splice(i, 1);
+      //call update 
+      this.update();
+      this._snackBar.open("Deleted Successfully!", "Okay", { 'duration': 3000 });
+
+    }
   }
 
   itemChangeKeyup(event: any) {
