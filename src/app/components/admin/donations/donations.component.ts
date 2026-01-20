@@ -325,7 +325,9 @@ export class DonationsComponent implements OnInit {
         "Donor Address": data[i]?.donorAddress
       };
       if(data[i].donorId == 0 || data[i].donorId == undefined) {
-        d.push(data1);
+        // if(data[i]?.mode == 2) { // Unknown Cheque only
+          d.push(data1);
+        // }
       }
     }
     console.log(d, "D");
