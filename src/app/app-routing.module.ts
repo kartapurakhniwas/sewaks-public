@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PublicComponent } from './layout/public/public.component';
 import { LoginComponent } from './layout/login/login.component';
 import { MasterComponent } from './layout/master/master.component';
+import { PublicComponent } from './layout/public/public.component';
 
 const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
-    data: { title: ' ALS - Home' },
+    data: { title: ' Sewaks - Home' },
     loadChildren: () =>
       import('./components/homepage/_module').then(
         (m) => m.HomepageModule
@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'admin/dashboard',
     component: MasterComponent,
-    data: { title: ' ALS - Dashboard' },
+    data: { title: ' Sewaks - Dashboard' },
     loadChildren: () =>
       import('./components/admin/dashboard/_module').then(
         (m) => m.DashboardModule
@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: 'admin/volunteers',
     component: MasterComponent,
-    data: { title: ' ALS - Volunteers' },
+    data: { title: ' Sewaks - Volunteers' },
     loadChildren: () =>
       import('./components/admin/volunteers/_module').then(
         (m) => m.VolunteersModule
@@ -36,7 +36,7 @@ const routes: Routes = [
   {
     path: 'admin/contact-us-list',
     component: MasterComponent,
-    data: { title: ' ALS - Contact Us List' },
+    data: { title: ' Sewaks - Contact Us List' },
     loadChildren: () =>
       import('./components/admin/contact-us/_module').then(
         (m) => m.JoinUsFormModule
@@ -45,7 +45,7 @@ const routes: Routes = [
   {
     path: 'admin/bills',
     component: MasterComponent,
-    data: { title: ' ALS - Bills' },
+    data: { title: ' Sewaks - Bills' },
     loadChildren: () =>
       import('./components/admin/bills/_module').then(
         (m) => m.BillsModule
@@ -54,7 +54,7 @@ const routes: Routes = [
   {
     path: 'admin/suppliers',
     component: MasterComponent,
-    data: { title: ' ALS - Suppliers' },
+    data: { title: ' Sewaks - Suppliers' },
     loadChildren: () =>
       import('./components/admin/suppliers/_module').then(
         (m) => m.SuppliersModule
@@ -63,7 +63,7 @@ const routes: Routes = [
   {
     path: 'admin/donations',
     component: MasterComponent,
-    data: { title: ' ALS - Donations' },
+    data: { title: ' Sewaks - Donations' },
     loadChildren: () =>
       import('./components/admin/donations/_module').then(
         (m) => m.DonationsModule
@@ -72,7 +72,7 @@ const routes: Routes = [
   {
     path: 'admin/xlsx',
     component: MasterComponent,
-    data: { title: ' ALS - Donations' },
+    data: { title: ' Sewaks - Donations' },
     loadChildren: () =>
       import('./components/admin/debit-list-xlsx/_module').then(
         (m) => m.DebitListModule
@@ -81,10 +81,28 @@ const routes: Routes = [
   {
     path: 'admin/donatins-xlsx',
     component: MasterComponent,
-    data: { title: ' ALS - Donations' },
+    data: { title: ' Sewaks - Donations' },
     loadChildren: () =>
       import('./components/admin/credit-list-xlsx/_module').then(
         (m) => m.CreditListModule
+      ),
+  },
+  {
+    path: 'admin/voucher-category',
+    component: MasterComponent,
+    data: { title: ' Sewaks - Voucher Category' },
+    loadChildren: () =>
+      import('./components/admin/voucher-category/_module').then(
+        (m) => m.VoucherCategoryModule
+      ),
+  },
+  {
+    path: 'admin/vouchers',
+    component: MasterComponent,
+    data: { title: ' Sewaks - Vouchers' },
+    loadChildren: () =>
+      import('./components/admin/vouchers/_module').then(
+        (m) => m.VouchersModule
       ),
   },
 
@@ -94,7 +112,7 @@ const routes: Routes = [
   {
     path: 'account',
     component: PublicComponent,
-    data: { title: ' ALS - Login' },
+    data: { title: ' Sewaks - Login' },
     loadChildren: () =>
       import('./components/user/_module').then(
         (m) => m.UserModule
@@ -103,7 +121,7 @@ const routes: Routes = [
   {
     path: 'about',
     component: PublicComponent,
-    data: { title: ' ALS - About Us' },
+    data: { title: ' Sewaks - About Us' },
     loadChildren: () =>
       import('./components/about-us/_module').then(
         (m) => m.AboutUsModule
@@ -112,7 +130,7 @@ const routes: Routes = [
   {
     path: 'donation',
     component: PublicComponent,
-    data: { title: ' ALS - Donation' },
+    data: { title: ' Sewaks - Donation' },
     loadChildren: () =>
       import('./components/donation/_module').then(
         (m) => m.DonationModule
@@ -121,7 +139,7 @@ const routes: Routes = [
   {
     path: 'volunteers',
     component: PublicComponent,
-    data: { title: ' ALS - Volunteers' },
+    data: { title: ' Sewaks - Volunteers' },
     loadChildren: () =>
       import('./components/volunteers/_module').then(
         (m) => m.VolunteersModule
@@ -130,7 +148,7 @@ const routes: Routes = [
   {
     path: 'causes',
     component: PublicComponent,
-    data: { title: ' ALS - Causes' },
+    data: { title: ' Sewaks - Causes' },
     loadChildren: () =>
       import('./components/causes/_module').then(
         (m) => m.CausesModule
@@ -139,7 +157,7 @@ const routes: Routes = [
   {
     path: 'gallery',
     component: PublicComponent,
-    data: { title: ' ALS - Gallery' },
+    data: { title: ' Sewaks - Gallery' },
     loadChildren: () =>
       import('./components/gallery/_module').then(
         (m) => m.GalleryModule
@@ -148,7 +166,7 @@ const routes: Routes = [
   {
     path: 'faq',
     component: PublicComponent,
-    data: { title: ' ALS - Faq' },
+    data: { title: ' Sewaks - Faq' },
     loadChildren: () =>
       import('./components/faq/_module').then(
         (m) => m.FaqModule
@@ -157,7 +175,7 @@ const routes: Routes = [
   {
     path: 'user',
     component: PublicComponent,
-    data: { title: ' ALS - User' },
+    data: { title: ' Sewaks - User' },
     loadChildren: () =>
       import('./components/user/_module').then(
         (m) => m.UserModule
@@ -166,7 +184,7 @@ const routes: Routes = [
   {
     path: 'events',
     component: PublicComponent,
-    data: { title: ' ALS - Events' },
+    data: { title: ' Sewaks - Events' },
     loadChildren: () =>
       import('./components/events/_module').then(
         (m) => m.EventsModule
@@ -175,7 +193,7 @@ const routes: Routes = [
   {
     path: 'testimonials',
     component: PublicComponent,
-    data: { title: ' ALS - Testimonials' },
+    data: { title: ' Sewaks - Testimonials' },
     loadChildren: () =>
       import('./components/testimonials/_module').then(
         (m) => m.TestimonialsModule
@@ -184,7 +202,7 @@ const routes: Routes = [
   {
     path: 'privacy',
     component: PublicComponent,
-    data: { title: ' ALS - Privacy' },
+    data: { title: ' Sewaks - Privacy' },
     loadChildren: () =>
       import('./components/privacy/_module').then(
         (m) => m.PrivacyModule
@@ -193,7 +211,7 @@ const routes: Routes = [
   {
     path: 'terms',
     component: PublicComponent,
-    data: { title: ' ALS - Terms' },
+    data: { title: ' Sewaks - Terms' },
     loadChildren: () =>
       import('./components/terms/_module').then(
         (m) => m.TermsModule
@@ -202,7 +220,7 @@ const routes: Routes = [
   {
     path: 'commingsoon',
     component: PublicComponent,
-    data: { title: ' ALS - Commingsoon' },
+    data: { title: ' Sewaks - Commingsoon' },
     loadChildren: () =>
       import('./components/commingsoon/_module').then(
         (m) => m.CommingsoonModule
@@ -211,7 +229,7 @@ const routes: Routes = [
   {
     path: 'nofound',
     component: PublicComponent,
-    data: { title: ' ALS - Nofound' },
+    data: { title: ' Sewaks - Nofound' },
     loadChildren: () =>
       import('./components/404/_module').then(
         (m) => m.NotFoundModule
@@ -220,7 +238,7 @@ const routes: Routes = [
   {
     path: 'blog',
     component: PublicComponent,
-    data: { title: ' ALS - Blog' },
+    data: { title: ' Sewaks - Blog' },
     loadChildren: () =>
       import('./components/blog/_module').then(
         (m) => m.BlogModule
@@ -229,7 +247,7 @@ const routes: Routes = [
   {
     path: 'blogdetail',
     component: PublicComponent,
-    data: { title: ' ALS - Blogdetail' },
+    data: { title: ' Sewaks - Blogdetail' },
     loadChildren: () =>
       import('./components/blog-detail/_module').then(
         (m) => m.BlogdetailModule
@@ -238,7 +256,7 @@ const routes: Routes = [
   {
     path: 'contact',
     component: PublicComponent,
-    data: { title: ' ALS - Contact' },
+    data: { title: ' Sewaks - Contact' },
     loadChildren: () =>
       import('./components/contact/_module').then(
         (m) => m.ContactModule
@@ -247,7 +265,7 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    data: { title: ' ALS - Contact' },
+    data: { title: ' Sewaks - Contact' },
 
   },
 
