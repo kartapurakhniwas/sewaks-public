@@ -73,11 +73,11 @@ export class AddSuppliersComponent {
   }
 
   supplierForm = new FormGroup({
-    supplierName: new FormControl(''),
+    supplierName: new FormControl('', Validators.required),
     supplierType: new FormControl(''),
     contactEmail: new FormControl('', [Validators.email]),
     contactPhone: new FormControl(''),
-    gstNo: new FormControl(''),
+    gst: new FormControl(''),
     address: new FormControl(''),
     notes: new FormControl(''),
     isActive: new FormControl(true, { nonNullable: true }),
@@ -88,7 +88,7 @@ export class AddSuppliersComponent {
     this.updateFlag = true;
     this.supplierForm.controls["supplierName"].setValue(data?.supplierName);
     this.supplierForm.controls["supplierType"].setValue(data?.supplierType);
-    this.supplierForm.controls["gstNo"].setValue(data?.gstNo);
+    this.supplierForm.controls["gst"].setValue(data?.gst);
     this.supplierForm.controls["contactEmail"].setValue(data?.contactEmail);
     this.supplierForm.controls["contactPhone"].setValue(data?.contactPhone);
     this.supplierForm.controls["address"].setValue(data?.address);
