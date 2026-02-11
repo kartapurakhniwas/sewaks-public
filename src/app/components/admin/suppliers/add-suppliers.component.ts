@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MasterService } from 'src/app/services';
 import { SupplierService } from 'src/app/services/supplier.service';
 import { CustomAlertService } from 'src/shared/alert.service';
@@ -26,13 +26,15 @@ export class AddSuppliersComponent {
   itemListFlag: boolean = false;
   supplierList: any = [];
   updateFlag: boolean = false;
+  supplierId: any;
 
   constructor(
-    public gl: MasterService, 
-    private supplierService: SupplierService, 
+    public gl: MasterService,
+    private supplierService: SupplierService,
     private nav: Router,
-    private customAlertService: CustomAlertService, 
-    private _snackBar: MatSnackBar
+    private customAlertService: CustomAlertService,
+    private _snackBar: MatSnackBar,
+    private routerParam: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -40,8 +42,10 @@ export class AddSuppliersComponent {
   }
 
   refresh() {
-    if (this.gl.setRowDataArray[0]) {
+    this.supplierId = this.routerParam.snapshot.paramMap.get("supplierId");
+    if (this.supplierId) {
       this.GetByID();
+
     } else {
       this.GetSupplierList();
     }
@@ -61,7 +65,7 @@ export class AddSuppliersComponent {
 
   GetByID() {
     let self = this;
-    self.supplierService.GetById(this.gl.setRowData.supplierId).subscribe((m: any) => {
+    self.supplierService.GetById(this.supplierId).subscribe((m: any) => {
       if (m.respStatus) {
         this.setValue(m.model);
       }
@@ -124,7 +128,7 @@ export class AddSuppliersComponent {
   update() {
     let self = this;
     let data = this.supplierForm.value;
-    data.supplierId = this.gl.setRowData.supplierId;
+    data.supplierId = this.supplierId;
     data.createdOn = new Date(data.createdOn);
     if (this.supplierForm.valid) {
       self.supplierService.Add(data).subscribe((m: any) => {

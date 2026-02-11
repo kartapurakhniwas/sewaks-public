@@ -38,7 +38,8 @@ import { SuppliersComponent } from './suppliers.component';
     MatSelectModule,
     RouterModule.forChild([
       { path: '', component: SuppliersComponent },
-      { path: 'add', component: AddSuppliersComponent }
+      { path: 'add', component: AddSuppliersComponent },
+      { path: 'edit/:supplierId', component: AddSuppliersComponent }
     ])
   ],
   providers: [DatePipe],

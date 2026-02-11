@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
 import { MasterService } from 'src/app/services';
@@ -14,27 +15,27 @@ import { TableUtil } from 'src/shared/tableUtil';
 })
 export class SuppliersComponent implements OnInit {
   @ViewChild("agGrid") agGrid: AgGridAngular | undefined;
-  selectedCar:any;
+  selectedCar: any;
   cars = [
     { id: 1, name: 'Volvo' },
     { id: 2, name: 'Saab' },
     { id: 3, name: 'Opel' },
     { id: 4, name: 'Audi' },
-];
+  ];
 
-public gridApi: any;
-public gidColumnApi: any;
-public columnDefs: any;
-public sortingOrder: any;
-defaultColDef:any;
-gridOptions: GridOptions;
+  public gridApi: any;
+  public gidColumnApi: any;
+  public columnDefs: any;
+  public sortingOrder: any;
+  defaultColDef: any;
+  gridOptions: GridOptions;
   rowSelection: string;
   statusValue: any;
   isfilter: any;
   getPaged: any;
   getpaged: any;
 
-  constructor(public gl: MasterService, private vol: SupplierService, public datepipe: DatePipe) {
+  constructor(public gl: MasterService, private vol: SupplierService, public datepipe: DatePipe, private nav: Router) {
     this.columnDefs = [
       {
         headerName: 'Name',
@@ -64,7 +65,7 @@ gridOptions: GridOptions;
         headerName: 'Supplier Type',
         field: 'supplierType',
         width: 130,
-        valueGetter: (data:any) => {
+        valueGetter: (data: any) => {
           switch (data.data.supplierType) {
             case 'Electricity': {
               return 'Electricity';
@@ -104,7 +105,7 @@ gridOptions: GridOptions;
       editable: false,
       resizable: true,
       sortable: true,
-        filter: true
+      filter: true
     };
     this.gridOptions = {
       defaultColDef: {
@@ -130,17 +131,17 @@ gridOptions: GridOptions;
       "pageSize": 100000,
       "monthlyDonation": 0
     }
-    self.vol.GetAllByPagination().subscribe((m:any) => {
-        if (m.respStatus) {
-          this.getpaged = m.lstModel;
-        }
-        console.log(m);
-
+    self.vol.GetAllByPagination().subscribe((m: any) => {
+      if (m.respStatus) {
+        this.getpaged = m.lstModel;
       }
+      console.log(m);
+
+    }
     );
   }
 
-  onGridReady(params:any) {
+  onGridReady(params: any) {
     this.gridApi = params.api;
     this.gidColumnApi = params.columnApi;
     params.api.setRowData(this.getPaged);
@@ -159,16 +160,23 @@ gridOptions: GridOptions;
       : null;
   }
 
+  editSupplier() {
+    if (this.gl.setRowData) {
+      this.nav.navigateByUrl("admin/suppliers/edit/"+this.gl.setRowData.supplierId);
+
+    }
+  }
+
   delete() {
     let self = this;
     if (confirm("Are you sure you want to Delete?")) {
-      self.vol.Delete(this.gl.setRowData.supplierId).subscribe((m:any) => {
+      self.vol.Delete(this.gl.setRowData.supplierId).subscribe((m: any) => {
         if (m == true) {
-            this.refresh();
-            this.gl.setRowData = null;
+          this.refresh();
+          this.gl.setRowData = null;
         }
       }
-    );
+      );
     }
 
   }
