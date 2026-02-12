@@ -17,8 +17,18 @@
         <div class="custom-droplist">
           <mat-form-field appearance="fill" class="w-100 mb-2">
             <mat-label>Supplier Name</mat-label>
-            <input (keyup)="itemChangeKeyup($event)" formControlName="supplierName" matInput
-              placeholder="Supplier Name">
+ <mat-select formControlName="supplierName" required
+                    (openedChange)="onSupplierOpened($event)"
+              (selectionChange)="itemSelected($event.value)">
+              <mat-option>
+                 <input #supplierSearchInput matInput placeholder="Search supplier" (click)="$event.stopPropagation()"
+                  (keydown)="$event.stopPropagation()" (keyup)="itemChangeKeyup($event)">
+              </mat-option>
+              <mat-option *ngIf="filteredSuppList.length === 0" disabled>No Records Found</mat-option>
+              <mat-option *ngFor="let i of filteredSuppList" [value]="i.supplierName">
+                {{ i.supplierName }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
           <ul class="options" *ngIf="itemListFlag">
             <li (click)="itemListFlag = false" class="text-end">Close</li>
@@ -76,14 +86,14 @@
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
       </div>
-      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+      <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Bill Type</mat-label>
           <mat-select formControlName="billType">
             <mat-option *ngFor="let type of billType" [value]="type.value">{{ type.viewValue }}</mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
+      </div> -->
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <!-- <div class="form-group">
                 <label  class="form-label">Payment Date </label>
@@ -208,23 +218,23 @@
         </thead>
         <tbody>
           <!-- <li class="list-group-item" *ngFor="let i of uploadFilesData; let ind = index"> -->
-            <tr *ngFor="let i of uploadFilesData; let ind = index">
-              <td>{{ind+1}}</td>
-              <td><span>{{i.fileName}}</span></td>
-              <td style="display: flex; align-items: center; ">
-                <button class="btn-round me-2" (click)="downloadPhotos(i)" mat-mini-fab color="warn"
-                  aria-label="Example icon button with a filter list icon">
-                  <mat-icon>download</mat-icon>
-                </button>
-                <button class="btn-round" (click)="deletePhotos(ind)"><mat-icon>delete</mat-icon></button>
+          <tr *ngFor="let i of uploadFilesData; let ind = index">
+            <td>{{ind+1}}</td>
+            <td><span>{{i.fileName}}</span></td>
+            <td style="display: flex; align-items: center; ">
+              <button class="btn-round me-2" (click)="downloadPhotos(i)" mat-mini-fab color="warn"
+                aria-label="Example icon button with a filter list icon">
+                <mat-icon>download</mat-icon>
+              </button>
+              <button class="btn-round" (click)="deletePhotos(ind)"><mat-icon>delete</mat-icon></button>
 
 
-              </td>
+            </td>
 
-            </tr>
- 
+          </tr>
+
           <!-- </li> -->
- 
+
         </tbody>
       </table>
 

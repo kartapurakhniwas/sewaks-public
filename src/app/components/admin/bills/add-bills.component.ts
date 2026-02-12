@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,25 +9,26 @@ import { SupplierService } from 'src/app/services/supplier.service';
 @Component({
   selector: 'app-add-Bills',
   templateUrl: './add-bills.component.html',
-  styleUrls: ['../style.scss']
+  styleUrls: ['../style.scss'],
 })
 export class AddBillsComponent implements OnInit {
+@ViewChild('supplierSearchInput') supplierSearchInput?: ElementRef<HTMLInputElement>;
   billType: any[] = [
-    { value: 1, viewValue: "Water" },
-    { value: 2, viewValue: "Electricity" },
-    { value: 3, viewValue: "Milk" },
-    { value: 4, viewValue: "Grocery" },
-    { value: 5, viewValue: "Miscellaneous" }
+    { value: 1, viewValue: 'Water' },
+    { value: 2, viewValue: 'Electricity' },
+    { value: 3, viewValue: 'Milk' },
+    { value: 4, viewValue: 'Grocery' },
+    { value: 5, viewValue: 'Miscellaneous' },
   ];
 
   status: any[] = [
-    { value: 0, viewValue: "Active" },
-    { value: 2, viewValue: "Pending" },
-    { value: 1, viewValue: "Paid" }
+    { value: 0, viewValue: 'Active' },
+    { value: 2, viewValue: 'Pending' },
+    { value: 1, viewValue: 'Paid' },
   ];
 
   mode: any[] = [
-    { value: 1, viewValue: "Online" }
+    { value: 1, viewValue: 'Online' },
     // { value: 2, viewValue: "Cash" }
     // { value: 3, viewValue: "NEFT" },
     // { value: 4, viewValue: "UPI" },
@@ -41,21 +42,24 @@ export class AddBillsComponent implements OnInit {
     supplierName: new FormControl('', Validators.required),
     supplierId: new FormControl(''),
 
-    billNo: new FormControl(0, Validators.required),
-    billDate: new FormControl(new Date().toISOString().substring(0, 10), Validators.required),
+    billNo: new FormControl(0),
+    billDate: new FormControl(
+      new Date().toISOString().substring(0, 10),
+      Validators.required,
+    ),
     billAmount: new FormControl('', Validators.required),
     dueDate: new FormControl(''),
-    billType: new FormControl(Validators.required),
-    status: new FormControl(0, Validators.required),
-    image: new FormControl('', Validators.required),
+    billType: new FormControl(''),
+    status: new FormControl(0),
+    image: new FormControl(''),
     comments: new FormControl(''),
     paymentDate: new FormControl(''),
-    mode: new FormControl(1, Validators.required),
+    mode: new FormControl(1),
     chequeNo: new FormControl(''),
     chequeDate: new FormControl(''),
-    dateofBankDebit: new FormControl('', Validators.required),
+    dateofBankDebit: new FormControl(''),
     neftAmount: new FormControl(0),
-    neftDate: new FormControl('')
+    neftDate: new FormControl(''),
   });
 
   dummy_date: any = new Date(2020, 3, 1);
@@ -69,25 +73,33 @@ export class AddBillsComponent implements OnInit {
   filteredSuppList: any[] = [];
   billId: any;
 
-  constructor(private supp: SupplierService, public gl: MasterService, private srv: Billservice, private nav: Router, private _snackBar: MatSnackBar, private routeParam: ActivatedRoute) { }
+  constructor(
+    private supp: SupplierService,
+    public gl: MasterService,
+    private srv: Billservice,
+    private nav: Router,
+    private _snackBar: MatSnackBar,
+    private routeParam: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    this.billId = this.routeParam.snapshot.paramMap.get("billId");
+    this.billId = this.routeParam.snapshot.paramMap.get('billId');
     if (this.billId) {
       this.GetByID();
-    }else{
+    } else {
       this.getBillNextNo();
     }
-    // get suplliers name list 
+    // get suplliers name list
     this.getSupplier();
-
   }
 
-  getBillNextNo(){
+  getBillNextNo() {
     let self = this;
     self.srv.GetAllByPagination().subscribe((m: any) => {
       if (m.respStatus) {
-          this.Form.controls['billNo'].setValue( Number(m.lstModel[0]?.billNo) + 1);
+        this.Form.controls['billNo'].setValue(
+          Number(m.lstModel[0]?.billNo) + 1,
+        );
       }
     });
   }
@@ -97,8 +109,9 @@ export class AddBillsComponent implements OnInit {
     self.supp.GetAllByPagination().subscribe((m: any) => {
       if (m.respStatus) {
         this.suppList = m.lstModel;
+        this.filteredSuppList = [...this.suppList];
 
-       // this.Form.controls['billNo'].setValue(m.lstModel[0]?.billNo + 1);
+        // this.Form.controls['billNo'].setValue(m.lstModel[0]?.billNo + 1);
       }
     });
   }
@@ -109,33 +122,31 @@ export class AddBillsComponent implements OnInit {
       if (m.respStatus) {
         this.setValue(m.model);
         console.log(m.model);
-
       }
     });
   }
 
   setValue(data: any) {
-    this.Form.controls["supplierName"].setValue(data?.supplierName);
-    this.Form.controls["billNo"].setValue(data?.billNo);
-    this.Form.controls["billDate"].setValue(data?.billDate);
-    this.Form.controls["billAmount"].setValue(data?.billAmount);
-    this.Form.controls["dueDate"].setValue(data?.dueDate);
-    this.Form.controls["billType"].setValue(data?.billType);
-    this.Form.controls["status"].setValue(data?.status);
-    this.Form.controls["image"].setValue(data?.image);
-    this.Form.controls["comments"].setValue(data?.comments);
-    this.Form.controls["paymentDate"].setValue(data?.paymentDate);
-    this.Form.controls["mode"].setValue(data?.mode);
-    this.Form.controls["chequeNo"].setValue(data?.chequeNo);
-    this.Form.controls["chequeDate"].setValue(data?.chequeDate);
-    this.Form.controls["dateofBankDebit"].setValue(data?.dateofBankDebit);
-    this.Form.controls["neftAmount"].setValue(data?.neftAmount);
-    this.Form.controls["neftDate"].setValue(data?.neftDate);
-    
+    this.Form.controls['supplierName'].setValue(data?.supplierName);
+    this.Form.controls['billNo'].setValue(data?.billNo);
+    this.Form.controls['billDate'].setValue(data?.billDate);
+    this.Form.controls['billAmount'].setValue(data?.billAmount);
+    this.Form.controls['dueDate'].setValue(data?.dueDate);
+    this.Form.controls['billType'].setValue(data?.billType);
+    this.Form.controls['status'].setValue(data?.status);
+    this.Form.controls['image'].setValue(data?.image);
+    this.Form.controls['comments'].setValue(data?.comments);
+    this.Form.controls['paymentDate'].setValue(data?.paymentDate);
+    this.Form.controls['mode'].setValue(data?.mode);
+    this.Form.controls['chequeNo'].setValue(data?.chequeNo);
+    this.Form.controls['chequeDate'].setValue(data?.chequeDate);
+    this.Form.controls['dateofBankDebit'].setValue(data?.dateofBankDebit);
+    this.Form.controls['neftAmount'].setValue(data?.neftAmount);
+    this.Form.controls['neftDate'].setValue(data?.neftDate);
+
     this.uploadFilesData = JSON.parse(data?.image);
     //this.imageList = JSON.parse(data?.image);
   }
-
 
   save() {
     //console.log('dfsdfdfg');
@@ -145,30 +156,26 @@ export class AddBillsComponent implements OnInit {
       } else {
         this.add();
       }
- 
-    }else{
- 
-    Object.keys(this.Form.controls).forEach(key => {
-      const control = this.Form.get(key);
-    
-      if (control?.invalid) {
-        console.log(key, control.errors);
-      }
-    });
+    } else {
+      Object.keys(this.Form.controls).forEach((key) => {
+        const control = this.Form.get(key);
+
+        if (control?.invalid) {
+          console.log(key, control.errors);
+        }
+      });
 
       // for (let i in this.Form.controls) {
       //   this.Form.controls[i].markAsTouched();
       // }
-      this.Form.markAllAsTouched(); // show validation errors 
+      this.Form.markAllAsTouched(); // show validation errors
 
       this._snackBar.open('Please fill required fields', 'Okay', {
         duration: 3000,
       });
 
-       //return; // ⛔ stop API call
-     
+      //return; // ⛔ stop API call
     }
-
   }
 
   add() {
@@ -210,57 +217,57 @@ export class AddBillsComponent implements OnInit {
 
     self.srv.Add(data).subscribe((m: any) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/admin/bills");
-        console.log(m.respStatus, "paged");
+        this.nav.navigateByUrl('/admin/bills');
+        console.log(m.respStatus, 'paged');
         this.Form.reset();
         // this._snackBar.open('New Bill added successfully', "Okay", {
         //   duration: 3000,
         // }
         // )
       }
-    })
+    });
   }
 
   update() {
     console.log('update');
 
     if (this.Form.value.mode == 1) {
-      this.Form.controls["chequeNo"].setValue("null");
-      this.Form.controls["chequeDate"].setValue("0001-01-01");
-      this.Form.controls["dateofBankDebit"].setValue("0001-01-01");
-      this.Form.controls["neftAmount"].setValue(0);
-      this.Form.controls["neftDate"].setValue("0001-01-01");
+      this.Form.controls['chequeNo'].setValue('null');
+      this.Form.controls['chequeDate'].setValue('0001-01-01');
+      this.Form.controls['dateofBankDebit'].setValue('0001-01-01');
+      this.Form.controls['neftAmount'].setValue(0);
+      this.Form.controls['neftDate'].setValue('0001-01-01');
     }
 
     if (this.Form.value.mode == 2) {
-      this.Form.controls["neftAmount"].setValue(0);
-      this.Form.controls["neftDate"].setValue("0001-01-01");
+      this.Form.controls['neftAmount'].setValue(0);
+      this.Form.controls['neftDate'].setValue('0001-01-01');
     }
 
     if (this.Form.value.mode == 3) {
-      this.Form.controls["chequeNo"].setValue("null");
-      this.Form.controls["chequeDate"].setValue("0001-01-01");
+      this.Form.controls['chequeNo'].setValue('null');
+      this.Form.controls['chequeDate'].setValue('0001-01-01');
     }
 
     //this.Form.controls["status"].setValue(1);
     // this.Form.controls["clientid"].setValue(this.gl.selectedClient);
 
     let data = JSON.parse(JSON.stringify(this.Form.value));
-     data.billNo = String(data.billNo);
-     data.image = JSON.stringify(this.uploadFilesData);
+    data.billNo = String(data.billNo);
+    data.image = JSON.stringify(this.uploadFilesData);
     data.id = this.billId;
     let self = this;
     self.srv.update(data).subscribe((m: any) => {
       if (m.respStatus) {
-        this.nav.navigateByUrl("/admin/bills");
-        console.log(m.respStatus, "paged");
+        this.nav.navigateByUrl('/admin/bills');
+        console.log(m.respStatus, 'paged');
         this.Form.reset();
         // this._snackBar.open('New Bill added successfully', "Okay", {
         //   duration: 3000,
         // }
         // )
       }
-    })
+    });
   }
 
   changePaymentMode(event: any) {
@@ -273,15 +280,15 @@ export class AddBillsComponent implements OnInit {
     } else if (event.value == 2) {
       this.chequeFlag = true;
     } else {
-      this.neftFlag = true
+      this.neftFlag = true;
     }
   }
 
   invoiceDocument = new FormGroup({
-    fileName: new FormControl(""),
+    fileName: new FormControl(''),
     uploadDate: new FormControl(),
     fileData: new FormControl(),
-    fileType: new FormControl()
+    fileType: new FormControl(),
   });
 
   upload(event: any) {
@@ -298,11 +305,10 @@ export class AddBillsComponent implements OnInit {
       this.uploadFilesData.push(JSON.parse(JSON.stringify(data)));
     };
     console.log(this.uploadFilesData);
-
   }
 
   async downloadPhotos(data: any): Promise<void> {
-    console.log(data, "dasfdg");
+    console.log(data, 'dasfdg');
 
     const base64Data = data.fileData; // Replace with your base64 data
 
@@ -321,55 +327,53 @@ export class AddBillsComponent implements OnInit {
   }
 
   deletePhotos(i: any) {
-    if(confirm('Are you sure to remove this document ? ')){
+    if (confirm('Are you sure to remove this document ? ')) {
       this.uploadFilesData.splice(i, 1);
-      //call update 
+      //call update
       this.update();
-      this._snackBar.open("Deleted Successfully!", "Okay", { 'duration': 3000 });
-
+      this._snackBar.open('Deleted Successfully!', 'Okay', { duration: 3000 });
     }
   }
 
   itemChangeKeyup(event: any) {
-    let self = this;
-    if (event.target.value.trim() == '') {
-      this.itemListFlag = false;
-    } else {
-      this.itemListFlag = true;
-      let input = event.target.value.trim();
-      this.filteredSuppList = this.suppList.filter(s => s.supplierName?.toLowerCase().includes(input));
+    const input = event.target.value.trim().toLowerCase();
+    if (!input) {
+      this.filteredSuppList = [...this.suppList];
+      return;
+    }
+    this.filteredSuppList = this.suppList.filter((s) =>
+      (s.supplierName || '').toLowerCase().includes(input),
+    );
+  }
 
-      // let data = {
-      //   firstName: event.target.value,
-      //   referedById: 0,
-      //   bloodGroupTypeId: 0,
-      //   pageNumber: 1,
-      //   pageSize: 10000,
-      //   donationMoney: 0,
-      // };
-
-      // // USABLE
-      // self.supp.SearchSuppliers(data).subscribe((m: any) => {
-      //   if (m.respStatus) {
-      //     console.log(m);
-      //     this.suppList = m.lstModel;
-      //   } else {
-      //     this.suppList = [];
-      //   }
-      // });
+  itemSelected(selectedName: string) {
+    const selected = this.suppList.find((s) => s.supplierName === selectedName);
+    if (selected) {
+      this.Form.controls['supplierName'].setValue(selected.supplierName);
+      this.Form.controls['supplierId'].setValue(selected.supplierId);
+      this.Form.controls['supplierName'].markAsPristine();
     }
   }
 
-  itemSelected(selected: any) {
-    let self = this;
-    console.log(selected);
-    if (selected) {
-      this.itemListFlag = false;
-      this.Form.controls['supplierName'].setValue(selected.supplierName);
-      this.Form.controls['supplierId'].setValue(selected.supplierId);
-      this.Form.controls['supplierName'].valid;
-      this.Form.controls['supplierName'].markAsPristine();
-
+  resetSupplierFilter() {
+    this.filteredSuppList = [...this.suppList];
+  }
+  onSupplierOpened(opened: boolean) {
+    if (opened) {
+      // fresh list and focus the search box
+      this.resetSupplierFilter();
+      setTimeout(() => {
+        if (this.supplierSearchInput) {
+          this.supplierSearchInput.nativeElement.value = '';
+          this.supplierSearchInput.nativeElement.focus();
+        }
+      }, 0);
+    } else {
+      // clear any typed text and restore full list
+      if (this.supplierSearchInput) {
+        this.supplierSearchInput.nativeElement.value = '';
+      }
+      this.resetSupplierFilter();
     }
   }
 }

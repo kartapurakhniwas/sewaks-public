@@ -1,0 +1,33 @@
+<div class="admin-header">
+  <h3>{{ updateFlag ? 'Edit Supplier Category' : 'Add Supplier Category' }}</h3>
+  <div class="d-flex justify-content-between">
+    <button class="btn" routerLink="/admin/supplier-category">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+    <button *ngIf="updateFlag" (click)="update()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Update
+    </button>
+    <button *ngIf="!updateFlag" (click)="save()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>save</mat-icon> Save
+    </button>
+  </div>
+</div>
+
+<div class="add-form-wrap">
+  <form class="form mat-form mt-3 mb-5" [formGroup]="categoryForm">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Category Name</mat-label>
+          <input formControlName="categoryName" matInput placeholder="Enter category name">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-3">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Description</mat-label>
+          <textarea formControlName="description" matInput rows="3" placeholder="Add a short description"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>

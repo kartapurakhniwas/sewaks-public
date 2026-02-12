@@ -15,14 +15,7 @@ import { CustomAlertService } from 'src/shared/alert.service';
 })
 export class AddSuppliersComponent {
   selectedSupplier: any;
-  supplierTypeList: any = [
-    { id: 1, name: 'Electricity' },
-    { id: 2, name: 'Milk' },
-    { id: 3, name: 'Cow Feed' },
-    { id: 4, name: 'Construction Material' },
-    { id: 5, name: 'Salary' },
-    { id: 6, name: 'Hospital Expenses' }
-  ];
+  supplierTypeList: any = [];
   itemListFlag: boolean = false;
   supplierList: any = [];
   updateFlag: boolean = false;
@@ -40,12 +33,29 @@ export class AddSuppliersComponent {
   }
 
   refresh() {
+    this.getSupplierType();
     if (this.gl.setRowDataArray[0]) {
       this.GetByID();
     } else {
       this.GetSupplierList();
     }
   }
+
+getSupplierType() {
+  let self = this;
+  self.supplierService.GetSupplierType().subscribe({
+    next: (response: any) => {
+      if (response.success) {
+        this.supplierTypeList = response.lstModel;
+      } else {
+        console.error('Request failed:', response.message);
+      }
+    },
+    error: (error:any) => {
+      console.error('Error occurred:', error);
+    },
+  });
+}
 
   GetSupplierList() {
     let self = this;
