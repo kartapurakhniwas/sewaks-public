@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
@@ -34,7 +35,13 @@ gridOptions: GridOptions;
   getPaged: any;
   getpaged: any;
 
-  constructor(public gl: MasterService, private vol: Billservice, public datepipe: DatePipe, private nav:Router) {
+  constructor(
+    public gl: MasterService,
+    private vol: Billservice,
+    public datepipe: DatePipe,
+    private nav: Router,
+    private dialog: MatDialog
+  ) {
     this.columnDefs = [
       {
         headerName: 'Supplier Name',
@@ -72,28 +79,22 @@ gridOptions: GridOptions;
           switch (data.data.billType) {
             case 1: {
               return 'Water';
-              break;
             }
             case 2: {
               return 'Electricity';
-              break;
             }
             case 3: {
               return 'Milk';
-              break;
             }
             case 4: {
               return 'Grocery';
-              break;
             }
             case 5: {
               return 'Miscellaneous';
-              break;
             }
           
             default:
               return '---';
-              break;
           }
         },
       },
@@ -113,32 +114,25 @@ gridOptions: GridOptions;
           switch (data.data.mode) {
             case 1: {
               return 'Cash';
-              break;
             }
             case 2: {
               return 'Cheque';
-              break;
             }
             case 3: {
               return 'NEFT';
-              break;
             }
             case 4: {
               return 'UPI';
-              break;
             }
             case 5: {
               return 'IMPS';
-              break;
             }
             case 6: {
               return 'RTGS';
-              break;
             }
           
             default:
               return '---';
-              break;
           }
         },
       },
@@ -163,16 +157,13 @@ gridOptions: GridOptions;
           switch (data.data.status) {
             case 1: {
               return 'Paid';
-              break;
             }
             case 2: {
               return 'Pending';
-              break;
             }
           
             default:
               return '---';
-              break;
           }
         },
       },
@@ -195,8 +186,9 @@ gridOptions: GridOptions;
         // filter: true
       }
     }
-    this.rowSelection = "single";
+    this.rowSelection = "multiple";
     this.gl.setRowData = null;
+    this.gl.setRowDataArray = [];
   }
 
   ngOnInit(): void {
@@ -226,12 +218,10 @@ gridOptions: GridOptions;
   }
 
   onSelectionChanged() {
-    this.gl.setRowData = null;
     const selectedNodes = this.agGrid?.api.getSelectedNodes();
-    const selectedData: any = selectedNodes?.map((node) => node.data);
-    this.gl.setRowData = JSON.stringify(selectedData[0])
-      ? selectedData[0]
-      : null;
+    const selectedData: any[] = selectedNodes?.map((node) => node.data) || [];
+    this.gl.setRowDataArray = selectedData;
+    this.gl.setRowData = selectedData[0] || null;
   }
 
   delete() {
@@ -282,5 +272,92 @@ gridOptions: GridOptions;
     TableUtil.exportAgGridToExcel(d, "KPN Volunteer");
   }
 
+  printVoucher(): void {
+    if (!this.gl.setRowDataArray?.length) { return; }
+    this.dialog.open(PrintVoucherPopup, { width: '1070px' });
+  }
 
+
+}
+
+
+
+
+
+@Component({
+  selector: 'print-voucher-dialog',
+  templateUrl: './voucher.component.html',
+  styleUrls: ['../style.scss']
+})
+export class PrintVoucherPopup {
+  @ViewChild('voucherDiv') voucherDiv: ElementRef = null as any;
+  voucherList: any[] = [];
+
+  constructor(
+    public gl: MasterService,
+    public datepipe: DatePipe,
+    public dialogRef: MatDialogRef<PrintVoucherPopup>
+  ) {}
+
+  ngOnInit(): void {
+    this.buildVouchers();
+  }
+
+  buildVouchers() {
+    const rows = this.gl.setRowDataArray || [];
+    this.voucherList = rows.map((bill: any) => {
+      const amount = Number(bill?.billAmount || 0);
+      return {
+        firmName: "SEWAKS' CHARITABLE TRUST",
+        voucherNo: bill?.billNo || '',
+        date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
+        debitEntries: [
+          { description: `Payment to ${bill?.supplierName || ''}`, rupees: this.numberWithCommas(amount), paisa: '/-' },
+          { description: bill?.comments || '', rupees: '', paisa: '' },
+          { description: '', rupees: '', paisa: '' }
+        ],
+        debitTotal: { rupees: this.numberWithCommas(amount), paisa: '/-' },
+        creditEntries: [
+          { description: this.modeLabel(bill?.mode), rupees: this.numberWithCommas(amount), paisa: '/-' },
+          { description: `Bill No: ${bill?.billNo || ''}`, rupees: '', paisa: '' },
+          { description: '', rupees: '', paisa: '' }
+        ],
+        creditTotal: { rupees: this.numberWithCommas(amount), paisa: '/-' },
+        approvalLabel: "For SEWAKS' CHARITABLE TRUST\nApproved by",
+        approvedBy: "__________________",
+        approvalSubtitle: "Chairman/Treasurer/Secy. General/Trustee",
+        signature: "",
+        signatureSubtitle: "",
+        receiverSignature: bill?.supplierName || ''
+      };
+    });
+  }
+
+  modeLabel(mode: any) {
+    switch (mode) {
+      case 1: return 'Online';
+      case 2: return 'Cheque';
+      case 3: return 'NEFT';
+      case 4: return 'UPI';
+      case 5: return 'IMPS';
+      case 6: return 'RTGS';
+      default: return '---';
+    }
+  }
+
+  numberWithCommas(x: any) {
+    const n = Number(x) || 0;
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  printPage() {
+    const popupWin: any = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(this.gl.printReceipt(this.voucherDiv.nativeElement.innerHTML));
+    popupWin.print();
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close('');
+  }
 }
