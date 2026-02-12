@@ -49,7 +49,7 @@ export class AddBillsComponent implements OnInit {
     ),
     billAmount: new FormControl('', Validators.required),
     dueDate: new FormControl(''),
-    billType: new FormControl(''),
+    billType: new FormControl(1),
     status: new FormControl(0),
     image: new FormControl(''),
     comments: new FormControl(''),
