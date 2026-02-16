@@ -454,68 +454,323 @@ numberToWords(value: any): string {
 
 
 private voucherStyles = `
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: Arial, sans-serif; background:#fff; }
-  
-  /* A4 is 297mm high. 140mm allows 2 per page with a small gap */
-  .voucher-container { 
-    width: 200mm; 
-    height: 140mm; 
-    margin: 2mm auto; 
-    background: #fff; 
-    border: 3px solid #000; 
-    position: relative;
-    overflow: hidden;
-    display: block;
-    page-break-inside: avoid;
-  }
-  
-  .voucher-wrapper { display: flex; height: 100%; }
-  
-  /* Sidebar: Slightly narrower */
-  .sidebar { width: 80px; border-right: 3px solid #000; display: flex; flex-direction: column; }
-  .logo-section { border-bottom: 2px solid #000; padding: 10px 5px; text-align: center; }
-  .logo-box { width: 60px; height: 60px; border: 2px solid #000; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 9px; }
-  .sidebar-text { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: bold; text-align: center; white-space: nowrap; }
+  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .main-content { flex: 1; padding: 10px 20px; display: flex; flex-direction: column; }
-  
-  /* Header: Reduced margins */
-  .voucher-title { text-align: center; font-size: 24px; font-weight: bold; color: #6B4423; letter-spacing: 2px; margin-bottom: 10px; text-decoration: underline; }
-  
-  .firm-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; font-size: 13px; }
-  .firm-value { font-weight: bold; color: #0047AB; flex: 1; border-bottom: 1px solid #000; margin: 0 10px; text-align: center; }
-  
-  .meta-group { display: flex; gap: 15px; font-size: 13px; margin-bottom: 5px; }
-  .meta-value { border-bottom: 1px solid #000; padding: 0 5px; min-width: 80px; text-align: center; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-  /* Particulars: Using flex-grow to fill middle space */
-  .particulars-section { margin-top: 5px; flex-grow: 1; display: flex; flex-direction: column; }
-  .particulars-header { text-align: center; font-size: 14px; font-weight: bold; color: #6B4423; border-top: 3px solid #6B4423; border-bottom: 3px solid #6B4423; padding: 2px 0; }
-  
-  .particulars-table { border: 2px solid #000; border-top: none; flex: 1; }
-  .table-header { display: flex; border-bottom: 2px solid #000; background: #eee; font-size: 12px; }
-  .row-description { flex: 1; padding: 4px 8px; font-size: 12px; border-right: 2px solid #000; }
-  .row-amount { width: 90px; padding: 4px; text-align: right; font-size: 12px; font-weight: bold; }
-  
-  .entry-row { display: flex; border-bottom: 1px solid #ddd; min-height: 28px; }
-  .total-row { display: flex; border-top: 2px solid #000; font-weight: bold; background: #f9f9f9; }
+        .voucher-container {
+            background: #fff;
+            width:210mm; min-height:148mm; 
+            margin:0 auto;
+            border: 3px solid #8B4513;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
 
-  /* Footer: Compact Signature Blocks */
-  .footer-section { margin-top: 8px; }
-  .signature-row { display: flex; justify-content: space-between; gap: 15px; }
-  .signature-block { flex: 1; text-align: center; }
-  .signature-label { font-size: 11px; color: #6B4423; font-weight: bold; margin-bottom: 2px; }
-  .signature-value { border-bottom: 1px solid #000; min-height: 25px; font-size: 12px; padding-top: 5px; }
-  .signature-subtitle { font-size: 10px; color: #0047AB; font-weight: bold; }
+        /* Left sidebar with vertical text */
+        .sidebar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
+        }
 
-  @media print {
-    @page { size: A4; margin: 0.5cm; }
-    body { padding: 0; }
-    .voucher-container { margin-bottom: 5mm; }
-    /* Force page break after every 2 vouchers */
-    .voucher-container:nth-child(2n) { page-break-after: always; }
-  }
+        .sidebar-text {
+            writing-mode: vertical-lr;
+            transform: rotate(180deg);
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8B4513;
+            font-weight: bold;
+        } 
+
+        /* Main content */
+        .content {
+            margin-left: 100px;
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #8B4513;
+            text-decoration: underline;
+            text-decoration-color: #8B4513;
+            text-underline-offset: 5px;
+            letter-spacing: 8px;
+            font-weight: bold;
+        }
+
+        /* Top info section */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .info-row .left {
+            flex: 2;
+        }
+
+        .info-row .right {
+            flex: 1;
+            text-align: right;
+        }
+
+        .info-label {
+            color: #333;
+            font-weight: normal;
+        }
+
+        .info-line {
+            display: inline-block;
+            border-bottom: 1px solid #333;
+            min-width: 300px;
+            margin-left: 10px;
+        }
+
+        .info-line-short {
+            display: inline-block;
+            border-bottom: 1px solid #333;
+            min-width: 100px;
+            margin-left: 10px;
+        }
+
+        /* Particulars section */
+        .particulars-header {
+            text-align: center;
+            margin: 20px 0 10px 0;
+            position: relative;
+        }
+
+        .particulars-header h2 {
+            display: inline-block;
+            font-size: 16px;
+            color: #8B4513;
+            letter-spacing: 4px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+            background: #fff;
+        }
+
+        .particulars-header::before,
+        .particulars-header::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 3px;
+            background: repeating-linear-gradient(
+                to right,
+                #8B4513 0px,
+                #8B4513 10px,
+                transparent 10px,
+                transparent 15px
+            );
+        }
+
+        .particulars-header::before {
+            left: 0;
+        }
+
+        .particulars-header::after {
+            right: 0;
+        }
+
+        /* Table structure */
+        .table-section {
+            border: 2px solid #8B4513;
+            margin-bottom: 15px;
+        }
+
+        .table-header {
+            display: flex;
+            border-bottom: 2px solid #8B4513;
+            background: #f9f9f9;
+        }
+
+        .table-header .col-main {
+            flex: 1;
+            padding: 8px 10px;
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 14px;
+        }
+
+        .table-header .col-rupee {
+            width: 80px;
+            border-left: 2px solid #8B4513;
+            padding: 8px 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .table-header .col-paise {
+            width: 60px;
+            border-left: 2px solid #8B4513;
+            padding: 8px 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        /* Table rows */
+        .table-row {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            min-height: 35px;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row .col-main {
+            flex: 1;
+            padding: 8px 10px;
+            border-right: 2px solid #8B4513;
+        }
+
+        .table-row .col-rupee {
+            width: 80px;
+            border-right: 2px solid #8B4513;
+            padding: 8px 10px;
+        }
+
+        .table-row .col-paise {
+            width: 60px;
+            padding: 8px 10px;
+        }
+
+        .total-row {
+            display: flex;
+            border-top: 2px solid #8B4513;
+            background: #f9f9f9;
+            font-weight: bold;
+        }
+
+        .total-row .col-main {
+            flex: 1;
+            padding: 8px 10px;
+            text-align: right;
+            border-right: 2px solid #8B4513;
+            color: #8B4513;
+        }
+
+        .total-row .col-rupee {
+            width: 80px;
+            border-right: 2px solid #8B4513;
+            padding: 8px 10px;
+        }
+
+        .total-row .col-paise {
+            width: 60px;
+            padding: 8px 10px;
+        }
+
+        /* Section labels */
+        .section-label {
+            padding: 8px 10px;
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 14px;
+            border-bottom: 2px solid #8B4513;
+            background: #f9f9f9;
+        }
+
+        /* Footer section */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            font-size: 13px;
+        }
+
+        .footer-item {
+            flex: 1;
+        }
+
+        .footer-label {
+            color: #8B4513;
+            margin-bottom: 5px;
+        }
+
+        .footer-line {
+            border-bottom: 1px solid #333;
+            width: 180px;
+            margin-top: 5px;
+        }
+        .voucher-box { 
+  height: 100%;
+  border: 1px solid #8b5e3c;
+  position: relative;
+  padding: 10px;
+  display: flex;
+    flex-direction: row-reverse;
+    gap: 15px;
+}
+
+/* Vertical Text */
+.vertical-text {
+  writing-mode: vertical-rl;
+    transform: rotate(360deg);
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.vertical-text.small {
+  font-weight: normal;
+}
+
+/* Vertical Line */
+.vertical-line {
+  width: 2px;
+    height: 100%;
+    border: 1px solid #8b5e3c;
+}
+
+        /* Print styles */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .voucher-container {
+                box-shadow: none;
+                border: 2px solid #000;
+            }
+        }
 `;
 
 printPage() {
