@@ -349,6 +349,36 @@ export class PrintVoucherPopup {
   ngOnInit(): void {
     this.buildVouchers();
   }
+  getPreviousMonthName(dateValue: any): string {
+  if (!dateValue) return '';
+
+  const date = new Date(dateValue);
+  date.setMonth(date.getMonth() - 1);
+
+  return date.toLocaleString('default', { month: 'long' });
+}
+
+numberToWords(value: any): string {
+
+  const num = Number(String(value).replace(/,/g, ''));
+
+  if (!num) return '';
+
+  const a = ['', 'One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+  'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  
+  const b = ['', '', 'Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+  if (num < 20) return a[num];
+  if (num < 100) return b[Math.floor(num/10)] + ' ' + a[num%10];
+  if (num < 1000) return a[Math.floor(num/100)] + ' Hundred ' + this.numberToWords(num%100);
+  if (num < 100000) return this.numberToWords(Math.floor(num/1000)) + ' Thousand ' + this.numberToWords(num%1000);
+  if (num < 10000000) return this.numberToWords(Math.floor(num/100000)) + ' Lakh ' + this.numberToWords(num%100000);
+  return this.numberToWords(Math.floor(num/10000000)) + ' Crore ' + this.numberToWords(num%10000000);
+}
+
+
+
 
   buildVouchers() {
     const rows = this.gl.setRowDataArray || [];
@@ -359,7 +389,9 @@ export class PrintVoucherPopup {
         voucherNo: bill?.billNo || '',
         date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
         debitEntries: [
-          { description: `Payment to ${bill?.supplierName || ''}`, rupees: this.numberWithCommas(amount), paisa: '/-' },
+         { description: `Salary AC to ${bill?.supplierName || ''} for ${this.getPreviousMonthName(bill?.billDate)}`},
+
+          // { description: `Salary AC to ${bill?.supplierName || ''}`, rupees: this.numberWithCommas(amount), paisa: '/-' },
           { description: bill?.comments || '', rupees: '', paisa: '' },
           { description: '', rupees: '', paisa: '' }
         ],
