@@ -431,7 +431,7 @@ private voucherStyles = `
           <script>
             window.onload = function() { window.print(); window.close(); };
           </script>
-        </body>
+        </body> 
       </html>
     `);
     printWindow?.document.close();
