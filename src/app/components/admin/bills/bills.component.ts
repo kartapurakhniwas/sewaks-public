@@ -283,114 +283,179 @@ gridOptions: GridOptions;
 
 
 
-
 @Component({
   selector: 'print-voucher-dialog',
   templateUrl: './voucher.component.html',
-  styleUrls: ['../style.scss']
 })
 export class PrintVoucherPopup implements OnInit {
-@ViewChild('voucherDiv') voucherDiv!: ElementRef;
+  @ViewChild('voucherDiv') voucherDiv!: ElementRef;
   voucherList: any[] = [];
 
+  // UPDATED CSS FOR 2 VOUCHERS PER PAGE
+  private voucherStyles = `
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
+  body { font-family: 'Arial', 'Helvetica', sans-serif; background: white; margin: 0; padding: 0; }
+  
+  .page-container {
+    width: 210mm;
+    height: 297mm; /* A4 Height */
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    padding: 10mm 0; /* Vertical padding */
+    align-items: center;
+  }
 
-private voucherStyles = `
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
-    body { font-family: 'Courier New', monospace; background: white; margin: 0; padding: 0; }
-    
-    /* Forces the browser to treat every 3 vouchers as one rigid block */
-    .page-container {
-      width: 210mm;
-      height: 297mm; /* Exact A4 Height */
-      overflow: hidden;
-      page-break-after: always;
-      display: flex;
-      flex-direction: column;
-      padding: 5mm 0; /* Safety margin at top/bottom of page */
-    }
+  /* Height calculated for 2 per page: roughly 138mm each */
+  .voucher-container {
+    width: 200mm;
+    height: 135mm; 
+    border: 2px solid #8B4513;
+    display: flex;
+    overflow: hidden;
+    background: white;
+    margin-bottom: 2mm; 
+  }
 
-    .voucher-container {
-      width: 200mm;
-      height: 90mm; /* Strict height to ensure 3 fit (3 x 90 = 270mm) */
-      border: 2px solid #8B4513;
-      margin: 0 auto;
-      display: flex;
-      overflow: hidden;
-      background: white;
-    }
-
-      .sidebar {    width: 60px;
+  /* SIDEBAR */
+  .sidebar {
+    width: 50px;
     background: #f9f9f9;
     border-right: 2px solid #8B4513;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
-    align-items: start;     padding: 10px;
-    line-height: 1.2;
-margin-right: 3px;
-}
-      .vertical-text { writing-mode: vertical-rl; font-weight: bold; font-size: 9px; color: #8B4513; white-space: nowrap;     margin-left: 5px;}
+    align-items: center;
+    padding: 10px 5px;
+  }
+  .vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg); /* Fix orientation if needed, or remove transform if vertical-rl is enough */
+    font-weight: bold;
+    font-size: 12px;
+    color: #8B4513;
+    white-space: nowrap;
+    margin-left: 5px;
+    text-align: center;
+    line-height: 1.5;
+  }
 
+  /* MAIN CONTENT */
+  .content {
+    flex: 1;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .content {
-      flex: 1;
-      padding: 6px 12px;
-      display: flex;
-      flex-direction: column;
-    }
+  /* TOP HEADER: VOUCHER */
+  .header-title h1 {
+    font-size: 18px;
+    color: #8B4513;
+    text-decoration: underline;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
 
-    .header h1 {
-      font-size: 16px;
-      color: #8B4513;
-      text-decoration: underline;
-      letter-spacing: 4px;
-      text-align: center;
-      margin-bottom: 3px;
-    }
+  /* FIRM HEADER (New Requirement) */
+  .firm-header {
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px dotted #8B4513;
+    padding-bottom: 5px;
+  }
+  .firm-name {
+    font-size: 22px; /* Much bigger */
+    font-weight: 800;
+    color: #8B4513;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .firm-details {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.3;
+  }
 
-    .info-row { display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 10px; }
-    .info-line { border-bottom: 1px dotted #333; flex: 1; font-weight: bold; padding-left: 5px; }
-    .info-line-short { border-bottom: 1px dotted #333; min-width: 65px; font-weight: bold; text-align: center;}
+  /* INFO ROW (Voucher No / Date) */
+  .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+  .info-label { font-weight: bold; }
+  .info-line-short { border-bottom: 1px dotted #333; min-width: 100px; font-weight: bold; text-align: center;}
 
-    .particulars-header {
-      text-align: center;
-      margin: 3px 0;
-      border-top: 1px solid #8B4513;
-      border-bottom: 1px solid #8B4513;
-      line-height: 1.2;
-    }
-  .particulars-header h2 { font-size: 10px; color: #8B4513; letter-spacing: 2px; margin-bottom: 4px;
-    margin-top: 3px;}
+  /* PARTICULARS HEADER */
+  .particulars-header {
+    text-align: center;
+    margin: 5px 0;
+    border-top: 2px solid #8B4513;
+    border-bottom: 2px solid #8B4513;
+    background: #f0e6dc;
+  }
+  .particulars-header h2 { font-size: 12px; color: #8B4513; letter-spacing: 2px; margin: 4px 0; }
 
-    .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 10px; overflow: hidden; }
-    .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
-    .table-row { display: flex; border-bottom: 1px solid #eee; min-height: 16px; }
-    .col-main { flex: 1; padding: 2px 5px; border-right: 1px solid #8B4513; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .col-rupee { width: 60px; padding: 2px 5px; text-align: right; border-right: 1px solid #8B4513; }
-    .col-paise { width: 30px; padding: 2px 5px; text-align: center; }
-    
-    .section-label { background: #f9f9f9; font-weight: bold; font-size: 8px; border-bottom: 1px solid #8B4513; padding-left: 5px; }
-    .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; margin-top: auto; }
+  /* TABLE SECTION - Using flex to fill space */
+  .table-section {
+    border: 1.5px solid #8B4513;
+    flex: 1; /* Fills remaining height */
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+  }
+  .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; padding: 4px 0;}
+  
+  /* Columns */
+  .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; }
+  .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; }
+  .col-paise { width: 40px; padding: 4px 5px; text-align: center; }
 
-    .footer { display: flex; justify-content: space-between; margin-top: 6px; }
-    .footer-item { text-align: center; width: 30%; }
-    .footer-label { font-size: 8px; color: #8B4513; margin-bottom: 8px; }
-    .footer-line { border-bottom: 1px solid #333; }
+  /* Rows */
+  .table-row { display: flex; border-bottom: 1px solid #eee; }
+  .section-label { background: #f9f9f9; font-weight: bold; font-size: 10px; border-bottom: 1px solid #8B4513; padding: 2px 5px; color: #8B4513; }
 
-    .cut-line { 
-      width: 100%; 
-      border-top: 1px dashed #bbb; 
-      height: 2mm; 
-      margin: 1.5mm 0; 
-    }
+  /* Spacer to push Total to bottom of table if content is short */
+  .spacer { flex: 1; } 
 
-    @media print {
-      @page { size: A4 portrait; margin: 0; }
-      .no-print { display: none; }
-      body { margin: 0; }
-    }
-  `;
+  .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; }
 
+  /* FOOTER - Increased space for stamps */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px; /* More space above footer */
+    padding-bottom: 5px;
+    height: 70px; /* Fixed height to ensure room for stamps */
+    align-items: flex-end; /* Align lines to bottom */
+  }
+  .footer-item { text-align: center; width: 30%; }
+  .footer-label { font-size: 11px; color: #8B4513; margin-bottom: 40px; font-weight: bold;} /* Space between label and line */
+  .footer-line { border-bottom: 1px solid #333; }
+
+  /* CUT LINE */
+  .cut-line { 
+    width: 100%; 
+    border-top: 2px dashed #bbb; 
+    height: 0; 
+    margin: 5mm 0;
+    position: relative;
+  }
+  .cut-line::after {
+    content: '✂';
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    background: white;
+    padding: 0 5px;
+    color: #bbb;
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    .no-print { display: none; }
+    body { margin: 0; -webkit-print-color-adjust: exact; }
+  }
+`;
 
   constructor(public gl: MasterService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintVoucherPopup>) {}
 
@@ -399,70 +464,47 @@ margin-right: 3px;
   buildVouchers() {
     const rows = this.gl.setRowDataArray || [];
     this.voucherList = rows.map((bill: any) => ({
-      firmName: "SEWAKS' CHARITABLE TRUST",
+      // firmName removed from here as it is now static in HTML
       voucherNo: bill?.billNo || '',
       date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
       debitEntries: [
-        { description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-' },
-        // { description: bill?.comments || '' }
+        { description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-', paisa: '' },
+        {description: '-'}
       ],
-      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
+      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-', paisa: '' },
       debitTotalAmt: { rupees: this.numberWithCommas(bill?.billAmount) },
       creditEntries: [
         { description: 'SBI AC 6287' },
-        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
-        // { description: this.modeLabel(bill?.mode), rupees: this.numberWithCommas(bill?.billAmount), paisa: '/-' },
-        // { description: `Bill No: ${bill?.billNo || ''}` }
+        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-', paisa: '' },
       ],
       creditTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
     }));
   }
 
-  // printPage() {
-  //   const printWindow = window.open('', '_blank', 'width=1000,height=800');
-  //   printWindow?.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Voucher Print</title>
-  //         <style>${this.voucherStyles}</style>
-  //       </head>
-  //       <body>
-  //         ${this.voucherDiv.nativeElement.innerHTML}
-  //         <script>
-  //           window.onload = function() { window.print(); window.close(); };
-  //         </script>
-  //       </body> 
-  //     </html>
-  //   `);
-  //   // printWindow?.document.close();
-  // }
+  printPage() {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
 
-printPage() {
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) return;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Voucher Print</title>
+          <style>${this.voucherStyles}</style>
+        </head>
+        <body>
+          ${this.voucherDiv.nativeElement.innerHTML}
+        </body> 
+      </html>
+    `);
 
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Voucher Print</title>
-        <style>${this.voucherStyles}</style>
-      </head>
-      <body>
-        ${this.voucherDiv.nativeElement.innerHTML}
-      </body> 
-    </html>
-  `);
-
-  printWindow.document.close(); // Important for loading images/styles
-
-  // Use a slight timeout to ensure the browser has rendered the CSS before opening print dialog
-  setTimeout(() => {
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-  }, 250);
-}
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  }
 
   getPreviousMonthName(dateValue: any): string {
     if (!dateValue) return '';
@@ -472,11 +514,6 @@ printPage() {
   }
 
   numberWithCommas(x: any) { return (Number(x) || 0).toLocaleString('en-IN'); }
-
-  modeLabel(mode: any) {
-    const modes: any = { 1: 'Online', 2: 'Cheque', 3: 'NEFT', 4: 'UPI', 5: 'IMPS', 6: 'RTGS' };
-    return modes[mode] || '---';
-  }
 
   numberToWords(num: any): string {
     const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -496,8 +533,9 @@ printPage() {
 
   onNoClick(): void { this.dialogRef.close(''); }
 
-get chunkedVouchers() {
-    const size = 3;
+  // CHANGED TO SIZE 2
+  get chunkedVouchers() {
+    const size = 2;
     const chunks = [];
     for (let i = 0; i < this.voucherList.length; i += size) {
       chunks.push(this.voucherList.slice(i, i + size));
