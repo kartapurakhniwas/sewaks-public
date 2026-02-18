@@ -293,6 +293,7 @@ export class PrintVoucherPopup implements OnInit {
 @ViewChild('voucherDiv') voucherDiv!: ElementRef;
   voucherList: any[] = [];
 
+
 private voucherStyles = `
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
     body { font-family: 'Courier New', monospace; background: white; margin: 0; padding: 0; }
@@ -318,24 +319,18 @@ private voucherStyles = `
       background: white;
     }
 
-    .sidebar {
-      width: 60px;
-      background: #f9f9f9;
-      border-right: 2px solid #8B4513;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+      .sidebar {    width: 60px;
+    background: #f9f9f9;
+    border-right: 2px solid #8B4513;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: start;     padding: 10px;
+    line-height: 1.2;
+margin-right: 3px;
+}
+      .vertical-text { writing-mode: vertical-rl; font-weight: bold; font-size: 9px; color: #8B4513; white-space: nowrap;     margin-left: 5px;}
 
-    .vertical-text {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      font-weight: bold;
-      font-size: 9px;
-      color: #8B4513;
-      white-space: nowrap;
-    }
 
     .content {
       flex: 1;
@@ -364,7 +359,8 @@ private voucherStyles = `
       border-bottom: 1px solid #8B4513;
       line-height: 1.2;
     }
-    .particulars-header h2 { font-size: 10px; color: #8B4513; letter-spacing: 2px; }
+  .particulars-header h2 { font-size: 10px; color: #8B4513; letter-spacing: 2px; margin-bottom: 4px;
+    margin-top: 3px;}
 
     .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 10px; overflow: hidden; }
     .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
@@ -395,6 +391,7 @@ private voucherStyles = `
     }
   `;
 
+
   constructor(public gl: MasterService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintVoucherPopup>) {}
 
   ngOnInit(): void { this.buildVouchers(); }
@@ -406,36 +403,66 @@ private voucherStyles = `
       voucherNo: bill?.billNo || '',
       date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
       debitEntries: [
-        { description: `Salary AC to ${bill?.supplierName || ''} for ${this.getPreviousMonthName(bill?.billDate)}` },
-        { description: bill?.comments || '' }
+        { description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-' },
+        // { description: bill?.comments || '' }
       ],
-      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount), paisa: '/-' },
+      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
+      debitTotalAmt: { rupees: this.numberWithCommas(bill?.billAmount) },
       creditEntries: [
-        { description: this.modeLabel(bill?.mode), rupees: this.numberWithCommas(bill?.billAmount), paisa: '/-' },
-        { description: `Bill No: ${bill?.billNo || ''}` }
+        { description: 'SBI AC 6287' },
+        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
+        // { description: this.modeLabel(bill?.mode), rupees: this.numberWithCommas(bill?.billAmount), paisa: '/-' },
+        // { description: `Bill No: ${bill?.billNo || ''}` }
       ],
-      creditTotal: { rupees: this.numberWithCommas(bill?.billAmount), paisa: '/-' }
+      creditTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
     }));
   }
 
-  printPage() {
-    const printWindow = window.open('', '_blank', 'width=1000,height=800');
-    printWindow?.document.write(`
-      <html>
-        <head>
-          <title>Voucher Print</title>
-          <style>${this.voucherStyles}</style>
-        </head>
-        <body>
-          ${this.voucherDiv.nativeElement.innerHTML}
-          <script>
-            window.onload = function() { window.print(); window.close(); };
-          </script>
-        </body> 
-      </html>
-    `);
-    printWindow?.document.close();
-  }
+  // printPage() {
+  //   const printWindow = window.open('', '_blank', 'width=1000,height=800');
+  //   printWindow?.document.write(`
+  //     <html>
+  //       <head>
+  //         <title>Voucher Print</title>
+  //         <style>${this.voucherStyles}</style>
+  //       </head>
+  //       <body>
+  //         ${this.voucherDiv.nativeElement.innerHTML}
+  //         <script>
+  //           window.onload = function() { window.print(); window.close(); };
+  //         </script>
+  //       </body> 
+  //     </html>
+  //   `);
+  //   // printWindow?.document.close();
+  // }
+
+printPage() {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Voucher Print</title>
+        <style>${this.voucherStyles}</style>
+      </head>
+      <body>
+        ${this.voucherDiv.nativeElement.innerHTML}
+      </body> 
+    </html>
+  `);
+
+  printWindow.document.close(); // Important for loading images/styles
+
+  // Use a slight timeout to ensure the browser has rendered the CSS before opening print dialog
+  setTimeout(() => {
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  }, 250);
+}
 
   getPreviousMonthName(dateValue: any): string {
     if (!dateValue) return '';

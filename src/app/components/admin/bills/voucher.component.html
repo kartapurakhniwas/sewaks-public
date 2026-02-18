@@ -6,15 +6,25 @@
       /* Same styles as above, repeated here for the preview window */
       .page-container { width: 210mm; height: 297mm; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; padding: 5mm 0; }
       .voucher-container { width: 200mm; height: 90mm; border: 2px solid #8B4513; margin: 0 auto; display: flex; overflow: hidden; background: white; }
-      .sidebar { width: 60px; background: #f9f9f9; border-right: 2px solid #8B4513; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-      .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold; font-size: 9px; color: #8B4513; white-space: nowrap; }
+      .sidebar {    width: 60px;
+    background: #f9f9f9;
+    border-right: 2px solid #8B4513;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: start;     padding: 10px;
+    line-height: 1.2;
+margin-right: 3px;
+}
+      .vertical-text { writing-mode: vertical-rl; font-weight: bold; font-size: 9px; color: #8B4513; white-space: nowrap;     margin-left: 5px;}
       .content { flex: 1; padding: 6px 12px; display: flex; flex-direction: column; }
       .header h1 { font-size: 16px; color: #8B4513; text-decoration: underline; letter-spacing: 4px; text-align: center; margin-bottom: 3px; }
       .info-row { display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 10px; }
       .info-line { border-bottom: 1px dotted #333; flex: 1; font-weight: bold; padding-left: 5px; }
       .info-line-short { border-bottom: 1px dotted #333; min-width: 65px; font-weight: bold; text-align: center;}
       .particulars-header { text-align: center; margin: 3px 0; border-top: 1px solid #8B4513; border-bottom: 1px solid #8B4513; }
-      .particulars-header h2 { font-size: 10px; color: #8B4513; letter-spacing: 2px; }
+      .particulars-header h2 { font-size: 10px; color: #8B4513; letter-spacing: 2px; margin-bottom: 4px;
+    margin-top: 3px;}
       .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 10px; overflow: hidden; }
       .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
       .table-row { display: flex; border-bottom: 1px solid #eee; min-height: 16px; }
@@ -39,17 +49,17 @@
           <div class="voucher-container">
             <div class="sidebar">
               <div class="vertical-text">
-                RECEIVED the sum of <span style="text-decoration: underline;"> {{ numberToWords(voucher.debitTotal.rupees) }} </span> Rupees
+                RECEIVED the sum of : <br><span style="text-decoration: underline;"> {{ numberToWords(voucher.debitTotalAmt.rupees) }} </span> Rupees
               </div>
-              <div style="height: 10px;"></div>
-              <div class="vertical-text" style="font-weight: normal; font-size: 7px;">On A/c of</div>
+              <!-- <div style="height: 10px;"></div> -->
+              <div class="vertical-text" >On A/c of : <span style="text-decoration: underline;">Salary Account</span></div>
             </div>
 
             <div class="content">
               <div class="header"><h1>VOUCHER</h1></div>
 
               <div class="info-row">
-                <span class="info-label">Firm:</span>
+                <span class="info-label">Firm's Name:</span>
                 <span class="info-line">{{voucher.firmName}}</span>
                 <div style="width: 10px;"></div>
                 <span class="info-label">No:</span>
