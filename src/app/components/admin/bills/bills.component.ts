@@ -280,8 +280,7 @@ gridOptions: GridOptions;
 
 }
 
-
-
+// ... existing imports ...
 
 @Component({
   selector: 'print-voucher-dialog',
@@ -291,191 +290,109 @@ export class PrintVoucherPopup implements OnInit {
   @ViewChild('voucherDiv') voucherDiv!: ElementRef;
   voucherList: any[] = [];
 
-  // UPDATED CSS FOR 2 VOUCHERS PER PAGE
   private voucherStyles = `
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
-  body { font-family: 'Arial', 'Helvetica', sans-serif; background: white; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
+    body { font-family: 'Courier New', monospace; background: white; margin: 0; padding: 0; }
+    
+    .page-container {
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      padding: 5mm 0;
+    }
+
+    .voucher-container {
+      width: 200mm;
+      height: 138mm; /* Fixed height for 2 per page */
+      border: 2px solid #8B4513;
+      margin: 0 auto;
+      display: flex;
+      overflow: hidden;
+      background: white;
+      margin-bottom: 2mm;
+    }
+
+    /* REVERTED SIDEBAR TO ORIGINAL ALIGNMENT */
+    .sidebar {
+      width: 60px;
+      background: #f9f9f9;
+      border-right: 2px solid #8B4513;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      align-items: start; 
+      padding: 10px;
+      line-height: 1.2;
+      margin-right: 3px;
+    }
+
+    .vertical-text {
+      writing-mode: vertical-rl;
+      font-weight: bold;
+      font-size: 11px; /* Slightly larger for the new 2-per-page layout */
+      color: #8B4513;
+      white-space: nowrap;
+      margin-left: 5px;
+      margin-top: 8px;
+    }
+
+    .content { flex: 1; padding: 6px 15px; display: flex; flex-direction: column; }
+
+    /* Firm Header Styles */
+    .header h1 { font-size: 18px; color: #8B4513; text-decoration: underline; letter-spacing: 4px; text-align: center; margin-bottom: 3px; }
+    .firm-name { font-size: 22px; font-weight: bold; color: #8B4513; text-align: center; text-transform: uppercase; }
+    .firm-details { font-size: 10px; text-align: center; color: #333; line-height: 1.3; margin-bottom: 8px; border-bottom: 1px dotted #8B4513; padding-bottom: 5px; }
+
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 12px; }
+    .info-line-short { border-bottom: 1px dotted #333; min-width: 80px; font-weight: bold; text-align: center; }
+
+    .particulars-header { text-align: center; margin: 5px 0; border-top: 1.5px solid #8B4513; border-bottom: 1.5px solid #8B4513; background: #f0e6dc; }
+    .particulars-header h2 { font-size: 12px; color: #8B4513; letter-spacing: 2px; margin: 4px 0; }
+
+    .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 12px; overflow: hidden; }
+    .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
+    .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; }
+    .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; }
+    .col-paise { width: 35px; padding: 4px 5px; text-align: center; }
+    
+    .section-label { background: #f9f9f9; font-weight: bold; font-size: 10px; border-bottom: 1px solid #8B4513; padding-left: 5px; color: #8B4513; }
+    .table-row { display: flex; border-bottom: 1px solid #eee; min-height: 20px; }
+    .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; margin-top: auto; }
+
+    .footer { display: flex; justify-content: space-between; margin-top: 15px; height: 80px; align-items: flex-end; }
+    .footer-item { text-align: center; width: 30%; }
+    .footer-label { font-size: 11px; color: #8B4513; margin-bottom: 45px; font-weight: bold; }
+    .footer-line { border-bottom: 1px solid #333; }
+
+    .cut-line { width: 100%; border-top: 2px dashed #bbb; height: 2mm; margin: 4mm 0; position: relative; }
+    .cut-line::after { content: '✂'; position: absolute; top: -12px; left: 50%; background: white; padding: 0 5px; color: #bbb; }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      .no-print { display: none; }
+    }
+  `;
+
+  // ... (keep rest of logic same as previous: getPreviousMonthName, numberWithCommas, numberToWords, chunkedVouchers with size 2) ...
+  // ...
   
-  .page-container {
-    width: 210mm;
-    height: 297mm; /* A4 Height */
-    overflow: hidden;
-    page-break-after: always;
-    display: flex;
-    flex-direction: column;
-    padding: 10mm 0; /* Vertical padding */
-    align-items: center;
-  }
-
-  /* Height calculated for 2 per page: roughly 138mm each */
-  .voucher-container {
-    width: 200mm;
-    height: 135mm; 
-    border: 2px solid #8B4513;
-    display: flex;
-    overflow: hidden;
-    background: white;
-    margin-bottom: 2mm; 
-  }
-
-  /* SIDEBAR */
-  .sidebar {
-    width: 50px;
-    background: #f9f9f9;
-    border-right: 2px solid #8B4513;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 5px;
-  }
-  .vertical-text {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg); /* Fix orientation if needed, or remove transform if vertical-rl is enough */
-    font-weight: bold;
-    font-size: 12px;
-    color: #8B4513;
-    white-space: nowrap;
-    margin-left: 5px;
-    text-align: center;
-    line-height: 1.5;
-  }
-
-  /* MAIN CONTENT */
-  .content {
-    flex: 1;
-    padding: 10px 15px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* TOP HEADER: VOUCHER */
-  .header-title h1 {
-    font-size: 18px;
-    color: #8B4513;
-    text-decoration: underline;
-    letter-spacing: 4px;
-    text-align: center;
-    margin-bottom: 5px;
-    margin-top: 0;
-  }
-
-  /* FIRM HEADER (New Requirement) */
-  .firm-header {
-    text-align: center;
-    margin-bottom: 10px;
-    border-bottom: 1px dotted #8B4513;
-    padding-bottom: 5px;
-  }
-  .firm-name {
-    font-size: 22px; /* Much bigger */
-    font-weight: 800;
-    color: #8B4513;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .firm-details {
-    font-size: 10px;
-    color: #333;
-    line-height: 1.3;
-  }
-
-  /* INFO ROW (Voucher No / Date) */
-  .info-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
-  .info-label { font-weight: bold; }
-  .info-line-short { border-bottom: 1px dotted #333; min-width: 100px; font-weight: bold; text-align: center;}
-
-  /* PARTICULARS HEADER */
-  .particulars-header {
-    text-align: center;
-    margin: 5px 0;
-    border-top: 2px solid #8B4513;
-    border-bottom: 2px solid #8B4513;
-    background: #f0e6dc;
-  }
-  .particulars-header h2 { font-size: 12px; color: #8B4513; letter-spacing: 2px; margin: 4px 0; }
-
-  /* TABLE SECTION - Using flex to fill space */
-  .table-section {
-    border: 1.5px solid #8B4513;
-    flex: 1; /* Fills remaining height */
-    display: flex;
-    flex-direction: column;
-    font-size: 12px;
-  }
-  .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; padding: 4px 0;}
-  
-  /* Columns */
-  .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; }
-  .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; }
-  .col-paise { width: 40px; padding: 4px 5px; text-align: center; }
-
-  /* Rows */
-  .table-row { display: flex; border-bottom: 1px solid #eee; }
-  .section-label { background: #f9f9f9; font-weight: bold; font-size: 10px; border-bottom: 1px solid #8B4513; padding: 2px 5px; color: #8B4513; }
-
-  /* Spacer to push Total to bottom of table if content is short */
-  .spacer { flex: 1; } 
-
-  .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; }
-
-  /* FOOTER - Increased space for stamps */
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px; /* More space above footer */
-    padding-bottom: 5px;
-    height: 70px; /* Fixed height to ensure room for stamps */
-    align-items: flex-end; /* Align lines to bottom */
-  }
-  .footer-item { text-align: center; width: 30%; }
-  .footer-label { font-size: 11px; color: #8B4513; margin-bottom: 40px; font-weight: bold;} /* Space between label and line */
-  .footer-line { border-bottom: 1px solid #333; }
-
-  /* CUT LINE */
-  .cut-line { 
-    width: 100%; 
-    border-top: 2px dashed #bbb; 
-    height: 0; 
-    margin: 5mm 0;
-    position: relative;
-  }
-  .cut-line::after {
-    content: '✂';
-    position: absolute;
-    left: 50%;
-    top: -10px;
-    background: white;
-    padding: 0 5px;
-    color: #bbb;
-  }
-
-  @media print {
-    @page { size: A4 portrait; margin: 0; }
-    .no-print { display: none; }
-    body { margin: 0; -webkit-print-color-adjust: exact; }
-  }
-`;
-
   constructor(public gl: MasterService, public datepipe: DatePipe, public dialogRef: MatDialogRef<PrintVoucherPopup>) {}
-
   ngOnInit(): void { this.buildVouchers(); }
-
+  
   buildVouchers() {
     const rows = this.gl.setRowDataArray || [];
     this.voucherList = rows.map((bill: any) => ({
-      // firmName removed from here as it is now static in HTML
       voucherNo: bill?.billNo || '',
       date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
-      debitEntries: [
-        { description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-', paisa: '' },
-        {description: '-'}
-      ],
-      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-', paisa: '' },
+      debitEntries: [{ description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-' },{description: '-'}],
+      debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
       debitTotalAmt: { rupees: this.numberWithCommas(bill?.billAmount) },
       creditEntries: [
         { description: 'SBI AC 6287' },
-        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-', paisa: '' },
+        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
       ],
       creditTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
     }));
@@ -484,26 +401,9 @@ export class PrintVoucherPopup implements OnInit {
   printPage() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Voucher Print</title>
-          <style>${this.voucherStyles}</style>
-        </head>
-        <body>
-          ${this.voucherDiv.nativeElement.innerHTML}
-        </body> 
-      </html>
-    `);
-
+    printWindow.document.write(`<html><head><style>${this.voucherStyles}</style></head><body>${this.voucherDiv.nativeElement.innerHTML}</body></html>`);
     printWindow.document.close();
-    setTimeout(() => {
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();
-    }, 250);
+    setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 250);
   }
 
   getPreviousMonthName(dateValue: any): string {
@@ -533,13 +433,10 @@ export class PrintVoucherPopup implements OnInit {
 
   onNoClick(): void { this.dialogRef.close(''); }
 
-  // CHANGED TO SIZE 2
   get chunkedVouchers() {
     const size = 2;
     const chunks = [];
-    for (let i = 0; i < this.voucherList.length; i += size) {
-      chunks.push(this.voucherList.slice(i, i + size));
-    }
+    for (let i = 0; i < this.voucherList.length; i += size) { chunks.push(this.voucherList.slice(i, i + size)); }
     return chunks;
   }
 }
