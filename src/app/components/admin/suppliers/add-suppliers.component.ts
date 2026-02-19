@@ -80,7 +80,7 @@ getSupplierType() {
 
   supplierForm = new FormGroup({
     supplierName: new FormControl('', Validators.required),
-    supplierType: new FormControl(''),
+    supplierType: new FormControl('Salary'),
     contactEmail: new FormControl('', [Validators.email]),
     contactPhone: new FormControl(''),
     gst: new FormControl(''),

@@ -43,7 +43,7 @@ gridOptions: GridOptions;
         headerCheckboxSelectionFilteredOnly: true,
         checkboxSelection: true,
         sortingOrder: ["asc", "desc"],
-        width: 200,
+        width: 400,
       },
       {
         headerName: 'Address',
