@@ -3,9 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as saveAs from 'file-saver';
+import { firstValueFrom } from 'rxjs';
 import { MasterService } from 'src/app/services';
 import { Billservice } from 'src/app/services/bills.service';
 import { SupplierService } from 'src/app/services/supplier.service';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-add-Bills',
   templateUrl: './add-bills.component.html',
@@ -376,4 +378,218 @@ export class AddBillsComponent implements OnInit {
       this.resetSupplierFilter();
     }
   }
+
+
+
+
+
+// Inside AddBillsComponent class
+bulkEntries: any[] = [];
+isProcessing: boolean = false;
+
+// 1. Function to handle Excel Upload
+onExcelUpload(event: any) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (e: any) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet);
+
+    this.prepareBulkEntries(jsonData);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+prepareBulkEntries(data: any[]) {
+  this.bulkEntries = data.map(row => {
+    const description = (row['Description'] || '').trim();
+    const refNo = row['Ref No./Cheque No.'];
+    const debitValue = row['        Debit']; 
+    const creditValue = row['Credit'];
+
+    const excelDate = row['Txn Date'];
+    const billDate = this.excelDateToJSDate(excelDate);
+
+    // 🔥 USE THE NEW SMARTER MATCHING FUNCTION HERE 🔥
+    const matchedSupplier = this.findMatchingSupplier(description);
+
+    const amount = typeof debitValue === 'number' ? debitValue : 0;
+
+    return {
+      supplierName: matchedSupplier ? matchedSupplier.supplierName : 'Unknown',
+      supplierId: matchedSupplier ? matchedSupplier.supplierId : null,
+      billNo: refNo ? refNo.toString().trim() : '0',
+      billDate: billDate,
+      billAmount: amount,
+      dueDate: billDate,
+      paymentDate: billDate,
+      mode: this.detectMode(description),
+      status: 1, 
+      comments: description,
+      isValid: !!matchedSupplier && amount > 0,
+      isSelected: false
+    };
+  })
+  .filter(entry => entry.billAmount > 0); 
+  this.autoSelectVisible();
+  
+  console.log("Processed Bulk Entries:", this.bulkEntries);
+}
+
+findMatchingSupplier(description: string): any {
+  const upperDesc = description.toUpperCase();
+  
+  // 1. Words that will cause false positives - DO NOT match based on these alone
+  const ignoreWords = ['SINGH', 'KAUR', 'KUMAR', 'THE', 'AND', 'SONS', 'STORE', 'NEW', 'ENT', 'AC'];
+
+  for (let s of this.suppList) {
+    if (!s.supplierName) continue;
+
+    // 2. Split the supplier name into individual words (e.g., "Dayal", "Padol", "Mistri")
+    const nameParts = s.supplierName.toUpperCase().split(/\s+/);
+    
+    for (let part of nameParts) {
+      // 3. Only check words longer than 2 letters that are NOT in the ignore list
+      if (part.length > 2 && !ignoreWords.includes(part)) {
+        
+        // 4. If the bank description contains this specific word, we found our match!
+        if (upperDesc.includes(part)) {
+          return s; 
+        }
+      }
+    }
+  }
+  return null; // Return null if absolutely no words matched
+}
+
+// Add this property to track the toggle switch
+// 1. The toggle variable
+hideUnknowns: boolean = false;
+
+// 2. The getter for the table (as we did before)
+get displayedEntries() {
+  return this.hideUnknowns 
+    ? this.bulkEntries.filter(e => e.isValid) 
+    : this.bulkEntries;
+}
+
+// 3. The logic to auto-select everything
+autoSelectVisible() {
+  this.displayedEntries.forEach(entry => {
+    // We only auto-select entries that have a valid supplier
+    if (entry.isValid) {
+      entry.isSelected = true;
+    } else {
+      entry.isSelected = false; // Keep Unknowns unselected by default
+    }
+  });
+}
+
+// Add this getter function to filter the view dynamically
+// get displayedEntries() {
+//   if (this.hideUnknowns) {
+//     // Only return entries that have a matched supplier (where isValid is true)
+//     return this.bulkEntries.filter(entry => entry.isValid);
+//   }
+//   // If toggle is off, show everything
+//   return this.bulkEntries;
+// }
+
+// Helper to convert Excel serial date (e.g., 45872.0001) to JS Date
+excelDateToJSDate(serial: any) {
+  if (typeof serial !== 'number') return new Date();
+  const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
+  return date;
+}
+
+detectMode(desc: string): number {
+  if (desc.includes('TRANSFER-UPI')) return 4;
+  if (desc.includes('TRANSFER-NEFT')) return 3;
+  if (desc.includes('TRANSFER-IMPS')) return 5;
+  if (desc.includes('CHEQUE')) return 2;
+  return 1; // Default Cash/Online
+}
+
+// Helper function to create a delay
+private delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async saveBulkEntries() {
+  // 1. Only process what is valid and selected
+const entriesToSave = this.bulkEntries
+  .filter(e => e.isValid && e.isSelected)
+  .map(e => ({
+    id: 0, // Static value
+    supplierName: e.supplierName,
+    billNo: e.billNo,
+    billDate: e.billDate,
+    billAmount: e.billAmount,
+    dueDate: e.dueDate,
+    billType: 0, // Static value
+    status: e.status,
+    image: "string", // Static value
+    comments: e.comments,
+    paymentDate: e.paymentDate,
+    mode: e.mode,
+    chequeNo: "string", // Static value
+    chequeDate: new Date().toISOString(), // Static/Current date
+    dateofBankDebit: new Date().toISOString(), // Static/Current date
+    neftAmount: 0, // Static value
+    neftDate: new Date().toISOString() // Static/Current date
+  }));
+
+  if (entriesToSave.length === 0) {
+    alert("No valid entries selected!");
+    return;
+  }
+
+  this.isProcessing = true;
+  let actualSavedCount = 0;
+
+  // for (let i = 0; i < entriesToSave.length; i++) {
+  //   const entry = entriesToSave[i];
+
+// entriesToSave.filter((m:any) => {
+
+// });
+
+    // const payload = {
+    //   ...entry,
+    //   billDate: new Date(entry.billDate),
+    //   image: "[]",
+    //   dateofBankDebit: new Date(),
+    //   status: 1 
+    // };
+
+    try {
+      // 2. Convert the Observable to a Promise and AWAIT it
+      // This forces the loop to stop here until the server responds
+      await this.srv.PostALL(entriesToSave).toPromise(); 
+      
+      // actualSavedCount++;
+      console.log(`Successfully saved ${entriesToSave.length} entries`);
+
+      // 3. INCREASED DELAY: Wait 1.5 seconds before the next hit
+      // This gives your server and database plenty of time to finish the previous task
+      // await this.delay(5000); 
+
+    } catch (err) {
+      // console.error(`Error at index ${i}:`, err);
+      // We still wait even if there's an error to keep the timing consistent
+      // await this.delay(5000); 
+    }
+  // }
+
+  this.isProcessing = false;
+  this._snackBar.open(`${actualSavedCount} entries saved successfully`, 'Close', { duration: 5000 });
+  
+  if (actualSavedCount > 0) {
+    this.nav.navigateByUrl('/admin/bills');
+  }
+}
 }

@@ -10,6 +10,44 @@
   </div>
 </div>
 <div class="add-form-wrap">
+<div class="col-12 mt-3">
+  <input type="file" (change)="onExcelUpload($event)" accept=".xlsx, .xls" id="excelFile" style="display:none">
+  <button class="btn btn-primary" onclick="document.getElementById('excelFile').click()">
+    <mat-icon>upload_file</mat-icon> Upload Bank Statement
+  </button>
+</div>
+<!-- {{this.bulkEntries | json}} -->
+<div style="margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+  <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+    <input type="checkbox" 
+           [(ngModel)]="hideUnknowns" 
+           (change)="autoSelectVisible()"> 
+    <span>Hide Unknown Suppliers & Auto-Select All Matches</span>
+  </label>
+</div>
+
+
+<div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
+  <h4>Preview Bulk Entries</h4>
+<table class="table">
+  <tr *ngFor="let entry of displayedEntries" [class.table-danger]="!entry.isValid">
+    <td>{{ entry.billDate | date:'dd-MM-yyyy' }}</td>
+    <td>
+      <b *ngIf="entry.isValid">{{ entry.supplierName }}</b>
+      <span *ngIf="!entry.isValid" class="text-danger">Unknown (No Match)</span>
+    </td>
+    <td>{{ entry.billAmount }}</td>
+    <td>
+      <input type="checkbox" [(ngModel)]="entry.isSelected" *ngIf="entry.isValid">
+    </td>
+  </tr>
+</table>
+  
+  <button (click)="saveBulkEntries()" class="btn btn-success" [disabled]="isProcessing">
+    <!-- <mat-spinner diameter="20" *ngIf="isProcessing"></mat-spinner> -->
+    Confirm & Save All ({{bulkEntries.length}} Entries)
+  </button>
+</div>
   <form class="form mat-form mt-3 mb-3" [formGroup]="Form">
     <div class="row">
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">

@@ -14,6 +14,10 @@ export class Billservice {
   Add(data:any) {
     return this.srv.post(data, "Bill");
   }
+  PostALL(data:any) {
+    return this.srv.post(data, "Bill/PostALL");
+  }
+ 
   update(data:any) {
     return this.srv.put(data, "Bill");
   }
