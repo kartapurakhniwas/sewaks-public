@@ -446,7 +446,9 @@ findMatchingSupplier(description: string): any {
   // 1. Words that will cause false positives - DO NOT match based on these alone
   const ignoreWords = ['SINGH', 'KAUR', 'KUMAR', 'THE', 'AND', 'SONS', 'STORE', 'NEW', 'ENT', 'AC'];
 
-  for (let s of this.suppList) {
+  let list = [...this.suppList, { supplierName: 'Gurm' }];
+
+  for (let s of list) {
     if (!s.supplierName) continue;
 
     // 2. Split the supplier name into individual words (e.g., "Dayal", "Padol", "Mistri")

@@ -67,11 +67,20 @@
 
     .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 12px; overflow: hidden; }
     .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
-    .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; }
-    .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; }
-    .col-paise { width: 35px; padding: 4px 5px; text-align: center; }
+    .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; line-height: 1; }
+    .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; line-height: 1;}
+    .col-paise { width: 35px; padding: 4px 5px; text-align: center; line-height: 1;}
     
-    .section-label { background: #f9f9f9; font-weight: bold; font-size: 10px; border-bottom: 1px solid #8B4513; padding-left: 5px; color: #8B4513; }
+    .section-label { position: relative; background: #f9f9f9; font-weight: bold; font-size: 12px; border-bottom: 1px solid #8B4513; padding-left: 5px; color: #8B4513; }
+    .section-label .heading-content {     position: absolute;
+    right: 0;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-weight: normal;
+    text-align: center;
+    width: 100%;
+    font-size: 15px; }
     .table-row { display: flex; border-bottom: 1px solid #eee; min-height: 20px; }
     .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; margin-top: auto; }
 
@@ -130,14 +139,27 @@
                   <div class="col-paise">P</div>
                 </div>
 
-                <div class="section-label">DEBIT</div>
+                <div class="section-label">
+                    DEBIT
+                    <span class="heading-content">
+                      Salary Account
+                    </span>
+                </div>
                 <div class="table-row" *ngFor="let item of voucher.debitEntries">
                   <div class="col-main">{{item.description}}</div>
                   <div class="col-rupee">{{item.rupees}}</div>
                   <div class="col-paise"></div>
                 </div>
-
-                <div class="section-label" style="border-top: 1px solid #8B4513;">CREDIT</div>
+                <div class="total-row">
+                  <div class="col-main" style="text-align: right;">TOTAL</div>
+                  <div class="col-rupee">{{voucher.debitTotal.rupees}}</div>
+                  <div class="col-paise"></div>
+                </div>
+                <div class="section-label" style="border-top: 1px solid #8B4513;">
+                  CREDIT
+                  <span class="heading-content">
+                      SBI BANK Account
+                    </span></div>
                 <div class="table-row" *ngFor="let item of voucher.creditEntries">
                   <div class="col-main">{{item.description}}</div>
                   <div class="col-rupee">{{item.rupees}}</div>

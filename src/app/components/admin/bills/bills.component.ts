@@ -323,7 +323,7 @@ export class PrintVoucherPopup implements OnInit {
       display: flex;
       flex-direction: row-reverse;
       justify-content: center;
-      align-items: start; 
+      align-items: start;
       padding: 10px;
       line-height: 1.2;
       margin-right: 3px;
@@ -354,11 +354,20 @@ export class PrintVoucherPopup implements OnInit {
 
     .table-section { border: 1.5px solid #8B4513; flex: 1; display: flex; flex-direction: column; font-size: 12px; overflow: hidden; }
     .table-header { background: #f0e6dc; font-weight: bold; border-bottom: 1px solid #8B4513; display: flex; }
-    .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; }
-    .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; }
-    .col-paise { width: 35px; padding: 4px 5px; text-align: center; }
+    .col-main { flex: 1; padding: 4px 5px; border-right: 1px solid #8B4513; line-height: 1; }
+    .col-rupee { width: 80px; padding: 4px 5px; text-align: right; border-right: 1px solid #8B4513; line-height: 1;}
+    .col-paise { width: 35px; padding: 4px 5px; text-align: center; line-height: 1;}
     
-    .section-label { background: #f9f9f9; font-weight: bold; font-size: 10px; border-bottom: 1px solid #8B4513; padding-left: 5px; color: #8B4513; }
+    .section-label { position: relative; background: #f9f9f9; font-weight: bold; font-size: 12px; border-bottom: 1px solid #8B4513; padding-left: 5px; color: #8B4513; }
+    .section-label .heading-content {     position: absolute;
+    right: 0;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-weight: normal;
+    text-align: center;
+    width: 100%;
+    font-size: 15px; }
     .table-row { display: flex; border-bottom: 1px solid #eee; min-height: 20px; }
     .total-row { display: flex; border-top: 1.5px solid #8B4513; background: #f0e6dc; font-weight: bold; margin-top: auto; }
 
@@ -387,12 +396,17 @@ export class PrintVoucherPopup implements OnInit {
     this.voucherList = rows.map((bill: any) => ({
       voucherNo: bill?.billNo || '',
       date: this.datepipe.transform(bill?.billDate, 'dd/MM/yyyy') || '',
-      debitEntries: [{ description: `Salary AC to ${bill?.supplierName || ''} as salary of ${this.getPreviousMonthName(bill?.billDate)}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-' },{description: '-'}],
+      debitEntries: [{ description: `Amount paid for the month of ${this.getPreviousMonthName(bill?.billDate)} to ${bill?.supplierName || ''}` , rupees: this.numberWithCommas(bill?.billAmount)+ '/-' }
+        ,{description: '\n'}
+        ,{description: '\n'}
+      ],
       debitTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' },
       debitTotalAmt: { rupees: this.numberWithCommas(bill?.billAmount) },
       creditEntries: [
-        { description: 'SBI AC 6287' },
-        { description: `To ${bill?.supplierName || ''} (${this.getPreviousMonthName(bill?.billDate)} Salary)`, rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
+        // { description: 'SBI AC 6287' },
+        { description: `NEFT transfer to ${bill?.supplierName || ''} for the month of ${this.getPreviousMonthName(bill?.billDate)}`, rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
+        ,{description: '\n'}
+        ,{description: '\n'}
       ],
       creditTotal: { rupees: this.numberWithCommas(bill?.billAmount) + '/-' }
     }));
