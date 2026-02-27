@@ -420,12 +420,19 @@ export class PrintVoucherPopup implements OnInit {
     setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 250);
   }
 
-  getPreviousMonthName(dateValue: any): string {
-    if (!dateValue) return '';
-    const date = new Date(dateValue);
-    date.setMonth(date.getMonth() - 1);
-    return date.toLocaleString('default', { month: 'long' });
-  }
+  // getPreviousMonthName(dateValue: any): string {
+  //   if (!dateValue) return '';
+  //   const date = new Date(dateValue);
+  //   date.setMonth(date.getMonth() - 1);
+  //   return date.toLocaleString('default', { month: 'long' });
+  // }
+
+getPreviousMonthName(dateValue: any): string {
+  if (!dateValue) return '';
+  const date = new Date(dateValue);
+  date.setMonth(date.getMonth() - 1);
+  return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+}
 
   numberWithCommas(x: any) { return (Number(x) || 0).toLocaleString('en-IN'); }
 
