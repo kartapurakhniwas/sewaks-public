@@ -5,6 +5,7 @@
         <ng-select [(ngModel)]="selectedCar" class="ml-4">
             <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
          </ng-select> -->
+         <button (click)="deleteAll()">Delete All</button>
  <button *ngIf="gl.setRowDataArray?.length" (click)="printVoucher()" class="btn"> <mat-icon>print</mat-icon> Print Voucher</button>
         <button (click)="exportAsExcel()" class="btn"> <mat-icon>description</mat-icon> Export to Excel</button>
         <!-- <button *ngIf="gl.setRowData" routerLink="/admin/bills/add" class="btn" style="background-color: #f5b324; color: #ffffff;"> -->

@@ -25,6 +25,10 @@ export class Billservice {
     // console.log("User ID", data);
     return this.srv.get(`Bill/${id}`);
   }
+  DeleteAll() {
+    // console.log("User ID", data);
+    return this.srv.delete(`Bill/DeleteALL`);
+  }
   Delete(id:any) {
     // console.log("User ID", data);
     return this.srv.delete(`Bill/${id}`);

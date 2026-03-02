@@ -3,7 +3,110 @@
 <div mat-dialog-content class="content-body payment-popup pb-0">
   <div #voucherDiv>
     <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
+      body { font-family: 'Courier New', monospace; background: white; color: black; }
+      
+      .page-container {
+        width: 210mm;
+        height: 297mm;
+        overflow: hidden;
+        page-break-after: always;
+        display: flex;
+        flex-direction: column;
+        padding: 5mm 0;
+      }
 
+      .voucher-container {
+        width: 200mm;
+        height: 138mm; 
+        border: 2px solid black;
+        margin: 0 auto;
+        display: flex;
+        overflow: hidden;
+        background: white;
+        margin-bottom: 2mm;
+      }
+
+      .sidebar {
+        width: 65px;
+        background: #eeeeee; 
+        border-right: 2px solid black;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        align-items: start;
+        padding: 10px;
+        line-height: 1.2;
+      }
+
+      .vertical-text {
+        writing-mode: vertical-rl;
+        font-weight: bold;
+        font-size: 11px;
+        color: black;
+        white-space: nowrap;
+        margin-left: 5px;
+        margin-top: 8px;
+      }
+
+      .content { flex: 1; padding: 6px 15px; display: flex; flex-direction: column; }
+
+      .header h1 { 
+        font-size: 20px; 
+        color: black; 
+        text-decoration: underline; 
+        letter-spacing: 6px; 
+        text-align: center; 
+        margin-bottom: 5px; 
+        font-weight: 900;
+      }
+      .firm-name { font-size: 22px; font-weight: bold; color: black; text-align: center; text-transform: uppercase; }
+      .firm-details { font-size: 13px; text-align: center; color: black; line-height: 1; margin-bottom: 8px; border-bottom: 1px solid black; padding-bottom: 5px; font-weight: bold;}
+
+      .info-row { display: flex; justify-content: space-between; margin-bottom: 4px;    font-size: 13px;
+    color: black;
+    font-weight: bold;}
+      .info-line-short { border-bottom: 1.5px solid black; min-width: 100px; font-weight: bold; text-align: center; }
+
+      .particulars-header { text-align: center; margin: 5px 0; border-top: 2px solid black; border-bottom: 2px solid black; background: #f2f2f2; }
+      .particulars-header h2 { font-size: 13px; color: black; letter-spacing: 3px; margin: 4px 0; font-weight: bold; }
+
+      .table-section { border: 2px solid black; flex: 1; display: flex; flex-direction: column; font-size: 12px; overflow: hidden; }
+      .table-header { background: #e0e0e0; font-weight: bold; border-bottom: 2px solid black; display: flex; }
+      .col-main {  font-weight:bold;   font-size: 13px;color:#000;flex: 1; padding: 6px 5px; border-right: 1.5px solid black; line-height: 1; }
+      .col-rupee {  font-weight:bold;   font-size: 13px;color:#000;width: 90px; padding: 6px 5px; text-align: right; border-right: 1.5px solid black; line-height: 1; font-weight: bold;}
+      .col-paise { font-weight:bold;    font-size: 13px;color:#000;width: 40px; padding: 6px 5px; text-align: center; line-height: 1; font-weight: bold;}
+      
+      .section-label { position: relative; background: #f2f2f2; font-weight: bold; font-size: 12px; border-bottom: 1px solid black; padding: 2px 5px; color: black; }
+      .section-label .heading-content { 
+        position: absolute;
+        right: 0;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+        font-size: 14px; 
+      }
+      
+      .table-row { color:#000;display: flex; border-bottom: 1px solid #ccc; min-height: 25px; align-items: center; }
+      .total-row { display: flex; border-top: 2px solid black; background: #e0e0e0; font-weight: bold; margin-top: auto; }
+
+      .footer { display: flex; justify-content: space-between; margin-top: 20px; height: 70px; align-items: flex-end; }
+      .footer-item { text-align: center; width: 30%; }
+      .footer-label { font-size: 12px; color: black; margin-bottom: 40px; font-weight: bold; }
+      .footer-line { border-bottom: 1.5px solid black; }
+
+      .cut-line { width: 100%; border-top: 2px dashed #000; height: 2mm; margin: 4mm 0; position: relative; }
+      .cut-line::after { content: '✂'; position: absolute; top: -12px; left: 50%; background: white; padding: 0 10px; color: black; font-size: 16px; }
+
+      @media print {
+        @page { size: A4 portrait; margin: 0; }
+        .no-print { display: none; }
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+/* 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; }
     body { font-family: 'Courier New', monospace; background: white; margin: 0; padding: 0; }
     
@@ -19,7 +122,7 @@
 
     .voucher-container {
       width: 200mm;
-      height: 138mm; /* Fixed height for 2 per page */
+      height: 138mm; 
       border: 2px solid #8B4513;
       margin: 0 auto;
       display: flex;
@@ -28,7 +131,6 @@
       margin-bottom: 2mm;
     }
 
-    /* REVERTED SIDEBAR TO ORIGINAL ALIGNMENT */
     .sidebar {
       width: 60px;
       background: #f9f9f9;
@@ -45,7 +147,7 @@
     .vertical-text {
       writing-mode: vertical-rl;
       font-weight: bold;
-      font-size: 11px; /* Slightly larger for the new 2-per-page layout */
+      font-size: 11px; 
       color: #8B4513;
       white-space: nowrap;
       margin-left: 5px;
@@ -54,7 +156,6 @@
 
     .content { flex: 1; padding: 6px 15px; display: flex; flex-direction: column; }
 
-    /* Firm Header Styles */
     .header h1 { font-size: 18px; color: #8B4513; text-decoration: underline; letter-spacing: 4px; text-align: center; margin-bottom: 3px; }
     .firm-name { font-size: 22px; font-weight: bold; color: #8B4513; text-align: center; text-transform: uppercase; }
     .firm-details { font-size: 10px; text-align: center; color: #333; line-height: 1.3; margin-bottom: 8px; border-bottom: 1px dotted #8B4513; padding-bottom: 5px; }
@@ -95,7 +196,7 @@
     @media print {
       @page { size: A4 portrait; margin: 0; }
       .no-print { display: none; }
-    }
+    } */
     </style>
     <div class="print-wrapper">
       <div class="page-container" *ngFor="let page of chunkedVouchers">
