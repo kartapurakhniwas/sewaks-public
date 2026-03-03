@@ -26,6 +26,8 @@
   </label>
 </div>
 
+<input type="checkbox" name="select all " id="selectAll" (change)="toggleSelectAll()"> Select All
+<input type="checkbox" name="select all " id="selectAll" (change)="toggleUnselectAll()"> Un Select All
 
 <div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
   <h4>Preview Bulk Entries</h4>
@@ -38,6 +40,9 @@
     </td>
     <td>{{ entry.billAmount }}</td>
     <td>
+      {{entry.originalDescription}}
+    </td>
+    <td>
       <input type="checkbox" [(ngModel)]="entry.isSelected" *ngIf="entry.isValid">
     </td>
   </tr>
@@ -47,6 +52,132 @@
     <!-- <mat-spinner diameter="20" *ngIf="isProcessing"></mat-spinner> -->
     Confirm & Save All ({{bulkEntries.length}} Entries)
   </button>
+
+
+
+
+
+
+
+
+
+<div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
+  <h4>Preview Bulk Entries</h4>
+  
+  <!-- Your existing filter toggles -->
+  <div style="margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+      <input type="checkbox" 
+             [(ngModel)]="hideUnknowns" 
+             (change)="autoSelectVisible()"> 
+      <span>Hide Unknown Suppliers & Auto-Select All Matches</span>
+    </label>
+    
+    <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; color: #007bff;">
+      <input type="checkbox" 
+             [(ngModel)]="showAllEntries" 
+             (change)="onShowAllToggle()"> 
+      <span>Show All Entries (including invalid) for Testing</span>
+    </label>
+  </div>
+
+  <!-- Your existing main table -->
+  <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <!-- ... your existing table code ... -->
+  </div>
+
+  <!-- NEW SECTION: Unmatched To Transfer Entries -->
+  <div class="mt-5" *ngIf="unmatchedToTransferEntries.length > 0">
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0">
+          <mat-icon>warning_amber</mat-icon> 
+          Unmatched "To Transfer" Entries ({{ unmatchedToTransferEntries.length }})
+        </h4>
+        <small class="text-muted">These are "To Transfer" transactions that couldn't be matched to any supplier</small>
+      </div>
+      <button class="btn btn-sm btn-outline-primary" (click)="toggleUnmatchedList = !toggleUnmatchedList">
+        <mat-icon>{{ toggleUnmatchedList ? 'expand_less' : 'expand_more' }}</mat-icon>
+        {{ toggleUnmatchedList ? 'Hide' : 'Show' }} Details
+      </button>
+    </div>
+
+    <div class="table-responsive" *ngIf="toggleUnmatchedList" style="max-height: 400px; overflow-y: auto;">
+      <table class="table table-bordered table-warning table-striped">
+        <thead style="position: sticky; top: 0; background: #fff3cd; z-index: 10;">
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Ref No.</th>
+            <th>Extracted Keywords</th>
+            <th>Suggested Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of unmatchedToTransferEntries">
+            <td>{{ entry.billDate | date:'dd-MM-yyyy' }}</td>
+            <td>
+              <div style="max-width: 500px; white-space: normal; word-wrap: break-word;">
+                <span class="badge bg-secondary me-1">{{ entry.transferType }}</span>
+                <span>{{ entry.originalDescription }}</span>
+              </div>
+            </td>
+            <td class="text-end">{{ entry.billAmount | currency:'INR' }}</td>
+            <td>{{ entry.refNo || 'N/A' }}</td>
+            <td>
+              <div *ngIf="entry.extractedWords?.length">
+                <span class="badge bg-info me-1" *ngFor="let word of entry.extractedWords">
+                  {{ word }}
+                </span>
+              </div>
+              <span *ngIf="!entry.extractedWords?.length" class="text-muted">No keywords extracted</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="createSupplierFromEntry(entry)" title="Create new supplier">
+                <mat-icon>person_add</mat-icon>
+              </button>
+              <button class="btn btn-sm btn-success" (click)="manuallyMatchEntry(entry)" title="Manually match to existing supplier">
+                <mat-icon>link</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Summary for unmatched entries -->
+      <div class="p-3 bg-light rounded mt-2">
+        <div class="row">
+          <div class="col-md-4">
+            <strong>Total Unmatched:</strong> {{ unmatchedToTransferEntries.length }}
+          </div>
+          <div class="col-md-4">
+            <strong>Total Amount:</strong> {{ getUnmatchedTotalAmount() | currency:'INR' }}
+          </div>
+          <div class="col-md-4">
+            <strong>Unique Keywords:</strong> {{ getUniqueKeywordsFromUnmatched() }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3" *ngIf="unmatchedToTransferEntries.length === 0 && bulkEntries.length > 0">
+    <div class="alert alert-success">
+      <mat-icon>check_circle</mat-icon> 
+      All "To Transfer" entries have been successfully matched to suppliers!
+    </div>
+  </div>
+  
+  <!-- Your existing stats and save button -->
+  <div class="mt-3 p-3 bg-light rounded">
+    <!-- ... your existing stats ... -->
+  </div>
+  
+  <button (click)="saveBulkEntries()" class="btn btn-success mt-3" [disabled]="isProcessing">
+    <!-- ... your existing button ... -->
+  </button>
+</div>
 </div>
   <form class="form mat-form mt-3 mb-3" [formGroup]="Form">
     <div class="row">
