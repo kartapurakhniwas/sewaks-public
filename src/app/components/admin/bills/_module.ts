@@ -15,13 +15,15 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { AgGridModule } from 'ag-grid-angular';
 import { AddBillsComponent } from './add-bills.component';
 import { BillsComponent, PrintVoucherPopup } from './bills.component';
+import { ManualVoucherComponent } from './manual-voucher.component';
 
 
 @NgModule({
   declarations: [
  BillsComponent,
    AddBillsComponent,
-   PrintVoucherPopup
+   PrintVoucherPopup,
+    ManualVoucherComponent,
   ],
 
   imports: [
@@ -43,6 +45,7 @@ import { BillsComponent, PrintVoucherPopup } from './bills.component';
     RouterModule.forChild([
       { path: '', component: BillsComponent },
       { path: 'add', component: AddBillsComponent },
+      { path: 'manual', component: ManualVoucherComponent },
        { path: 'edit/:billId', component: AddBillsComponent }
     ])
   ],

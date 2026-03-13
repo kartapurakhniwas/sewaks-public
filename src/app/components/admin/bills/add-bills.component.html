@@ -9,84 +9,177 @@
     </button>
   </div>
 </div>
+
 <div class="add-form-wrap">
-<div class="col-12 mt-3">
-  <input type="file" (change)="onExcelUpload($event)" accept=".xlsx, .xls" id="excelFile" style="display:none">
-  <button class="btn btn-primary" onclick="document.getElementById('excelFile').click()">
-    <mat-icon>upload_file</mat-icon> Upload Bank Statement
-  </button>
-</div>
-<!-- {{this.bulkEntries | json}} -->
-<div style="margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 5px;">
-  <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px;">
-    <input type="checkbox" 
-           [(ngModel)]="hideUnknowns" 
-           (change)="autoSelectVisible()"> 
-    <span>Hide Unknown Suppliers & Auto-Select All Matches</span>
-  </label>
-</div>
+  <!-- Excel Upload Button -->
+  <div class="col-12 mt-3">
+    <input type="file" (change)="onExcelUpload($event)" accept=".xlsx, .xls" id="excelFile" style="display:none">
+    <button class="btn btn-primary" onclick="document.getElementById('excelFile').click()">
+      <mat-icon>upload_file</mat-icon> Upload Bank Statement
+    </button>
+  </div>
 
-<input type="checkbox" name="select all " id="selectAll" (change)="toggleSelectAll()"> Select All
-<input type="checkbox" name="select all " id="selectAll" (change)="toggleUnselectAll()"> Un Select All
+  <!-- Supplier Filter Dropdown -->
+  <div style="margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <label style="font-weight: bold;">Filter by Supplier:</label>
+      <select 
+        [(ngModel)]="selectedFilterSupplier" 
+        (change)="onSupplierFilterChange()"
+        style="padding: 8px; border-radius: 4px; border: 1px solid #ced4da; min-width: 300px;">
+        <option value="all">📋 All Suppliers</option>
+        <option value="unknown">❓ Unknown (No Match)</option>
+        <option disabled>──────────────────</option>
+        <option *ngFor="let supplier of allSuppliersForFilter" [value]="supplier">
+          👤 {{ supplier }}
+        </option>
+      </select>
+    </div>
+    
+    <!-- Quick Stats for Selected Filter -->
+    <div style="color: #6c757d; background: #e9ecef; padding: 5px 10px; border-radius: 4px;">
+      <span *ngIf="selectedFilterSupplier === 'all'">
+        📊 Showing all {{ displayedEntries.length }} entries
+      </span>
+      <span *ngIf="selectedFilterSupplier === 'unknown'">
+        ❓ Showing {{ filteredBySupplierEntries.length }} unknown entries
+      </span>
+      <span *ngIf="selectedFilterSupplier !== 'all' && selectedFilterSupplier !== 'unknown'">
+        👤 Showing {{ filteredBySupplierEntries.length }} entries for {{ selectedFilterSupplier }}
+      </span>
+    </div>
+  </div>
 
-<div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
-  <h4>Preview Bulk Entries</h4>
-<table class="table">
-  <tr *ngFor="let entry of displayedEntries" [class.table-danger]="!entry.isValid">
-    <td>{{ entry.billDate | date:'dd-MM-yyyy' }}</td>
-    <td>
-      <b *ngIf="entry.isValid">{{ entry.supplierName }}</b>
-      <span *ngIf="!entry.isValid" class="text-danger">Unknown (No Match)</span>
-    </td>
-    <td>{{ entry.billAmount }}</td>
-    <td>
-      {{entry.originalDescription}}
-    </td>
-    <td>
-      <input type="checkbox" [(ngModel)]="entry.isSelected" *ngIf="entry.isValid">
-    </td>
-  </tr>
-</table>
-  
-  <button (click)="saveBulkEntries()" class="btn btn-success" [disabled]="isProcessing">
-    <!-- <mat-spinner diameter="20" *ngIf="isProcessing"></mat-spinner> -->
-    Confirm & Save All ({{bulkEntries.length}} Entries)
-  </button>
+  <!-- Summary for filtered view -->
+  <div style="margin-bottom: 15px; background: #e9ecef; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <div>
+      <strong>💰 Total Amount:</strong> {{ getFilteredTotalAmount() | currency:'INR' }}
+    </div>
+    <div>
+      <strong>✅ Selected:</strong> {{ getFilteredSelectedCount() }} / {{ filteredBySupplierEntries.length }}
+    </div>
+    <div *ngIf="selectedFilterSupplier !== 'all'">
+      <button class="btn btn-sm btn-outline-primary" (click)="selectedFilterSupplier = 'all'; onSupplierFilterChange()">
+        <mat-icon>clear</mat-icon> Clear Filter
+      </button>
+    </div>
+  </div>
 
-
-
-
-
-
-
-
-
-<div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
-  <h4>Preview Bulk Entries</h4>
-  
-  <!-- Your existing filter toggles -->
+  <!-- Filter Toggles -->
   <div style="margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
     <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px;">
       <input type="checkbox" 
              [(ngModel)]="hideUnknowns" 
              (change)="autoSelectVisible()"> 
-      <span>Hide Unknown Suppliers & Auto-Select All Matches</span>
+      <span>🙈 Hide Unknown Suppliers & Auto-Select All Matches</span>
     </label>
     
     <label style="cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; color: #007bff;">
       <input type="checkbox" 
              [(ngModel)]="showAllEntries" 
              (change)="onShowAllToggle()"> 
-      <span>Show All Entries (including invalid) for Testing</span>
+      <span>🔍 Show All Entries (including invalid) for Testing</span>
     </label>
   </div>
 
-  <!-- Your existing main table -->
-  <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-    <!-- ... your existing table code ... -->
+  <!-- Selection Controls -->
+  <div style="margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+    <button class="btn btn-sm btn-outline-primary" (click)="toggleSelectAll()">
+      <mat-icon>check_box</mat-icon> Select All ({{ filteredBySupplierEntries.length }})
+    </button>
+    <button class="btn btn-sm btn-outline-secondary" (click)="toggleUnselectAll()">
+      <mat-icon>check_box_outline_blank</mat-icon> Unselect All
+    </button>
+    
+    <!-- Show supplier statistics -->
+    <span style="margin-left: auto; color: #6c757d;">
+      📊 Valid: {{ getValidMatchesCount() }} | 
+      ❓ Unknown: {{ getNoMatchesCount() }} | 
+      🏷️ Suppliers: {{ uniqueSuppliersInBulk.length }}
+    </span>
   </div>
 
-  <!-- NEW SECTION: Unmatched To Transfer Entries -->
+  <!-- Bulk Entries Table -->
+  <div *ngIf="bulkEntries.length > 0" class="bulk-preview mt-4">
+    <h4>📋 Preview Bulk Entries 
+      <small style="font-size: 14px; color: #6c757d;">
+        ({{ filteredBySupplierEntries.length }} entries shown)
+      </small>
+    </h4>
+    
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+      <table class="table table-striped table-hover">
+        <thead style="position: sticky; top: 0; background: white; z-index: 10;">
+          <tr>
+            <th>Date</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of filteredBySupplierEntries" 
+              [class.table-danger]="!entry.isValid"
+              [class.table-success]="entry.isValid && entry.isSelected">
+            <td>{{ entry.billDate | date:'dd-MM-yyyy' }}</td>
+            <td>
+              <b *ngIf="entry.isValid" style="color: #28a745;">{{ entry.supplierName }}</b>
+              <span *ngIf="!entry.isValid" class="text-danger">
+                ❓ Unknown 
+                <small>({{ entry.transferType }})</small>
+              </span>
+            </td>
+            <td class="text-end">{{ entry.billAmount | currency:'INR' }}</td>
+            <td>
+              <span [title]="entry.originalDescription" style="cursor: help;">
+                {{entry.originalDescription | slice:0:50}}{{entry.originalDescription.length > 50 ? '...' : ''}}
+              </span>
+              <span *ngIf="entry.matchedWords?.length" class="badge bg-info ms-2" 
+                    title="Matched keywords: {{entry.matchedWords.join(', ')}}">
+                {{entry.matchedWords.length}} match
+              </span>
+            </td>
+            <td>
+              <input type="checkbox" 
+                     [(ngModel)]="entry.isSelected" 
+                     *ngIf="entry.isValid"
+                     [disabled]="!entry.isValid">
+            </td>
+          </tr>
+          <tr *ngIf="filteredBySupplierEntries.length === 0">
+            <td colspan="5" class="text-center text-muted py-4">
+              <mat-icon style="font-size: 48px; width: 48px; height: 48px;">info</mat-icon>
+              <p class="mt-2">No entries found for the selected filter</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Save Button Section -->
+    <div class="mt-3 p-3 bg-light rounded d-flex justify-content-between align-items-center">
+      <div>
+        <div><strong>✅ Selected:</strong> {{ getFilteredSelectedCount() }} of {{ filteredBySupplierEntries.length }} entries</div>
+        <div *ngIf="getFilteredSelectedCount() > 0">
+          <strong>💰 Total Amount:</strong> {{ getFilteredTotalAmount() | currency:'INR' }}
+        </div>
+        <div *ngIf="selectedFilterSupplier !== 'all'" class="mt-1">
+          <small class="text-muted">
+            Filtered by: <strong>{{ selectedFilterSupplier }}</strong>
+          </small>
+        </div>
+      </div>
+      <button (click)="saveBulkEntries()" 
+              class="btn btn-success btn-lg" 
+              [disabled]="isProcessing || getFilteredSelectedCount() === 0">
+        <mat-icon>save</mat-icon> 
+        {{ isProcessing ? 'Saving...' : 'Save Selected (' + getFilteredSelectedCount() + ')' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Unmatched To Transfer Entries Section -->
   <div class="mt-5" *ngIf="unmatchedToTransferEntries.length > 0">
     <div class="alert alert-warning d-flex justify-content-between align-items-center">
       <div>
@@ -168,30 +261,22 @@
       All "To Transfer" entries have been successfully matched to suppliers!
     </div>
   </div>
-  
-  <!-- Your existing stats and save button -->
-  <div class="mt-3 p-3 bg-light rounded">
-    <!-- ... your existing stats ... -->
-  </div>
-  
-  <button (click)="saveBulkEntries()" class="btn btn-success mt-3" [disabled]="isProcessing">
-    <!-- ... your existing button ... -->
-  </button>
-</div>
-</div>
+
+  <!-- Regular Form Section -->
   <form class="form mat-form mt-3 mb-3" [formGroup]="Form">
     <div class="row">
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-
         <div class="custom-droplist">
           <mat-form-field appearance="fill" class="w-100 mb-2">
             <mat-label>Supplier Name</mat-label>
- <mat-select formControlName="supplierName" required
-                    (openedChange)="onSupplierOpened($event)"
-              (selectionChange)="itemSelected($event.value)">
+            <mat-select formControlName="supplierName" required
+                       (openedChange)="onSupplierOpened($event)"
+                       (selectionChange)="itemSelected($event.value)">
               <mat-option>
-                 <input #supplierSearchInput matInput placeholder="Search supplier" (click)="$event.stopPropagation()"
-                  (keydown)="$event.stopPropagation()" (keyup)="itemChangeKeyup($event)">
+                <input #supplierSearchInput matInput placeholder="Search supplier" 
+                       (click)="$event.stopPropagation()"
+                       (keydown)="$event.stopPropagation()" 
+                       (keyup)="itemChangeKeyup($event)">
               </mat-option>
               <mat-option *ngIf="filteredSuppList.length === 0" disabled>No Records Found</mat-option>
               <mat-option *ngFor="let i of filteredSuppList" [value]="i.supplierName">
@@ -199,31 +284,17 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <ul class="options" *ngIf="itemListFlag">
-            <li (click)="itemListFlag = false" class="text-end">Close</li>
-            <li *ngIf="suppList.length==0" class="text-center">No Records Found</li>
-            <li *ngFor="let i of filteredSuppList" (click)="itemSelected(i)">
-              {{i.supplierName}}
-            </li>
-          </ul>
         </div>
-
-        <!-- <mat-form-field appearance="fill" class="w-100 mb-2">
-                <mat-label>Supplier Name</mat-label>
-                <input formControlName="supplierName" matInput placeholder="Supplier Name">
-              </mat-form-field> -->
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Bill No</mat-label>
           <input type="number" formControlName="billNo" matInput placeholder="Bill No">
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Bill Date </label>
-                <input formControlName="billDate" type="date" class="form-control" placeholder="Bill Date">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Bill Date</mat-label>
           <input formControlName="billDate" matInput [matDatepicker]="picker" readonly>
@@ -232,21 +303,15 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Bill Amount </label>
-                <input formControlName="billAmount" type="number" class="form-control" placeholder="Bill Amount">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Bill Amount</mat-label>
           <input formControlName="billAmount" type="number" required="required" matInput placeholder="Bill Amount">
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Due Date </label>
-                <input formControlName="dueDate" type="date" class="form-control" placeholder="Due Date">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Due Date</mat-label>
           <input formControlName="dueDate" matInput [matDatepicker]="picker1" readonly>
@@ -255,19 +320,8 @@
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
       </div>
-      <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <mat-form-field appearance="fill" class="w-100 mb-2">
-          <mat-label>Bill Type</mat-label>
-          <mat-select formControlName="billType">
-            <mat-option *ngFor="let type of billType" [value]="type.value">{{ type.viewValue }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div> -->
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Payment Date </label>
-                <input formControlName="paymentDate" type="date" class="form-control" placeholder="Payment Date">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Payment Date</mat-label>
           <input formControlName="paymentDate" matInput [matDatepicker]="picker2" readonly>
@@ -276,13 +330,8 @@
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Payment mode </label>
-                <select class="form-control" formControlName="mode" (change)="changePaymentMode($event)">
-                  <option *ngFor="let type of mode" [value]="type.value">{{ type.viewValue }}</option>
-                </select>
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Payment mode</mat-label>
           <mat-select (selectionChange)="changePaymentMode($event)" formControlName="mode">
@@ -290,21 +339,15 @@
           </mat-select>
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
-        <!-- <div class="form-group">
-                <label  class="form-label">Cheque No </label>
-                <input formControlName="chequeNo" type="text" class="form-control" placeholder="Cheque No">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Cheque No</mat-label>
           <input formControlName="chequeNo" matInput placeholder="Cheque No">
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="chequeFlag">
-        <!-- <div class="form-group">
-                <label  class="form-label">Cheque Date </label>
-                <input formControlName="chequeDate" type="date" class="form-control" placeholder="Cheque Date">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Cheque Date</mat-label>
           <input formControlName="chequeDate" matInput [matDatepicker]="picker3" readonly>
@@ -313,11 +356,8 @@
           <mat-datepicker #picker3></mat-datepicker>
         </mat-form-field>
       </div>
+
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="neftFlag">
-        <!-- <div class="form-group">
-                <label  class="form-label">NEFT Date </label>
-                <input formControlName="neftDate" type="date" class="form-control" placeholder="NEFT Date">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>NEFT Date</mat-label>
           <input formControlName="neftDate" matInput [matDatepicker]="picker4" readonly>
@@ -328,17 +368,13 @@
       </div>
 
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2" *ngIf="neftFlag">
-        <!-- <div class="form-group">
-                <label  class="form-label">NEFT Amount </label>
-                <input formControlName="neftAmount" type="number" class="form-control" placeholder="NEFT Amount">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>NEFT Amount</mat-label>
           <input formControlName="neftAmount" type="number" matInput placeholder="NEFT Amount">
         </mat-form-field>
       </div>
-      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
 
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
@@ -347,21 +383,16 @@
         </mat-form-field>
       </div>
 
-
       <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <!-- <div class="form-group">
-                <label  class="form-label">Comments</label>
-                <input formControlName="comments" type="text" class="form-control" placeholder="Comments">
-              </div> -->
         <mat-form-field appearance="fill" class="w-100 mb-2">
           <mat-label>Comments</mat-label>
           <input formControlName="comments" type="text" matInput placeholder="Comments">
         </mat-form-field>
       </div>
-
     </div>
   </form>
 
+  <!-- Photos Section -->
   <div class="admin-header d-block img-folder">
     <div class="d-flex align-items-center">
       <h5 class="m-0 mr-3">Add Photos</h5>
@@ -371,43 +402,31 @@
     </div>
     <input (change)="upload($event)" type="file" id="label" style="display: none">
 
-    <!-- <ul>
-            <li *ngFor="let i of uploadFilesData">
-              <img [src]="i.fileData" alt="">
-              <i class="fa-solid fa-trash"></i>
-            </li>
-          </ul> -->
-
     <ul class="list-group">
       <table>
         <thead>
-          <th>S.No.</th>
-          <th>File Name</th>
-          <th>Action</th>
+          <tr>
+            <th>S.No.</th>
+            <th>File Name</th>
+            <th>Action</th>
+          </tr>
         </thead>
         <tbody>
-          <!-- <li class="list-group-item" *ngFor="let i of uploadFilesData; let ind = index"> -->
           <tr *ngFor="let i of uploadFilesData; let ind = index">
             <td>{{ind+1}}</td>
             <td><span>{{i.fileName}}</span></td>
-            <td style="display: flex; align-items: center; ">
+            <td style="display: flex; align-items: center;">
               <button class="btn-round me-2" (click)="downloadPhotos(i)" mat-mini-fab color="warn"
-                aria-label="Example icon button with a filter list icon">
+                      aria-label="Download file">
                 <mat-icon>download</mat-icon>
               </button>
-              <button class="btn-round" (click)="deletePhotos(ind)"><mat-icon>delete</mat-icon></button>
-
-
+              <button class="btn-round" (click)="deletePhotos(ind)">
+                <mat-icon>delete</mat-icon>
+              </button>
             </td>
-
           </tr>
-
-          <!-- </li> -->
-
         </tbody>
       </table>
-
     </ul>
   </div>
-
 </div>

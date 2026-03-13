@@ -443,7 +443,7 @@ export class PrintVoucherPopup implements OnInit {
     if (!printWindow) return;
     printWindow.document.write(`<html><head><style>${this.voucherStyles}</style></head><body>${this.voucherDiv.nativeElement.innerHTML}</body></html>`);
     printWindow.document.close();
-    setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 250);
+    setTimeout(() => { printWindow.focus(); printWindow.print();  }, 250);
   }
 
   // getPreviousMonthName(dateValue: any): string {

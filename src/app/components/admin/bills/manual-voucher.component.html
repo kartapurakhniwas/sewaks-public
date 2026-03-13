@@ -1,0 +1,298 @@
+<div class="admin-header">
+  <h3>Create Manual Voucher</h3>
+  <div class="d-flex justify-content-between">
+    <button class="btn" routerLink="/admin/bills">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+    <button (click)="printVoucher()" class="btn" type="button" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>print</mat-icon> Print Voucher
+    </button>
+    <button (click)="saveAndPrint()" class="btn" type="button" style="background-color: #28a745; color: #ffffff;">
+      <mat-icon>save</mat-icon> Save & Print
+    </button>
+  </div>
+</div>
+
+<div class="add-form-wrap">
+  <!-- Quick Entry Form -->
+  <form class="form mat-form mt-3 mb-3" [formGroup]="voucherForm">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mb-3">Voucher Details</h4>
+      </div>
+
+      <!-- Supplier Selection with Search -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="custom-droplist">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>Supplier Name *</mat-label>
+            <mat-select formControlName="supplierName" required
+                       (openedChange)="onSupplierOpened($event)"
+                       (selectionChange)="onSupplierSelected($event.value)">
+              <mat-option>
+                <input #supplierSearchInput matInput placeholder="Search supplier" 
+                       (click)="$event.stopPropagation()"
+                       (keydown)="$event.stopPropagation()" 
+                       (keyup)="filterSuppliers($event)">
+              </mat-option>
+              <mat-option *ngIf="filteredSuppliers.length === 0" disabled>No Records Found</mat-option>
+              <mat-option *ngFor="let supplier of filteredSuppliers" [value]="supplier.supplierName">
+                {{ supplier.supplierName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Manual Supplier Entry (for new suppliers) -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Or Enter New Supplier</mat-label>
+          <input formControlName="newSupplierName" matInput placeholder="Enter supplier name">
+        </mat-form-field>
+        <small class="text-muted" *ngIf="voucherForm.get('newSupplierName')?.value">
+          New supplier will be created
+        </small>
+      </div>
+
+      <!-- Amount -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Amount *</mat-label>
+          <input formControlName="amount" type="number" required matInput placeholder="Enter amount">
+        </mat-form-field>
+      </div>
+
+      <!-- Date -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Date *</mat-label>
+          <input formControlName="date" matInput [matDatepicker]="datePicker" readonly>
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Description/Purpose -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Description/Purpose</mat-label>
+          <input formControlName="description" matInput placeholder="Enter description">
+        </mat-form-field>
+      </div>
+
+      <!-- Payment Mode -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Payment Mode</mat-label>
+          <mat-select formControlName="paymentMode" (selectionChange)="onPaymentModeChange($event)">
+            <mat-option *ngFor="let mode of paymentModes" [value]="mode.value">
+              {{ mode.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Conditional Fields based on Payment Mode -->
+      <ng-container *ngIf="showChequeFields">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>Cheque Number</mat-label>
+            <input formControlName="chequeNo" matInput placeholder="Enter cheque number">
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>Cheque Date</mat-label>
+            <input formControlName="chequeDate" matInput [matDatepicker]="chequeDatePicker" readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="chequeDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #chequeDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="showNeftFields">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>NEFT/UTR Number</mat-label>
+            <input formControlName="neftNo" matInput placeholder="Enter NEFT/UTR number">
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+          <mat-form-field appearance="fill" class="w-100 mb-2">
+            <mat-label>NEFT Date</mat-label>
+            <input formControlName="neftDate" matInput [matDatepicker]="neftDatePicker" readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="neftDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #neftDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <!-- Status -->
+      <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Comments -->
+      <div class="col-12">
+        <mat-form-field appearance="fill" class="w-100 mb-2">
+          <mat-label>Additional Comments</mat-label>
+          <textarea formControlName="comments" matInput rows="2" placeholder="Enter additional comments"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+
+  <!-- Quick Actions -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-primary" (click)="clearForm()">
+          <mat-icon>refresh</mat-icon> Clear Form
+        </button>
+        <button class="btn btn-info" (click)="setToday()">
+          <mat-icon>today</mat-icon> Set Today's Date
+        </button>
+        <button class="btn btn-secondary" (click)="useLastAmount()">
+          <mat-icon>history</mat-icon> Use Last Amount
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Vouchers Preview -->
+  <div class="mt-5" *ngIf="recentVouchers.length > 0">
+    <h4>Recent Vouchers</h4>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Supplier</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let voucher of recentVouchers">
+            <td>{{ voucher.billDate | date:'dd-MM-yyyy' }}</td>
+            <td>{{ voucher.supplierName }}</td>
+            <td class="text-end">{{ voucher.billAmount | currency:'INR' }}</td>
+            <td>{{ voucher.comments || '-' }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'bg-success': voucher.status === 1,
+                'bg-warning': voucher.status === 2,
+                'bg-secondary': voucher.status === 0
+              }">
+                {{ getStatusText(voucher.status) }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info me-1" (click)="loadVoucher(voucher)" title="Load Voucher">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn btn-sm btn-primary" (click)="printExistingVoucher(voucher)" title="Print Voucher">
+                <mat-icon>print</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Print Preview Modal (Hidden by default) -->
+  <div class="modal fade" id="printPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Voucher Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="voucherPrintContent">
+          <div class="voucher-container p-4" style="font-family: 'Courier New', monospace;">
+            <!-- Voucher Header -->
+            <div class="text-center mb-4">
+              <h2>PAYMENT VOUCHER</h2>
+              <p>Voucher #: {{ voucherNumber }}</p>
+              <p>Date: {{ voucherForm.get('date')?.value | date:'dd-MM-yyyy' }}</p>
+            </div>
+
+            <!-- Voucher Body -->
+            <table class="table table-bordered">
+              <tr>
+                <th width="30%">Payee:</th>
+                <td>{{ getSupplierDisplayName() }}</td>
+              </tr>
+              <tr>
+                <th>Amount:</th>
+                <td>
+                  <strong>{{ voucherForm.get('amount')?.value | currency:'INR' }}</strong><br>
+                  <small>({{ amountInWords(voucherForm.get('amount')?.value) }})</small>
+                </td>
+              </tr>
+              <tr>
+                <th>Description:</th>
+                <td>{{ voucherForm.get('description')?.value || voucherForm.get('comments')?.value || '-' }}</td>
+              </tr>
+              <tr>
+                <th>Payment Mode:</th>
+                <td>{{ getPaymentModeText() }}</td>
+              </tr>
+              <tr *ngIf="showChequeFields && voucherForm.get('chequeNo')?.value">
+                <th>Cheque Details:</th>
+                <td>Cheque No: {{ voucherForm.get('chequeNo')?.value }}, 
+                    Date: {{ voucherForm.get('chequeDate')?.value | date:'dd-MM-yyyy' }}</td>
+              </tr>
+              <tr *ngIf="showNeftFields && voucherForm.get('neftNo')?.value">
+                <th>NEFT Details:</th>
+                <td>UTR: {{ voucherForm.get('neftNo')?.value }}, 
+                    Date: {{ voucherForm.get('neftDate')?.value | date:'dd-MM-yyyy' }}</td>
+              </tr>
+              <tr>
+                <th>Status:</th>
+                <!-- <td>{{ getStatusText(voucherForm.get('status')?.value) }}</td> -->
+              </tr>
+            </table>
+
+            <!-- Signature Section -->
+            <div class="row mt-5">
+              <div class="col-4 text-center">
+                <p>_________________</p>
+                <p>Prepared By</p>
+              </div>
+              <div class="col-4 text-center">
+                <p>_________________</p>
+                <p>Approved By</p>
+              </div>
+              <div class="col-4 text-center">
+                <p>_________________</p>
+                <p>Received By</p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-4 text-muted">
+              <small>This is a computer generated voucher</small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()">Print</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

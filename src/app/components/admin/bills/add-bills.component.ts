@@ -520,84 +520,65 @@ export class AddBillsComponent implements OnInit {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async saveBulkEntries() {
-    // 1. Only process what is valid and selected
-    const entriesToSave = this.bulkEntries
-      .filter((e) => e.isValid && e.isSelected)
-      .map((e) => ({
-        id: 0, // Static value
-        supplierName: e.supplierName,
-        billNo: e.billNo,
-        billDate: e.billDate,
-        billAmount: e.billAmount,
-        dueDate: e.dueDate,
-        billType: 0, // Static value
-        status: e.status,
-        image: 'string', // Static value
-        comments: e.comments,
-        paymentDate: e.paymentDate,
-        mode: e.mode,
-        chequeNo: 'string', // Static value
-        chequeDate: new Date().toISOString(), // Static/Current date
-        dateofBankDebit: new Date().toISOString(), // Static/Current date
-        neftAmount: 0, // Static value
-        neftDate: new Date().toISOString(), // Static/Current date
-      }));
+async saveBulkEntries() {
+  // Use filteredBySupplierEntries to only save from current filtered view
+  // and filter only selected ones
+  const entriesToSave = this.filteredBySupplierEntries
+    .filter((e) => e.isValid && e.isSelected)
+    .map((e) => ({
+      id: 0, // Static value
+      supplierName: e.supplierName,
+      billNo: e.billNo,
+      billDate: e.billDate,
+      billAmount: e.billAmount,
+      dueDate: e.dueDate,
+      billType: 0, // Static value
+      status: e.status,
+      image: 'string', // Static value
+      comments: e.comments,
+      paymentDate: e.paymentDate,
+      mode: e.mode,
+      chequeNo: 'string', // Static value
+      chequeDate: new Date().toISOString(), // Static/Current date
+      dateofBankDebit: new Date().toISOString(), // Static/Current date
+      neftAmount: 0, // Static value
+      neftDate: new Date().toISOString(), // Static/Current date
+    }));
 
-    if (entriesToSave.length === 0) {
-      alert('No valid entries selected!');
-      return;
-    }
+  if (entriesToSave.length === 0) {
+    this._snackBar.open('No entries selected! Please select entries to save.', 'Close', { duration: 3000 });
+    return;
+  }
 
-    this.isProcessing = true;
-    let actualSavedCount = 0;
+  this.isProcessing = true;
 
-    // for (let i = 0; i < entriesToSave.length; i++) {
-    //   const entry = entriesToSave[i];
-
-    // entriesToSave.filter((m:any) => {
-
-    // });
-
-    // const payload = {
-    //   ...entry,
-    //   billDate: new Date(entry.billDate),
-    //   image: "[]",
-    //   dateofBankDebit: new Date(),
-    //   status: 1
-    // };
-
-    try {
-      // 2. Convert the Observable to a Promise and AWAIT it
-      // This forces the loop to stop here until the server responds
-      await this.srv.PostALL(entriesToSave).toPromise();
-
-      // actualSavedCount++;
-      console.log(`Successfully saved ${entriesToSave.length} entries`);
-
-      // 3. INCREASED DELAY: Wait 1.5 seconds before the next hit
-      // This gives your server and database plenty of time to finish the previous task
-      // await this.delay(5000);
-    } catch (err) {
-      // console.error(`Error at index ${i}:`, err);
-      // We still wait even if there's an error to keep the timing consistent
-      // await this.delay(5000);
-    }
-    // }
-
-    this.isProcessing = false;
+  try {
+    // Save all selected entries
+    await this.srv.PostALL(entriesToSave).toPromise();
+    
     this._snackBar.open(
-      `${actualSavedCount} entries saved successfully`,
+      `${entriesToSave.length} entries saved successfully`,
       'Close',
       { duration: 5000 },
     );
 
-    if (actualSavedCount > 0) {
-      this.nav.navigateByUrl('/admin/bills');
-    }
+    // Remove saved entries from bulkEntries or refresh the list
+    // Option 1: Remove saved entries
+    const savedSupplierNames = entriesToSave.map(e => e.supplierName);
+    this.bulkEntries = this.bulkEntries.filter(e => 
+      !(e.isSelected && savedSupplierNames.includes(e.supplierName))
+    );
+    
+    // Option 2: Clear all selections
+    this.bulkEntries.forEach(e => e.isSelected = false);
+    
+  } catch (err) {
+    console.error('Error saving entries:', err);
+    this._snackBar.open('Error saving entries. Please try again.', 'Close', { duration: 5000 });
+  } finally {
+    this.isProcessing = false;
   }
-
-
+}
 
 
 buildSupplierProfiles() {
@@ -1368,14 +1349,85 @@ originalMatchingLogic(description: string): any {
 }
 
 
+
+
+// Add these properties
+selectedFilterSupplier: string = 'all'; // 'all' or specific supplier name
+supplierFilterList: any[] = []; // For dropdown options
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Add this property
+
+// Computed property for filtered entries based on selected supplier
+get filteredBySupplierEntries() {
+  if (this.selectedFilterSupplier === 'all') {
+    return this.displayedEntries;
+  }
+  return this.displayedEntries.filter(entry => 
+    entry.supplierName === this.selectedFilterSupplier
+  );
+}
+
+// Get all suppliers from API for filter dropdown
+get allSuppliersForFilter(): any[] {
+  // Return all suppliers from your API (suppList)
+  return this.suppList.map(s => s.supplierName).sort();
+}
+
+// Get unique suppliers that actually appear in bulk entries (for stats)
+get uniqueSuppliersInBulk(): any[] {
+  const suppliers = this.bulkEntries
+    .filter(entry => entry.isValid) // Only valid entries
+    .map(entry => entry.supplierName)
+    .filter((value, index, self) => self.indexOf(value) === index) // Get unique
+    .sort();
+  
+  return suppliers;
+}
+
+// Method to handle supplier filter change
+onSupplierFilterChange() {
+  console.log('Filter changed to:', this.selectedFilterSupplier);
+  // You can add any additional logic here if needed
+}
+
+// Get total amount for filtered entries
+getFilteredTotalAmount(): number {
+  return this.filteredBySupplierEntries.reduce((sum, entry) => sum + entry.billAmount, 0);
+}
+
+// Get selected count for filtered entries
+getFilteredSelectedCount(): number {
+  return this.filteredBySupplierEntries.filter(e => e.isSelected).length;
+}
+
+
+
+
 toggleSelectAll() {
-  const allSelected = this.displayedEntries.every(e => e.isSelected);
-  this.displayedEntries.forEach(e => e.isSelected = !allSelected);
+  const allSelected = this.filteredBySupplierEntries
+    .filter(e => e.isValid)
+    .every(e => e.isSelected);
+  
+  this.filteredBySupplierEntries
+    .filter(e => e.isValid)
+    .forEach(e => e.isSelected = !allSelected);
 }
 
 toggleUnselectAll() {
-  const allUnselected = this.displayedEntries.every(e => !e.isSelected);
-  this.displayedEntries.forEach(e => e.isSelected = allUnselected);
+  this.filteredBySupplierEntries
+    .filter(e => e.isValid)
+    .forEach(e => e.isSelected = false);
 }
-
 }
