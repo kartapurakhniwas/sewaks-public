@@ -6,7 +6,8 @@ export const environment = {
   production: false,
 
   // apiUrl: 'http://182.73.78.171:8981/api/'
-  apiUrl: 'http://192.168.0.10:8981/api/' // staging
+  // apiUrl: 'http://192.168.0.10:8981/api/' // staging
+  apiUrl: 'http://14.195.208.190:8981/api/'
   // 
 };
 
