@@ -14,12 +14,20 @@ export class Billservice {
   Add(data:any) {
     return this.srv.post(data, "Bill");
   }
+  PostALL(data:any) {
+    return this.srv.post(data, "Bill/PostALL");
+  }
+ 
   update(data:any) {
     return this.srv.put(data, "Bill");
   }
   GetById(id:any) {
     // console.log("User ID", data);
     return this.srv.get(`Bill/${id}`);
+  }
+  DeleteAll() {
+    // console.log("User ID", data);
+    return this.srv.delete(`Bill/DeleteALL`);
   }
   Delete(id:any) {
     // console.log("User ID", data);

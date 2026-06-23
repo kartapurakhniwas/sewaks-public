@@ -61,6 +61,15 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'admin/supplier-category',
+    component: MasterComponent,
+    data: { title: ' Sewaks - Supplier Category' },
+    loadChildren: () =>
+      import('./components/admin/supplier-category/_module').then(
+        (m) => m.SupplierCategoryModule
+      ),
+  },
+  {
     path: 'admin/donations',
     component: MasterComponent,
     data: { title: ' Sewaks - Donations' },

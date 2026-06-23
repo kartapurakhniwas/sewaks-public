@@ -44,7 +44,7 @@ export class SuppliersComponent implements OnInit {
         headerCheckboxSelectionFilteredOnly: true,
         checkboxSelection: true,
         sortingOrder: ["asc", "desc"],
-        width: 200,
+        width: 400,
       },
       {
         headerName: 'Address',
@@ -189,16 +189,16 @@ export class SuppliersComponent implements OnInit {
 
     for (var i = 0; i < data.length; i++) {
       data1 = {
-        Name: data[i].firstName + ' ' + data[i].lastName,
-        "Refered By": data[i].referedBy,
-        "Primary Contact": data[i].primaryContact,
-        "Email": data[i].email,
-        "Address": data[i].address,
-        "Donation (INR)": data[i].donationMoney,
-        "Donation Date": data[i].donationDate,
-        "Want Rebate": data[i].wantRebate,
-        "Schedule Type": data[i].scheduleType,
-        "Blood Group": data[i].bloodGroupName
+        Name: data[i].supplierName ,
+        // "Refered By": data[i].referedBy,
+        // "Primary Contact": data[i].primaryContact,
+        // "Email": data[i].email,
+        // "Address": data[i].address,
+        // "Donation (INR)": data[i].donationMoney,
+        // "Donation Date": data[i].donationDate,
+        // "Want Rebate": data[i].wantRebate,
+        // "Schedule Type": data[i].scheduleType,
+        // "Blood Group": data[i].bloodGroupName
       };
       d.push(data1);
     }

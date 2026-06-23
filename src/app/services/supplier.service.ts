@@ -29,4 +29,7 @@ export class SupplierService {
   SearchSuppliers(data:any) {
     return this.srv.post(data, "Supplier/SuppliersSearch");
   }
+  GetSupplierType() {
+    return this.srv.get("Supplier/GeSupplierTypes");
+  }
 }

@@ -1,0 +1,32 @@
+<div class="admin-header">
+  <h3>Supplier Category</h3>
+  <div class="d-flex justify-content-between">
+    <button *ngIf="gl.setRowData" routerLink="/admin/supplier-category/add" class="btn" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>edit</mat-icon>  Edit
+    </button>
+    <button *ngIf="gl.setRowData" (click)="delete()" class="btn" style="background-color: #ffcecd !important; color: #ffffff;">
+      <mat-icon>delete</mat-icon>  Delete
+    </button>
+    <button (click)="exportAsExcel()" class="btn">
+      <mat-icon>description</mat-icon> Export to Excel
+    </button>
+    <button routerLink="/admin/supplier-category/add" class="btn" style="background-color: #f5b324; color: #ffffff;">
+      <mat-icon>add_circle</mat-icon>  Add New
+    </button>
+  </div>
+</div>
+
+<div *ngIf="getpaged">
+  <ag-grid-angular
+    [rowData]="getpaged"
+    #agGrid
+    id="myGrid"
+    class="ag-theme-balham table-size"
+    [columnDefs]="columnDefs"
+    [pagination]="true"
+    [paginationPageSize]="50"
+    rowSelection="single"
+    (selectionChanged)="onSelectionChanged()"
+    [defaultColDef]="defaultColDef">
+  </ag-grid-angular>
+</div>

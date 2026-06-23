@@ -3,55 +3,44 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AgGridModule } from 'ag-grid-angular';
-import { AddBillsComponent } from './add-bills.component';
-import { BillsComponent, PrintVoucherPopup } from './bills.component';
-import { ManualVoucherComponent } from './manual-voucher.component';
-
+import { AddSupplierCategoryComponent } from './add-supplier-category.component';
+import { SupplierCategoryComponent } from './supplier-category.component';
 
 @NgModule({
   declarations: [
- BillsComponent,
-   AddBillsComponent,
-   PrintVoucherPopup,
-    ManualVoucherComponent,
+    SupplierCategoryComponent,
+    AddSupplierCategoryComponent
   ],
-
   imports: [
     MatIconModule,
     CommonModule,
-    NgSelectModule ,
-    FormsModule ,
+    NgSelectModule,
+    FormsModule,
     ReactiveFormsModule,
     AgGridModule,
     MatFormFieldModule,
-    ReactiveFormsModule,
     MatInputModule,
     MatDatepickerModule,
+    MatRadioModule,
     MatTabsModule,
-    MatDialogModule,
     MatNativeDateModule,
     MatSnackBarModule,
     MatSelectModule,
     RouterModule.forChild([
-      { path: '', component: BillsComponent },
-      { path: 'add', component: AddBillsComponent },
-      { path: 'manual', component: ManualVoucherComponent },
-       { path: 'edit/:billId', component: AddBillsComponent }
+      { path: '', component: SupplierCategoryComponent },
+      { path: 'add', component: AddSupplierCategoryComponent }
     ])
   ],
-  providers: [DatePipe,MatSnackBarModule],
-
+  providers: [DatePipe],
 })
-export class  BillsModule {
-
-}
+export class SupplierCategoryModule { }
